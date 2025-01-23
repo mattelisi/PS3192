@@ -1,0 +1,499 @@
+---
+title: 'PS3192: Intro to R Worksheet'
+author: "Matteo Lisi"
+date: "24 january 2025"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+ 
+
+# The R prompt
+
+
+![The R command prompt looks like `>`. You can type in commands and they will run once you hit `Enter`. At its simplest, you can think of this as a fancy calculator.](r_prompt.PNG)
+
+For example if you type `citation()` and press enter, R will give you some information about how you can cite R in a report or your dissertation:
+
+```{r}
+citation()
+```
+
+
+Note that R is case-sensitive (it consider uppercase and lower case letters as different symbols altogether). Hence if you type the same command but with an uppercase C for example, you will get an error:
+
+```{r, error=TRUE}
+Citation()
+```
+
+
+You can get help on any function by typing `?` before it. For example:
+
+```{r, eval = FALSE}
+?citation
+?sum 
+?mean
+```
+
+The help isn't always as helpful as you might wish (can appear a bit cryptic when you are just starting), but it's a good first place to look for help. Internet search engines are also your friend!
+
+
+## Simple Arithmetic 
+
+Answer the following calculations using the R prompt:
+$$4829 + 5029 = $$
+$$ 28 \times 82 = $$
+$$ 5/3 = $$
+$$ 7^5 = $$
+$$ \sqrt{20} = $$ (hint: use the `sqrt()` function)
+
+## Using functions
+
+You have seen that there is quite a lot of calculations that we can do using simple operations such as `+` or `*`, but for more advanced calculations we need to use **functions**. Above we have seen an example of a function that use a single argument to compute the square root of a number. Most functions in R however tend to allow more than one argument, several of which tend to have "default" values.
+
+An example is the `round()` function, which can be used to round a number to the nearest whole number, for example
+
+```{r}
+round(3.141593)
+```
+
+Suppose however I want to round to two decimal places --- that is I should get `3.14`. The function `round()` support a second argument that specify the number of digits (you can see this in the help of the function --- type `?round` in your command prompt to see this).
+
+Another useful function that requires multiple arguments is `seq()`. Try to have a look at the help of the function typing `?seq` in the command prompt, then use the function to answer the following:
+
+- Create a sequence of increasing values from 0 to 100 in steps of 5.
+- Create a sequence of _decreasing_ values from 1 to 0 in steps of -0.05
+
+## Logical Operators
+
+Sometimes we want to work out if a logical statement is `TRUE` or `FALSE`. For exampe, in null hypothesis significance testing, a result is statistically significant if $p > 0.05$. For the following eamples, work out if they are true or false, and then check by typing them into the `R` prompt. 
+
+ - `>` means *greater than*, while < means *less than*:
+```{r, eval = FALSE}
+7 > 3
+
+2*5 < 8
+```
+
+- `==` means *is equal to*:
+
+```{r, eval = FALSE}
+6/2 == 3
+```
+
+- `&` means *and*
+
+```{r, eval = FALSE}
+(3 == 4-1) & (9 > 4)
+(8 < 18) & (-1 > 1)
+```
+
+- `|` means *or*
+
+```{r, eval = FALSE}
+(3 == 4-1) | (9 > 4)
+(8 < 18) | (-1 > 1)
+```
+
+- `!=` means *not equal*
+```{r, eval = FALSE}
+10 != 5+6
+```
+
+
+## Assignment
+
+We can assign a variable using `<-` or `=`. Think of this as storing a number (or a string)
+ for future use.  
+ 
+```{r, eval = FALSE}
+my_number <- 6
+print(my_number)
+my_number + 3
+my_number > 2
+```
+
+There are some differences between `<-` and `=` but these are outside the scope of module. Ask about them later in the module if you would like to know more! In the meantime, do your best to use the same symbols that we use. 
+
+# Working with scripts
+
+A big advantage of `R` is that it makes it very easy to work with scripts. A script is simply a collection of commands (like the above) that we can save in a file and then run at a later date. This is very useful if we need to rerun the same set of commands again an again (time-saving!) or if we want to have a perfect record of how we processed our data (reproducible research)! 
+
+Make a new script using File > New File > R Script, or using the bottom on the top-left corner of the menu. Or for extra style points, you can use the `Ctrl+Shift+N` shortcut. 
+
+Try typing out a few of commands.
+
+## The workspace
+
+The workspace is your current R working environment and includes any user-defined objects (vectors, matrices, data frames, lists, functions).
+
+It is good practice to add a command to **clear** the workspace, that is delete all variables in memory, at the top of a script, so that we are sure to start with a 'clean slate' and ensure that no leftover variables from previous sessions interfere with your current work.
+
+You can clear the workspace with the following command:
+
+```{r}
+rm(list=ls())
+```
+
+This is a composite command, so let's unpack a bit:
+
+- `ls()` lists all objects (variables, functions, datasets, etc.) currently stored in the workspace.
+- `list=ls()` tells `rm()` that its argument are all objects returned by `ls()` (joined together as a "list" --- more on this below), effectively clearing the workspace.
+- `rm()` is the function that removes specified objects from memory.
+
+Running `rm(list=ls())` at the beginning of a script thus remove all variables currently in the workspace.
+Note that `rm` command permanently deletes objects in the workspace (there is no 'undo' button), so be careful when using it in an interactive sessions.
+
+(If you only want to remove specific variables, you can list them explicitly, e.g., `rm(x, y, z)`.)
+
+
+## Running code in a script
+
+If you want to run the line that your cursor is currently on, press `Ctrl+Enter`. 
+
+You can also mouse-drag to select one or more lines, and then again press `Ctrl+Enter`. 
+
+To run the whole script, press `Ctrl+Shift+Enter`.
+
+You can also find these options by clicking on the Run icon in the menu bar.
+
+## Commenting Code
+
+It is very important to comment your code. This may sometimes feel like a waste of time, but it is a really good habit to get into. Comments start with a `#` symbol and they allow you to leave notes about what a line of code does. This will help others understand what you've done and why. It will also help future-you remember what past-you was thinking!
+
+```{r}
+# This is a comment
+print('This is not a comment')
+print('Neither is this.') # we can also put comments at the end of a line. 
+```
+
+## Debugging
+
+Having bugs --- that is errors or unexpected or unexpected behavior in your code that prevents it from running correctly --- is common, especially while learning. When there is a bug in your code, don't panic. This is perfectly normal. 
+
+- First try and work out which line of code is causing the problems.
+- Check for simple syntax problems (such as missing commas, the wrong number of type of brackets, etc).
+- Check that your variables have sensible values (perhaps your code is expecting `x` to be a number but you've set it to a factor?)
+- Restart your R session if needed --- sometimes, clearing the workspace (`rm(list=ls())`) and re-running the script from the beginning can help.
+
+
+# Vectors, Lists and Dataframes
+
+## Concatenation and indexing
+
+When we are analysing data, we are often working with vectors and lists of numbers (for example, the height of everybody in this room). We can *concatenate* several numbers togethers:
+
+```{r, eval = FALSE}
+many_numbers <- c(3, 1, 4, 6)
+print(many_numbers)
+2 * many_numbers 
+```
+
+We can index each entry on it's own using square brackets: `[` and `]`. For example:
+
+```{r}
+many_numbers <- c(3, 1, 4, 6)
+many_numbers[3]
+```
+
+
+Vectors are good if we want to store the the same type of information in each position. If we try to store different types of information, we will either get an error, or R will automatically apply a transform, which may cause difficult to find bugs later on. For example, what is going on with the the code below:
+
+```{r, eval = FALSE}
+x <- c("adfc", 6.5)
+x[2] + 1
+```
+
+## Lists
+
+We can store different types of information in a list. Lists are very powerful, but the syntax can get a little ugly, as we need to use double brackets to index positions. 
+
+```{r, eval = FALSE}
+x <- list("adfc", 6.5)
+x[[2]] + 1
+```
+
+We can name entries in a list. This can make it easier to index information using the `$` symbol:
+
+```{r}
+my_list <- list(a_character = "5", a_number = 6)
+my_list$a_number
+```
+
+We can have lists of lists too:
+
+```{r}
+pets <- list(
+  names = c("leo", "sally", "daisy", "mungo"), 
+  creature = c("cat", "dog", "dog", "cat"), 
+  still_alive = c(FALSE, FALSE, FALSE, TRUE))
+```
+
+Can you make a list summarising the different modules that you are taking this year?
+
+## `For` and `if` statements
+
+For 'loops' and if statements are some of the basic building blocks of computer languages. They allow us to repeat the same operations over different values, or ask a question about some variables and run code only _if_ certain conditions are met.
+
+An example of `for` loop --- run it in your command prompt.
+
+```{r, eval=FALSE}
+
+for (x in 1:10) {
+	print(x^2)
+}
+
+```
+
+And an example of an `if` statement
+
+```{r, eval=FALSE}
+
+module = "PS3192"
+
+if(module == "PS3192") {
+	print("this is my favourite course")
+} else {
+	print("this course is quite good")
+}
+
+```
+
+As an exercise, write a script that combines a `for` loop and an `if` statement to process numbers from **1 to 100**:
+
+1. Use a `for` loop to iterate over numbers from **1 to 100**.
+2. Inside the loop, check whether each number is **divisible by 2**.  
+   - *Hint:* Use the **modulo operator** `%%`, which returns the remainder of a division.  
+   - Example:  
+     - `4 %% 2` returns `0` (divisible by 2)  
+     - `5 %% 2` returns `1` (not divisible by 2)  
+   - A number is divisible by 2 if the remainder is `0`, i.e., `number %% 2 == 0`.
+3. If a number is **divisible by 2**, print it to the console. Otherwise, move to the next number.
+
+
+## Dataframes
+
+We will be using dataframes a lot in this module: they are essentially a list-of-lists. You can think of them as all the information you might have in a table or spreadsheet. 
+
+```{r}
+pets <- data.frame(
+  n = 1:4,
+  names = c("leo", "sally", "daisy", "mungo"), 
+  creature = c("cat", "dog", "dog", "cat"), 
+  still_alive = c(FALSE, FALSE, FALSE, TRUE))
+```
+
+We can use the `$` operator to reference a column in the dataframe.
+
+```{r}
+pets$names
+pets$still_alive == TRUE
+pets[pets$still_alive == TRUE,]
+```
+
+We can get an idea of the variables in a dataset by using the functions `str()` or `summary()`. Run and examine the output of the following code:
+
+```{r}
+str(pets)
+summary(pets)
+```
+
+
+# Probability Distributions
+
+We will be working with some _probability distributions_ in this course. You should have encountered these before
+
+## The Normal (Gaussian) Distribution
+
+The normal distribution is very common. It has two parameters, the mean ($\mu$) and the standard deviation ($\sigma$). 
+
+```{r}
+# rnorm generates random numbers from a normal distribution
+my_random_numbers <- rnorm(n = 100, mean =20, sd = 5)
+
+# we can look at the mean and sd of our sample
+mean(my_random_numbers)
+sd(my_random_numbers)
+
+# plot a histogram
+hist(my_random_numbers)
+
+# repeat, but with a larger n!
+my_random_numbers <- rnorm(n = 10000, mean =20, sd = 5)
+
+# plot a histogram
+hist(my_random_numbers)
+
+# we can change the number of bins!
+hist(my_random_numbers, breaks = 100)
+```
+
+Hopefully this bell-shaped curve is familiar to you?
+
+<!-- ## The Binomial Distribution {#sec-binom} -->
+
+<!-- The binomial distribution is used to model successes and failures. (Or heads and tails on a coin!). If your dependent variable is binary, you should think about using a binomial distribution. -->
+
+<!-- Imagine if a university had a policy that on average, 70% of students on each module should receive a "good" mark (60% or more). PS3192 is quite a small module, so let's assume 20 students. What fraction of students we expect should achieve this in any given year? -->
+
+<!-- [please note: this is all hypothetical. There are no such policies at the university!] -->
+
+<!-- Let's answer this by simulating 1000 times from a binomial distribution -->
+<!-- ```{r} -->
+
+<!-- n_students <- 20 -->
+<!-- prob <- 0.7 # probability of receiving a "good" mark -->
+
+<!-- good_marks <- rbinom(1000, n_students, prob) -->
+
+<!-- # we can use the head function to print only the first 10 results, rather than all 1000 -->
+<!-- head(good_marks) -->
+
+<!-- # convert into probabilities! -->
+<!-- good_marks <- 100*good_marks/n_students -->
+
+<!-- hist(good_marks, xlab="fraction of marks >= 60%") -->
+
+<!-- ``` -->
+
+<!-- We can use this simple model to answer the following: -->
+
+<!-- Assume PS3192 is perfectly calibrated to the universities standard. What is the probability that less than half the students achieve a good mark from the module? -->
+
+<!-- ```{r} -->
+<!--  mean(good_marks<50) -->
+<!-- ``` -->
+
+<!-- There is around a 0.01-0.02% change that less than half the students will get a good mark.  -->
+
+
+<!-- What is the probability that over 80% of the students will get a good mark? -->
+
+<!-- ```{r} -->
+<!-- mean(good_marks>80) -->
+<!-- ``` -->
+
+<!-- There is around a 10% chance that 80% of students will get a good mark! -->
+
+## Plotting
+
+In the previous section you have create a histogram, which is a type of plot used to display how a single variable is distributed. Another very common type of plot is the 'scatterplot', which is used to show the relationship between two variables. In R we can create this with the `plot()` function.
+
+For example:
+```{r}
+# create some random, normally distributed variables (100 values)
+x <- rnorm(100)
+y <- rnorm(100)
+
+# plot them
+plot(x,y)
+```
+
+To get some practice with plotting, try creating the following plots:
+
+
+- Use the `seq()` function to generate a sequence of values from **-10 to 10**. Store these values in a variable, and use them to plot the function:  $$y = -x^2$$
+- Modify the appearance of the plot:  
+   - Set `type = "l"` to draw a continuous line instead of points.  
+   - Use the arguments `col` and `lwd` to change the line color and width, respectively.  
+- Add another curve to the same plot using the `lines()` function. For this new line, replace $x$ with $x + 5$, so that you are plotting:  $$y = -(x+5)^2$$
+   - What do you notice about the position of this new curve compared to the original one?  
+
+
+# Custom functions
+
+It is often useful to expand R capabilities by writing your own function (especially when you need to repeat operations many times). For example, in this way we can add a function that compute the values of $Y$ in the mathematical function we have plotted in the previous section:
+
+```{r}
+quadratic_function <- function(x, a=0){
+  y <- -(x-a)^2
+  return(y)
+}
+```
+
+- Try to plot several instances of this curve, for various values of the parameter `a` to verify that `a` correspond to the maximum value of the curve. Try adding a straight line to the plot at the location of the maximum of the curve, using the function `abline()`.
+
+- Create a modified version of the function that apply the exponential function `exp()` to `y` before returning it as output. (The exponential function is a function that takes any input value, positive or negative, and transform them into positive values; see the optional handout on exponentials and logarithms on moodle for more details on this)
+
+
+## Exercises
+
+<!-- 1. Let's go back to the example in [the section on the Binomial distribution](#sec-binom). Now think about what might happen on a module with more students (say 200). How do your answer change?  -->
+
+1. Write an R script to plot a straight line using the equation $y = mx + c$ where the slope $m = 2$ and the intercept $c = 1$. Define $x$ as a sequence of numbers from -5 to 5, and then plot the resulting $y$ values.
+
+2. Create a function in R to compute the distance traveled by an object moving with a constant speed of 5 meters per second. Use the formula $d = 5t$, where $d$ is the distance and $t$ is the time. Plot a graph of distance as a function of time for t values ranging from 0 to 10 seconds.
+
+3. Write an R script that generates two lines with random slopes and intercepts using the command `rnorm(1)` (e.g., `a <- rnorm(1)` to assign a random value to `a`). Next, calculate which line has the steeper slope. Plot both lines on the same graph and use visual cues (such as line thickness or color) to highlight the steeper line. The script should function each time it is executed (sourced), meaning that new lines with random slopes and intercepts are generated every time the script runs. (Hint: Use an `if` statement to check which line has the steeper slope and ensure that the line with the higher slope is always drawn thicker or in a more salient color each time the script runs).
+
+
+## Linear regression
+
+If you have completed all the worksheet, you are ready to dive into some real data.
+
+Two datasets are available on Moodle for you to load into R and explore:
+
+### `earnings` dataset
+
+This dataset contains the annual earnings (in $), the heights (in inches) and the sex (male/female) of a random sample (N=1192) of adult Americans, surveyed in the 1990. 
+
+Download the file `earnings.csv` from the Moodle page, copy it in your working directory, and run the following code:
+
+```{r}
+earnings <- read.csv("earnings.csv")
+str(earnings)
+```
+
+Use this to answer the question: _do taller people have higher earnings?_
+
+_Hint:_ you can use the `lm()` function to for a linear regression model. For example, the following code would estimate a regression of income on height
+
+```{r, eval=FALSE}
+model <- lm(earn ~ height, data=earnings)
+```
+
+You can print a summary of the results by applying the `summary` function to the fitted model object, that is by running:
+
+```{r, eval=FALSE}
+sumary(model)
+```
+
+
+
+### `bechdel` dataset
+
+The Bechdel test is a tool to measure, at least approximately, gender bias in the movie business. It was originally formulated by cartoonist Alison Bechdel in a 1985 strip from her “Dykes To Watch Out For” series, reproduced below:
+
+![](bechdel.jpg)
+
+
+The test ask 2 simple questions of a movie: Does it have at least two named female characters? And do those characters have at least one conversation that is not about a man? 
+
+Load the dataset in R as follow:
+
+```{r}
+bechdel <- read.csv("bechdel.csv")
+str(bechdel)
+```
+
+It includes the following variables:
+
+- `title`: Movie title.  
+- `year`: Release year.  
+- `binary`: Whether the movie passes the Bechdel test (`PASS` or `FAIL`).  
+- `budget_2013`: Production budget (adjusted to 2013 dollars).  
+- `domgross_2013`: Domestic box office revenue (2013 dollars).  
+- `gross_millions`: Total box office revenue in millions.  
+- `log_gross`: Log-transformed total revenue.  
+
+
+You can use this dataset (put together by [fivethirtyeight](https://projects.fivethirtyeight.com/polls/) to explore questions such as:
+- what proportion of movies fails to pass the test
+- do movies that fails to pass the test have larger budget? do they make more or less revenue?
+
