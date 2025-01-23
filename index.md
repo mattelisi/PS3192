@@ -1,4 +1,8 @@
+Course coordinator: Matteo Lisi
+academic year: 2024-25
+
 # Introduction to R programming
+
 
 [Slides](01_IntroR/01_introduction_to_R_slides.html)
 

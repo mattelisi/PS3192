@@ -1,5 +1,5 @@
 ---
-title: 'PS3192: Intro to R Worksheet'
+title: 'PS3192: Introduction to R Worksheet'
 author: "Matteo Lisi"
 date: "24 january 2025"
 output: 
@@ -17,9 +17,14 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 # The R prompt
 
 
-![The R command prompt looks like `>`. You can type in commands and they will run once you hit `Enter`. At its simplest, you can think of this as a fancy calculator.](r_prompt.PNG)
+![The R command prompt looks like `>`. You can type in commands and they will run once you hit `Enter`. At its simplest, you can think of this as a fancy calculator.](r_prompt.PNG) As such you can use operators like `+`, `-`, `*` (for multiplication), `/`, etc. to do calculations:
 
-For example if you type `citation()` and press enter, R will give you some information about how you can cite R in a report or your dissertation:
+```{r}
+2+2
+3*2
+```
+
+R has also many additional _functions_ that are used for a variety of purposes. For example if you type `citation()` and press enter, R will give you some information about how you can cite R in a report or your dissertation:
 
 ```{r}
 citation()
@@ -475,7 +480,7 @@ The Bechdel test is a tool to measure, at least approximately, gender bias in th
 
 The test ask 2 simple questions of a movie: Does it have at least two named female characters? And do those characters have at least one conversation that is not about a man? 
 
-Load the dataset in R as follow:
+The dataset (put together by [fivethirtyeight](https://projects.fivethirtyeight.com/polls/) contains information about 1776 movies from 1990 to 2013, including whether they passed the test or not. Load the dataset in R as follow:
 
 ```{r}
 bechdel <- read.csv("bechdel.csv")
@@ -493,7 +498,7 @@ It includes the following variables:
 - `log_gross`: Log-transformed total revenue.  
 
 
-You can use this dataset (put together by [fivethirtyeight](https://projects.fivethirtyeight.com/polls/) to explore questions such as:
+You can use this dataset to explore questions such as:
 - what proportion of movies fails to pass the test
 - do movies that fails to pass the test have larger budget? do they make more or less revenue?
 

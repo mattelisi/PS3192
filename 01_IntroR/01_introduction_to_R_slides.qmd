@@ -1,0 +1,86 @@
+---
+title: "PS3192: Real World Data Science"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    incremental: true  
+    auto-stretch: true
+    theme: [default, matteo_rhul.css]
+editor: visual
+---
+
+# 
+
+## Module outline
+
+::: {style="font-size: 70%;"}
+| week | day | time | lecturer | topic |
+|----------|----------|----------|----------|----------------------------------|
+| 18 | 24 Jan | 10:00 - 12:00 | Matteo | Introduction to R programming |
+| 19 | 31 Jan | 10:00 - 12:00 | Hirotaka | Data Importing, Cleaning, and Processing |
+| 20 | 7 Feb | 10:00 - 12:00 | Hirotaka | Data Visualisation |
+| 21 | 14 Feb | 10:00 - 12:00 | Matteo | Introduction to Machine Learning Concepts |
+| 22 | 21 Feb | 10:00 - 12:00 | Matteo | Classification and Supervised Learning |
+| 23 |  |  |  | *(study week)* |
+| 24 | 7 March | 10:00 - 12:00 | Hirotaka | Reproducible Analyses and Reporting with R Markdown |
+| 25 | 14 March | 10:00 - 12:00 | Matteo | Clustering and Unsupervised Learning |
+| 26 | 21 March | 10:00 - 12:00 | Jonas | Introduction to Matlab |
+| 27 | 28 March | 10:00 - 12:00 | Jonas | Mind reading with a classifier |
+| 28 | 4 April | 10:00 - 12:00 | Matteo | Final Review and Consolidation Workshop |
+:::
+
+## Lecturers
+
+::: {.column width="33%"}
+![](ML.jpeg) <!-- {.nostretch fig-align="center" width="70%"} --> [Matteo Lisi](https://mlisi.xyz/)
+:::
+
+::: {.column width="34%"}
+![](hiro.png)
+
+[Hirotaka Imada](https://himada2018.github.io/)
+:::
+
+::: {.column width="33%"}
+![](jonas.png)\
+
+[Jonas Larsson](https://pure.royalholloway.ac.uk/en/persons/jonas-larsson)
+:::
+
+## Assessment
+
+-   Coursework contributes 100% to final course grade
+
+-   Create a portfolio by answering any 3 of 5 questions (Word Count: 5,000)
+
+-   One question will be essay-based, the other will include practical & quantitative aspects.
+
+-   Details to follow soon.
+
+## Today: introduction to R
+
+R is the most used open-source programming language for statistical computing and data visualization:
+
+-   Large community of users
+-   Very large number of extension packages
+-   [https://www.r-project.org/](https://www.r-project.org/)
+
+<!-- ::: fragment -->
+
+<!-- ![](stat_lang_R.png){.nostretch fig-align="center" width="80%"}  -->
+
+<!-- ::: -->
+
+## Key features of R
+
+-   Free software
+-   Unlike SPSS, there is no graphical interface --- you have to code
+-   Pro --- you have a record of what you did
+-   Con --- some people find this intimidating
+-   R-Studio (also free!) provides a nice interface
+
+## Program for today
+
+1.  Work through the worksheet `introduction to R programming`, available on Moodle.
+
+2.  After you have completed the worksheet you can download one of the two datasets on Moodle (`earnings.csv` and `bechdel.csv`; see the workbook for details)
