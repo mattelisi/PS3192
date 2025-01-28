@@ -1,0 +1,140 @@
+---
+title: "Exercises 5.1"
+author: "Matteo Lisi"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1
+
+Write an R script to plot a straight line using the equation $y = mx + c$ where the slope $m = 2$ and the intercept $c = 1$. Define $x$ as a sequence of numbers from -5 to 5, and then plot the resulting $y$ values.
+
+**Solution:**
+
+```{r}
+# set x values
+x <- seq(-5, 5)
+
+# plot; note that I can compute Y values within
+# the plot function, and I use the setting type="o" to
+# have "o"verlapping dots and lines
+plot(x,2*x + 1, type="o", col="blue")
+
+```
+
+
+# Exercise 2
+
+Create a function in R to compute the distance traveled by an object moving with a constant speed of 5 meters per second. Use the formula $d = 5t$, where $d$ is the distance and $t$ is the time. Plot a graph of distance as a function of time for t values ranging from 0 to 10 seconds.
+
+**Solution:**
+
+```{r}
+# I write the function and set the speed as 
+# 5 meters/second as default value
+distance_traveled <- function(time, speed=5){
+  distance <- speed * time
+  return(distance)
+}
+
+# now use it to make a plot
+t <- seq(0, 10, by=0.25)
+plot(t, distance_traveled(t),
+     xlab="time [seconds]",
+     ylab="distance [meters]",
+     col="dark grey")
+
+```
+
+# Exercise 3
+
+Write an R script that generates two lines with random slopes and intercepts using the command `rnorm(1)` (e.g., `a <- rnorm(1)` to assign a random value to `a`). Next, calculate which line has the steeper slope. Plot both lines on the same graph and use visual cues (such as line thickness or color) to highlight the steeper line. The script should function each time it is executed (sourced), meaning that new lines with random slopes and intercepts are generated every time the script runs. (Hint: Use an `if` statement to check which line has the steeper slope and ensure that the line with the higher slope is always drawn thicker or in a more salient color each time the script runs).
+
+**Solution:**
+
+The script could include the following code (note that this is just one approach, there are many more ways to obtain the sam result):
+
+```{r, eval=FALSE}
+# generate two random lines by sampling 
+# random values of intercept and slope
+# I use a vector of length 2 for each line
+# (note I set the argument n=2 to have 2 values, 
+# one for intercept and the other for slope)
+line_1 <- rnorm(n = 2)
+line_2 <- rnorm(2)
+
+# check which line as stepper slope
+# we use hte second value as slope (arbitrarily chosen)
+# I save a TRUE/FALSE value depending on whether the first line
+# has a steeper (larger) slope
+# note also that I consider the absolute value abs() of the slope parameter
+# because I am interested in the slope regardless of its direction 
+# (i.e. whether increasing or decreasing as a function of x)
+line_1_steeper <- abs(line_1[2]) > abs(line_2[2]) 
+
+# now make the plot:
+
+# define x values (I use 100 points equally spaced between -5 and 5)
+x <- seq(-5, 5, length.out=100)
+
+# compute y values
+y_line1 <- line_1[1] + line_1[2]*x
+y_line2 <- line_2[1] + line_2[2]*x
+
+# get the range of Y values across both lines
+# to ensure both are visible in the plot
+y_range <- range(c(y_line1, y_line2))
+
+# choose two colors
+col_steeper <- "red"
+col_other <- "dark grey"
+
+if(line_1_steeper){
+  
+  plot(x, y_line1, 
+       xlab="x", ylab="y",
+       ylim=y_range,
+       col=col_steeper,
+       type="l",
+       lwd=3)
+  
+  lines(x, y_line2, 
+        col=col_other)
+  
+}else{
+  # if line_1 is not the stepper one, we
+  # run the same commands just inverting the 
+  plot(x, y_line1,
+       xlab="x", ylab="y", 
+       ylim=y_range,
+       col=col_other,
+       type="l")
+  
+  lines(x, y_line2, 
+        col=col_steeper,
+        lwd=3)
+}
+
+
+```
+
+If we save this into a separate script, let's call this `5.1.3.R` for example, we can then execute it as follow:
+
+```{r, echo=FALSE}
+set.seed(1)
+
+```
+
+
+```{r}
+source("5.1.3.R")
+
+```
+
+Each time you run it would plot two different lines.
+
+

@@ -8,3 +8,5 @@ academic year: 2024-25
 
 [Worksheet](01_IntroR/lecture1_worksheet.html)
 
+[Solution to 5.1 exercises](01_IntroR/5.3.html)
+
