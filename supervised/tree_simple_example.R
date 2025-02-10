@@ -1,6 +1,8 @@
 library(rpart)
 library(rpart.plot)
 
+hablar::set_wd_to_script_path()
+
 # Sample data: classification on the iris dataset
 data(iris)
 
