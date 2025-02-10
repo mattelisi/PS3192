@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="01_introduction_to_R_slides_files/libs/clipboard/clipboard.min.js"></script>
-<script src="01_introduction_to_R_slides_files/libs/quarto-html/tabby.min.js"></script>
-<script src="01_introduction_to_R_slides_files/libs/quarto-html/popper.min.js"></script>
-<script src="01_introduction_to_R_slides_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="01_introduction_to_R_slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="01_introduction_to_R_slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="01_introduction_to_R_slides_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="01_introduction_to_R_slides_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="intro2ML_files/libs/clipboard/clipboard.min.js"></script>
+<script src="intro2ML_files/libs/quarto-html/tabby.min.js"></script>
+<script src="intro2ML_files/libs/quarto-html/popper.min.js"></script>
+<script src="intro2ML_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="intro2ML_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="intro2ML_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="intro2ML_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="intro2ML_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content="Matteo Lisi">
@@ -15,8 +15,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="01_introduction_to_R_slides_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="01_introduction_to_R_slides_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="intro2ML_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="intro2ML_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -30,11 +30,11 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="01_introduction_to_R_slides_files/libs/revealjs/dist/theme/quarto.css">
-  <link href="01_introduction_to_R_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="01_introduction_to_R_slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="01_introduction_to_R_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="01_introduction_to_R_slides_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="intro2ML_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="intro2ML_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="intro2ML_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="intro2ML_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="intro2ML_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -338,161 +338,131 @@ Matteo Lisi
 
 </section>
 <section>
-<section id="section" class="title-slide slide level1 center">
-<h1></h1>
+<section id="introduction-to-machine-learning-concepts" class="title-slide slide level1 center">
+<h1>Introduction to Machine Learning Concepts</h1>
 
 </section>
-<section id="module-outline" class="slide level2">
-<h2>Module outline</h2>
-<div style="font-size: 70%;">
-<table class="caption-top">
-<colgroup>
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 35%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>week</th>
-<th>day</th>
-<th>time</th>
-<th>lecturer</th>
-<th>topic</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>18</td>
-<td>24 Jan</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Introduction to R programming</td>
-</tr>
-<tr class="even">
-<td>19</td>
-<td>31 Jan</td>
-<td>10:00 - 12:00</td>
-<td>Hirotaka</td>
-<td>Data Importing, Cleaning, and Processing</td>
-</tr>
-<tr class="odd">
-<td>20</td>
-<td>7 Feb</td>
-<td>10:00 - 12:00</td>
-<td>Hirotaka</td>
-<td>Data Visualisation</td>
-</tr>
-<tr class="even">
-<td>21</td>
-<td>14 Feb</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Introduction to Machine Learning Concepts</td>
-</tr>
-<tr class="odd">
-<td>22</td>
-<td>21 Feb</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Classification and Supervised Learning</td>
-</tr>
-<tr class="even">
-<td>23</td>
-<td></td>
-<td></td>
-<td></td>
-<td><em>(study week)</em></td>
-</tr>
-<tr class="odd">
-<td>24</td>
-<td>7 March</td>
-<td>10:00 - 12:00</td>
-<td>Hirotaka</td>
-<td>Reproducible Analyses and Reporting with R Markdown</td>
-</tr>
-<tr class="even">
-<td>25</td>
-<td>14 March</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Clustering and Unsupervised Learning</td>
-</tr>
-<tr class="odd">
-<td>26</td>
-<td>21 March</td>
-<td>10:00 - 12:00</td>
-<td>Jonas</td>
-<td>Introduction to Matlab</td>
-</tr>
-<tr class="even">
-<td>27</td>
-<td>28 March</td>
-<td>10:00 - 12:00</td>
-<td>Jonas</td>
-<td>Mind reading with a classifier</td>
-</tr>
-<tr class="odd">
-<td>28</td>
-<td>4 April</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Final Review and Consolidation Workshop</td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="lecturers" class="slide level2">
-<h2>Lecturers</h2>
-<div class="column" style="width:33%;">
-<p><img data-src="ML.jpeg"> <!-- {.nostretch fig-align="center" width="70%"} --> <a href="https://mlisi.xyz/">Matteo Lisi</a></p>
-</div><div class="column" style="width:34%;">
-<p><img data-src="hiro.png"></p>
-<p><a href="https://himada2018.github.io/">Hirotaka Imada</a></p>
-</div><div class="column" style="width:33%;">
-<p><img data-src="jonas.png"><br>
-</p>
-<p><a href="https://pure.royalholloway.ac.uk/en/persons/jonas-larsson">Jonas Larsson</a></p>
-</div></section>
-<section id="assessment" class="slide level2">
-<h2>Assessment</h2>
+<section id="section" class="slide level2">
+<h2></h2>
+<p>Some core components of ‘data science’</p>
 <ul>
-<li class="fragment"><p>Coursework contributes 100% to final course grade</p></li>
-<li class="fragment"><p>Create a portfolio by answering any 3 of 5 questions (Word Count: 5,000)</p></li>
-<li class="fragment"><p>One question will be essay-based, the other will include practical &amp; quantitative aspects.</p></li>
-<li class="fragment"><p>Details to follow soon.</p></li>
+<li class="fragment">Data wrangling (data cleaning &amp; preparation)</li>
+<li class="fragment">Data visualization</li>
+<li class="fragment">Statistics &amp; probability</li>
+<li class="fragment">Machine learning &amp; predictive modeling</li>
+<li class="fragment">Causal inference</li>
+<li class="fragment">Big data &amp; data engineering</li>
+<li class="fragment">Applied context (actionable insights)</li>
+<li class="fragment">Communication</li>
 </ul>
 </section>
-<section id="today-introduction-to-r" class="slide level2">
-<h2>Today: introduction to R</h2>
-<p>R is the most used open-source programming language for statistical computing and data visualization:</p>
+<section id="learning-outcomes-for-today" class="slide level2">
+<h2>Learning Outcomes for today</h2>
 <ul>
-<li class="fragment">Large community of users</li>
-<li class="fragment">Very large number of extension packages</li>
-<li class="fragment"><a href="https://www.r-project.org/" class="uri">https://www.r-project.org/</a></li>
-</ul>
-<!-- ::: fragment -->
-<!-- ![](stat_lang_R.png){.nostretch fig-align="center" width="80%"}  -->
-<!-- ::: -->
-</section>
-<section id="key-features-of-r" class="slide level2">
-<h2>Key features of R</h2>
-<ul>
-<li class="fragment">Free software</li>
-<li class="fragment">Unlike SPSS, there is no graphical interface — you have to code</li>
-<li class="fragment">Pro — you have a record of what you did</li>
-<li class="fragment">Con — some people find this intimidating</li>
-<li class="fragment">R-Studio (also free!) provides a nice interface</li>
+<li class="fragment">Grasp <strong>fundamental machine learning</strong> concepts</li>
+<li class="fragment">Recognize typical pitfalls</li>
+<li class="fragment">Build and evaluate models in R</li>
 </ul>
 </section>
-<section id="program-for-today" class="slide level2">
-<h2>Program for today</h2>
+<section id="types-of-machine-learning" class="slide level2">
+<h2>Types of machine learning</h2>
+<ul>
+<li class="fragment"><strong>Supervised learning</strong> predict the next value based on a set of examples (regression, classification).</li>
+<li class="fragment"><strong>Unsupervised learning</strong> data drive (clustering; dimensionality reduction, e.g.&nbsp;PCA).</li>
+<li class="fragment"><strong>Reinforcement learning</strong> learn from mistakes.</li>
+</ul>
+</section>
+<section id="supervised-vs.-unsupervised-learning" class="slide level2">
+<h2>Supervised vs.&nbsp;Unsupervised Learning</h2>
+<p><strong>Supervised Learning</strong><br>
+- We have input features <span class="math inline">\(X\)</span> and target labels/outcomes <span class="math inline">\(y\)</span><br>
+- The algorithm learns a function <span class="math inline">\(f(X)\)</span> that predicts <span class="math inline">\(y\)</span> accurately<br>
+- Examples: <strong>Regression</strong> (continuous outcomes), <strong>Classification</strong> (categorical outcomes)</p>
+<p><strong>Unsupervised Learning</strong><br>
+- We only have input features <span class="math inline">\(X\)</span>, with no labeled outcome<br>
+- The algorithm finds structure in the data (e.g., clusters, latent factors)<br>
+- Examples: <strong>Clustering</strong> (e.g., gaussian mixture models), <strong>Dimensionality Reduction</strong> (PCA)</p>
+</section>
+<section id="overfitting-out-of-sample-prediction" class="slide level2">
+<h2>Overfitting &amp; Out-of-Sample Prediction</h2>
+<ul>
+<li class="fragment"><strong>Overfitting</strong>: The model fits the training data too closely and fails to generalize<br>
+</li>
+<li class="fragment"><strong>Bias-Variance Tradeoff</strong>:
+<ul>
+<li class="fragment">High-variance models are flexible but prone to overfitting</li>
+<li class="fragment">High-bias models are simpler but may underfit</li>
+</ul></li>
+<li class="fragment"><strong>Out-of-Sample Prediction</strong>:
+<ul>
+<li class="fragment">True test of a model is its performance on unseen (new) data</li>
+</ul></li>
+</ul>
+</section>
+<section id="cross-validation" class="slide level2">
+<h2>Cross-Validation</h2>
 <ol type="1">
-<li class="fragment"><p>Work through the worksheet <code>introduction to R programming</code>, available on Moodle.</p></li>
-<li class="fragment"><p>After you have completed the worksheet you can download one of the two datasets on Moodle (<code>earnings.csv</code> and <code>bechdel.csv</code>; see the workbook for details)</p></li>
+<li class="fragment"><strong>Why Cross-Validation?</strong>
+<ul>
+<li class="fragment">Need a reliable estimate of how a model performs on unseen data<br>
+</li>
+<li class="fragment">Simply using one train/test split can be misleading</li>
+</ul></li>
+<li class="fragment"><strong>k-Fold Cross-Validation</strong>
+<ul>
+<li class="fragment">Split data into \(k\) folds (subsets)<br>
+</li>
+<li class="fragment">Train on \(k - 1\) folds, test on the remaining fold<br>
+</li>
+<li class="fragment">Repeat for each fold; average performance across folds for a robust metric</li>
+</ul></li>
 </ol>
+</section>
+<section id="case-study-linear-regression" class="slide level2">
+<h2>Case Study: Linear Regression</h2>
+<p><strong>Goal:</strong> Predict a continuous outcome \(y\) from predictors \(X\).</p>
+<p>\[ y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \epsilon \]</p>
+<ol type="1">
+<li class="fragment"><strong>Train/Test Split or Cross-Validation</strong><br>
+</li>
+<li class="fragment"><strong>Fit the Model</strong> on training data<br>
+</li>
+<li class="fragment"><strong>Evaluate</strong> using metrics like RMSE, \(R^2\), MAE</li>
+</ol>
+<p><strong>Example in R</strong>:</p>
+</section>
+<section id="critical-thinking-about-machine-learning" class="slide level2">
+<h2>Critical Thinking About Machine Learning</h2>
+<p><strong>Algorithmic Bias</strong></p>
+<ul>
+<li class="fragment">Biased training data can lead to unfair or discriminatory predictions</li>
+<li class="fragment">Must consider representation and fairness at each stage</li>
+</ul>
+<p><strong>Transparency &amp; Explainability</strong></p>
+<ul>
+<li class="fragment">Black-box models (e.g., deep nets) can be hard to interpret</li>
+<li class="fragment">Growing field of explainable AI (e.g., SHAP, LIME) to interpret predictions</li>
+</ul>
+<p><strong>Ethical &amp; Social Considerations</strong></p>
+<ul>
+<li class="fragment">Always consider impact on stakeholders and society</li>
+<li class="fragment">Responsible data collection and model deployment</li>
+</ul>
+</section>
+<section id="summary-next-steps" class="slide level2">
+<h2>Summary &amp; Next Steps</h2>
+<ul>
+<li class="fragment">Machine Learning aims to learn patterns from data for prediction or discovery</li>
+<li class="fragment">Supervised vs.&nbsp;Unsupervised: labeled vs.&nbsp;unlabeled data tasks</li>
+<li class="fragment">Overfitting is a core challenge; cross-validation helps mitigate it</li>
+<li class="fragment">Linear Regression serves as a foundational supervised method</li>
+<li class="fragment">Ethical considerations are crucial for real-world applications</li>
+</ul>
+<p><strong>Next Lecture</strong></p>
+<ul>
+<li class="fragment">Deeper dive into Classification and other Supervised Learning methods</li>
+<li class="fragment">Hands-on practice building models in R</li>
+</ul>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
@@ -503,19 +473,19 @@ Matteo Lisi
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="intro2ML_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="intro2ML_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="intro2ML_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="intro2ML_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="intro2ML_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="intro2ML_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="intro2ML_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="intro2ML_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="intro2ML_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="intro2ML_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
@@ -709,6 +679,44 @@ Matteo Lisi
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {

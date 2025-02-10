@@ -1,0 +1,161 @@
+---
+title: "PS3192: Real World Data Science"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    incremental: true
+    auto-stretch: true
+    theme: [default, matteo_rhul.css]
+editor: visual
+---
+
+# Introduction to Machine Learning Concepts
+
+
+## Overview
+
+- **Fundamentals of learning from data**  
+  - Data as evidence  
+  - Pattern recognition and prediction
+
+- **Introduction to supervised and unsupervised learning**  
+  - Supervised learning: labeled outcomes  
+  - Unsupervised learning: structure discovery
+
+- **Understanding overfitting, out-of-sample prediction, and cross-validation**  
+  - Bias-variance tradeoff  
+  - Using cross-validation to prevent overfitting
+
+- **Case study: linear regression in supervised learning**  
+  - Simple vs. multiple linear regression  
+  - Training, validation, and evaluation
+
+- **Critical thinking about machine learning**  
+  - Algorithmic bias and fairness  
+  - Transparency and explainability of models
+
+
+## Learning Outcomes
+
+- Grasp **fundamental machine learning** concepts
+- Recognize the **potential** and **limitations** of machine learning
+- Build and evaluate basic machine learning models in R
+
+
+## Fundamentals of Learning from Data
+
+1. **Data as Evidence**  
+   - Make inferences or predictions from patterns in data  
+   - Data-driven decisions in science, industry, policy
+
+2. **Patterns & Predictions**  
+   - ML algorithms automate pattern discovery  
+   - Once found, these patterns can be used for predictions on unseen data
+
+
+## Supervised vs. Unsupervised Learning
+
+**Supervised Learning**  
+- We have input features \\(X\\) and target labels/outcomes \\(y\\)  
+- The algorithm learns a function \\(f(X)\\) that predicts \\(y\\) accurately  
+- Examples: **Regression** (continuous outcomes), **Classification** (categorical outcomes)
+
+**Unsupervised Learning**  
+- We only have input features \\(X\\), with no labeled outcome  
+- The algorithm finds structure in the data (e.g., clusters, latent factors)  
+- Examples: **Clustering** (e.g., k-means), **Dimensionality Reduction** (PCA)
+
+
+
+## Overfitting & Out-of-Sample Prediction
+
+- **Overfitting**: The model fits the training data too closely and fails to generalize  
+- **Bias-Variance Tradeoff**:
+  - High-variance models are flexible but prone to overfitting
+  - High-bias models are simpler but may underfit
+- **Out-of-Sample Prediction**:
+  - True test of a model is its performance on unseen (new) data
+
+
+
+## Cross-Validation
+
+1. **Why Cross-Validation?**  
+   - Need a reliable estimate of how a model performs on unseen data  
+   - Simply using one train/test split can be misleading
+
+2. **k-Fold Cross-Validation**  
+   - Split data into \\(k\\) folds (subsets)  
+   - Train on \\(k - 1\\) folds, test on the remaining fold  
+   - Repeat for each fold; average performance across folds for a robust metric
+
+
+
+## Case Study: Linear Regression
+
+**Goal:** Predict a continuous outcome \\(y\\) from predictors \\(X\\).
+
+\\[
+y = \\beta_0 + \\beta_1 X_1 + \\cdots + \\beta_p X_p + \\epsilon
+\\]
+
+1. **Train/Test Split or Cross-Validation**  
+2. **Fit the Model** on training data  
+3. **Evaluate** using metrics like RMSE, \\(R^2\\), MAE
+
+**Example in R**:
+
+```{r, eval=FALSE}
+# Suppose 'mydata' has columns: y, X1, X2
+mydata <- read.csv("mydata.csv")
+
+set.seed(123)  # for reproducibility
+train_index <- sample(seq_len(nrow(mydata)), size = 0.7*nrow(mydata))
+train_data <- mydata[train_index, ]
+test_data  <- mydata[-train_index, ]
+
+# Fit a linear model
+model <- lm(y ~ X1 + X2, data = train_data)
+
+# Predict on test data
+preds <- predict(model, newdata = test_data)
+
+# Calculate Mean Squared Error
+mse <- mean((test_data$y - preds)^2)
+mse
+```
+
+
+## Critical Thinking About Machine Learning
+
+**Algorithmic Bias**
+
+- Biased training data can lead to unfair or discriminatory predictions
+- Must consider representation and fairness at each stage
+
+
+**Transparency & Explainability**
+
+- Black-box models (e.g., deep nets) can be hard to interpret
+- Growing field of explainable AI (e.g., SHAP, LIME) to interpret predictions
+
+
+**Ethical & Social Considerations**
+
+- Always consider impact on stakeholders and society
+- Responsible data collection and model deployment
+
+
+## Summary & Next Steps
+
+- Machine Learning aims to learn patterns from data for prediction or discovery
+- Supervised vs. Unsupervised: labeled vs. unlabeled data tasks
+- Overfitting is a core challenge; cross-validation helps mitigate it
+- Linear Regression serves as a foundational supervised method
+- Ethical considerations are crucial for real-world applications
+
+**Next Lecture**
+
+- Deeper dive into Classification and other Supervised Learning methods
+- Hands-on practice building models in R
+

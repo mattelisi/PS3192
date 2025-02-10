@@ -1,0 +1,43 @@
+---
+title: "Data dictionaries"
+author: "Matteo Lisi"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Data Dictionary
+
+Below is a brief description of the variables for each dataset, including the target (dependent) variable.
+
+---
+
+### California Housing Dataset
+
+- **MedInc**: Median income of households within a block group (in tens of thousands of dollars).
+- **HouseAge**: Median age of the houses in a block group (in years).
+- **AveRooms**: Average number of rooms per household in a block group.
+- **AveBedrms**: Average number of bedrooms per household in a block group.
+- **Population**: Total population within a block group.
+- **AveOccup**: Average number of household members in a block group.
+- **Latitude**: Geographical latitude of the block group’s centroid.
+- **Longitude**: Geographical longitude of the block group’s centroid.
+- **MedHouseVal** (*target*): Median house value in a block group (in hundreds of thousands of dollars).
+
+---
+
+### Diabetes Dataset
+
+- **age**: (Scaled) Age of the patient in years.
+- **sex**: (Scaled) Gender of the patient (coded and normalized).
+- **bmi**: (Scaled) Body Mass Index.
+- **bp**: (Scaled) Average blood pressure.
+- **s1**: (Scaled) TC (total cholesterol) or related measure.
+- **s2**: (Scaled) LDL (low-density lipoproteins) or related measure.
+- **s3**: (Scaled) HDL (high-density lipoproteins) or related measure.
+- **s4**: (Scaled) Total cholesterol / HDL ratio or related measure.
+- **s5**: (Scaled) Log of serum triglycerides level or related measure.
+- **s6**: (Scaled) Blood sugar level or related measure.
+- **DiseaseProgression** (*target*): A quantitative measure of disease progression one year after baseline.

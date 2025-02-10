@@ -14,19 +14,19 @@ editor: visual
 ## Module outline
 
 ::: {style="font-size: 70%;"}
-| week | day | time | lecturer | topic |
-|----------|----------|----------|----------|----------------------------------|
-| 18 | 24 Jan | 10:00 - 12:00 | Matteo | Introduction to R programming |
-| 19 | 31 Jan | 10:00 - 12:00 | Hirotaka | Data Importing, Cleaning, and Processing |
-| 20 | 7 Feb | 10:00 - 12:00 | Hirotaka | Data Visualisation |
-| 21 | 14 Feb | 10:00 - 12:00 | Matteo | Introduction to Machine Learning Concepts |
-| 22 | 21 Feb | 10:00 - 12:00 | Matteo | Classification and Supervised Learning |
-| 23 |  |  |  | *(study week)* |
-| 24 | 7 March | 10:00 - 12:00 | Hirotaka | Reproducible Analyses and Reporting with R Markdown |
-| 25 | 14 March | 10:00 - 12:00 | Matteo | Clustering and Unsupervised Learning |
-| 26 | 21 March | 10:00 - 12:00 | Jonas | Introduction to Matlab |
-| 27 | 28 March | 10:00 - 12:00 | Jonas | Mind reading with a classifier |
-| 28 | 4 April | 10:00 - 12:00 | Matteo | Final Review and Consolidation Workshop |
+| week | day      | time          | lecturer | topic                                               |
+|------------|------------|------------|------------|--------------------------|
+| 18   | 24 Jan   | 10:00 - 12:00 | Matteo   | Introduction to R programming                       |
+| 19   | 31 Jan   | 10:00 - 12:00 | Hirotaka | Data Importing, Cleaning, and Processing            |
+| 20   | 7 Feb    | 10:00 - 12:00 | Hirotaka | Data Visualisation                                  |
+| 21   | 14 Feb   | 10:00 - 12:00 | Matteo   | Introduction to Machine Learning Concepts           |
+| 22   | 21 Feb   | 10:00 - 12:00 | Matteo   | Classification and Supervised Learning              |
+| 23   |          |               |          | *(study week)*                                      |
+| 24   | 7 March  | 10:00 - 12:00 | Hirotaka | Reproducible Analyses and Reporting with R Markdown |
+| 25   | 14 March | 10:00 - 12:00 | Matteo   | Clustering and Unsupervised Learning                |
+| 26   | 21 March | 10:00 - 12:00 | Jonas    | Introduction to Matlab                              |
+| 27   | 28 March | 10:00 - 12:00 | Jonas    | Mind reading with a classifier                      |
+| 28   | 4 April  | 10:00 - 12:00 | Matteo   | Final Review and Consolidation Workshop             |
 :::
 
 ## Lecturers
@@ -63,7 +63,7 @@ R is the most used open-source programming language for statistical computing an
 
 -   Large community of users
 -   Very large number of extension packages
--   [https://www.r-project.org/](https://www.r-project.org/)
+-   <https://www.r-project.org/>
 
 <!-- ::: fragment -->
 

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="01_introduction_to_R_slides_files/libs/clipboard/clipboard.min.js"></script>
-<script src="01_introduction_to_R_slides_files/libs/quarto-html/tabby.min.js"></script>
-<script src="01_introduction_to_R_slides_files/libs/quarto-html/popper.min.js"></script>
-<script src="01_introduction_to_R_slides_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="01_introduction_to_R_slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="01_introduction_to_R_slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="01_introduction_to_R_slides_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="01_introduction_to_R_slides_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="supervised_learning_files/libs/clipboard/clipboard.min.js"></script>
+<script src="supervised_learning_files/libs/quarto-html/tabby.min.js"></script>
+<script src="supervised_learning_files/libs/quarto-html/popper.min.js"></script>
+<script src="supervised_learning_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="supervised_learning_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="supervised_learning_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="supervised_learning_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="supervised_learning_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content="Matteo Lisi">
@@ -15,8 +15,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="01_introduction_to_R_slides_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="01_introduction_to_R_slides_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="supervised_learning_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="supervised_learning_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -30,11 +30,11 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="01_introduction_to_R_slides_files/libs/revealjs/dist/theme/quarto.css">
-  <link href="01_introduction_to_R_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="01_introduction_to_R_slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="01_introduction_to_R_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="01_introduction_to_R_slides_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="supervised_learning_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="supervised_learning_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="supervised_learning_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="supervised_learning_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="supervised_learning_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -337,185 +337,137 @@ Matteo Lisi
 </div>
 
 </section>
-<section>
-<section id="section" class="title-slide slide level1 center">
-<h1></h1>
-
+<section id="classification-in-supervised-learning" class="slide level2">
+<h2>Classification in Supervised Learning</h2>
 </section>
-<section id="module-outline" class="slide level2">
-<h2>Module outline</h2>
-<div style="font-size: 70%;">
-<table class="caption-top">
-<colgroup>
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 35%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>week</th>
-<th>day</th>
-<th>time</th>
-<th>lecturer</th>
-<th>topic</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>18</td>
-<td>24 Jan</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Introduction to R programming</td>
-</tr>
-<tr class="even">
-<td>19</td>
-<td>31 Jan</td>
-<td>10:00 - 12:00</td>
-<td>Hirotaka</td>
-<td>Data Importing, Cleaning, and Processing</td>
-</tr>
-<tr class="odd">
-<td>20</td>
-<td>7 Feb</td>
-<td>10:00 - 12:00</td>
-<td>Hirotaka</td>
-<td>Data Visualisation</td>
-</tr>
-<tr class="even">
-<td>21</td>
-<td>14 Feb</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Introduction to Machine Learning Concepts</td>
-</tr>
-<tr class="odd">
-<td>22</td>
-<td>21 Feb</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Classification and Supervised Learning</td>
-</tr>
-<tr class="even">
-<td>23</td>
-<td></td>
-<td></td>
-<td></td>
-<td><em>(study week)</em></td>
-</tr>
-<tr class="odd">
-<td>24</td>
-<td>7 March</td>
-<td>10:00 - 12:00</td>
-<td>Hirotaka</td>
-<td>Reproducible Analyses and Reporting with R Markdown</td>
-</tr>
-<tr class="even">
-<td>25</td>
-<td>14 March</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Clustering and Unsupervised Learning</td>
-</tr>
-<tr class="odd">
-<td>26</td>
-<td>21 March</td>
-<td>10:00 - 12:00</td>
-<td>Jonas</td>
-<td>Introduction to Matlab</td>
-</tr>
-<tr class="even">
-<td>27</td>
-<td>28 March</td>
-<td>10:00 - 12:00</td>
-<td>Jonas</td>
-<td>Mind reading with a classifier</td>
-</tr>
-<tr class="odd">
-<td>28</td>
-<td>4 April</td>
-<td>10:00 - 12:00</td>
-<td>Matteo</td>
-<td>Final Review and Consolidation Workshop</td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="lecturers" class="slide level2">
-<h2>Lecturers</h2>
-<div class="column" style="width:33%;">
-<p><img data-src="ML.jpeg"> <!-- {.nostretch fig-align="center" width="70%"} --> <a href="https://mlisi.xyz/">Matteo Lisi</a></p>
-</div><div class="column" style="width:34%;">
-<p><img data-src="hiro.png"></p>
-<p><a href="https://himada2018.github.io/">Hirotaka Imada</a></p>
-</div><div class="column" style="width:33%;">
-<p><img data-src="jonas.png"><br>
-</p>
-<p><a href="https://pure.royalholloway.ac.uk/en/persons/jonas-larsson">Jonas Larsson</a></p>
-</div></section>
-<section id="assessment" class="slide level2">
-<h2>Assessment</h2>
+<section id="overview" class="slide level2">
+<h2>Overview</h2>
 <ul>
-<li class="fragment"><p>Coursework contributes 100% to final course grade</p></li>
-<li class="fragment"><p>Create a portfolio by answering any 3 of 5 questions (Word Count: 5,000)</p></li>
-<li class="fragment"><p>One question will be essay-based, the other will include practical &amp; quantitative aspects.</p></li>
-<li class="fragment"><p>Details to follow soon.</p></li>
-</ul>
-</section>
-<section id="today-introduction-to-r" class="slide level2">
-<h2>Today: introduction to R</h2>
-<p>R is the most used open-source programming language for statistical computing and data visualization:</p>
-<ul>
-<li class="fragment">Large community of users</li>
-<li class="fragment">Very large number of extension packages</li>
-<li class="fragment"><a href="https://www.r-project.org/" class="uri">https://www.r-project.org/</a></li>
-</ul>
-<!-- ::: fragment -->
-<!-- ![](stat_lang_R.png){.nostretch fig-align="center" width="80%"}  -->
-<!-- ::: -->
-</section>
-<section id="key-features-of-r" class="slide level2">
-<h2>Key features of R</h2>
-<ul>
-<li class="fragment">Free software</li>
-<li class="fragment">Unlike SPSS, there is no graphical interface — you have to code</li>
-<li class="fragment">Pro — you have a record of what you did</li>
-<li class="fragment">Con — some people find this intimidating</li>
-<li class="fragment">R-Studio (also free!) provides a nice interface</li>
-</ul>
-</section>
-<section id="program-for-today" class="slide level2">
-<h2>Program for today</h2>
+<li class="fragment"><strong>Classification problems</strong> in supervised learning</li>
+<li class="fragment">Introduction to two key algorithms:
 <ol type="1">
-<li class="fragment"><p>Work through the worksheet <code>introduction to R programming</code>, available on Moodle.</p></li>
-<li class="fragment"><p>After you have completed the worksheet you can download one of the two datasets on Moodle (<code>earnings.csv</code> and <code>bechdel.csv</code>; see the workbook for details)</p></li>
+<li class="fragment"><strong>Logistic Regression</strong> (already covered previously)</li>
+<li class="fragment"><strong>Decision Trees</strong> (focus of this session)</li>
+</ol></li>
+<li class="fragment"><strong>Implementing</strong> classification algorithms with R (e.g., <code>rpart</code> for decision trees)</li>
+<li class="fragment"><strong>Evaluating</strong> classification models and preventing <strong>overfitting</strong></li>
+</ul>
+</section>
+<section id="learning-outcomes" class="slide level2">
+<h2>Learning Outcomes</h2>
+<ul>
+<li class="fragment"><strong>Implement</strong> logistic regression and decision tree algorithms in R</li>
+<li class="fragment"><strong>Evaluate</strong> model performance using appropriate metrics (accuracy, precision, recall, etc.)</li>
+<li class="fragment"><strong>Recognize</strong> common pitfalls (e.g., overfitting) and learn how to mitigate them</li>
+</ul>
+</section>
+<section id="decision-trees-the-big-picture" class="slide level2">
+<h2>Decision Trees: The Big Picture</h2>
+<ol type="1">
+<li class="fragment"><strong>Basic Idea</strong>
+<ul>
+<li class="fragment">A decision tree splits data into subsets based on feature values<br>
+</li>
+<li class="fragment">Each split aims to <strong>homogeneously group</strong> instances of the same class</li>
+</ul></li>
+<li class="fragment"><strong>Why Use Trees?</strong>
+<ul>
+<li class="fragment"><strong>Interpretability</strong>: The rules are easy to visualize<br>
+</li>
+<li class="fragment"><strong>Nonlinear Boundaries</strong>: Trees naturally model complex relationships<br>
+</li>
+<li class="fragment"><strong>Feature Selection</strong> is implicitly performed (splits on most important features first)</li>
+</ul></li>
 </ol>
-<div class="quarto-auto-generated-content">
+</section>
+<section id="decision-trees-a-bit-of-math" class="slide level2">
+<h2>Decision Trees: A Bit of Math</h2>
+<p>A simple conceptual view (for classification):</p>
+<ul>
+<li class="fragment">Start with a dataset <span class="math inline">\(D\)</span> having features <span class="math inline">\(X\)</span> and class labels <span class="math inline">\(y\)</span></li>
+<li class="fragment">Choose a feature (say <span class="math inline">\(X_j\)</span>) and a <strong>threshold</strong> <span class="math inline">\(t\)</span> that best <strong>splits</strong> the data into two subsets:
+<ol type="1">
+<li class="fragment"><span class="math inline">\(\{ x \in D : x_j \le t \}\)</span></li>
+<li class="fragment"><span class="math inline">\(\{ x \in D : x_j &gt; t \}\)</span></li>
+</ol></li>
+<li class="fragment"><strong>Best split</strong> is typically the one that <strong>minimizes impurity</strong> in child nodes.
+<ul>
+<li class="fragment">Common impurity measure: <strong>Gini index</strong>: <span class="math inline">\(G = 1 - \sum_{k=1}^K p_k^2\)</span></li>
+<li class="fragment">Here, <span class="math inline">\(p_k\)</span> is the proportion of class <span class="math inline">\(k\)</span> instances in a node.</li>
+</ul></li>
+<li class="fragment"><strong>Repeat</strong> recursively until some stopping criterion (e.g., max depth, minimum samples per leaf) is met.</li>
+</ul>
+</section>
+<section id="preventing-overfitting-in-decision-trees" class="slide level2">
+<h2>Preventing Overfitting in Decision Trees</h2>
+<ul>
+<li class="fragment"><strong>Pruning</strong>:
+<ul>
+<li class="fragment">After fully growing a tree, remove leaf nodes that add little predictive value.<br>
+</li>
+<li class="fragment">Balances model complexity and generalizability.</li>
+</ul></li>
+<li class="fragment"><strong>Min Samples / Max Depth</strong>:
+<ul>
+<li class="fragment">Restrict how deep the tree grows or how few instances are allowed in a leaf.<br>
+</li>
+<li class="fragment">Avoids overly complex trees.</li>
+</ul></li>
+<li class="fragment"><strong>Cross-Validation</strong>:
+<ul>
+<li class="fragment">Evaluate tree performance on multiple folds of data to ensure robust estimates and parameter tuning.</li>
+</ul></li>
+</ul>
+</section>
+<section id="implementing-decision-trees-in-r" class="slide level2">
+<h2>Implementing Decision Trees in R</h2>
+<p>We’ll use the <strong><code>rpart</code></strong> package:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Classification tree:
+rpart(formula = Species ~ ., data = iris, method = "class")
+
+Variables actually used in tree construction:
+[1] Petal.Length Petal.Width 
+
+Root node error: 100/150 = 0.66667
+
+n= 150 
+
+    CP nsplit rel error xerror     xstd
+1 0.50      0      1.00   1.18 0.050173
+2 0.44      1      0.50   0.64 0.060575
+3 0.01      2      0.06   0.10 0.030551</code></pre>
+</div>
+
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.96</code></pre>
+</div>
+</div>
+<img data-src="supervised_learning_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch"><div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="01_introduction_to_R_slides_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="supervised_learning_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
@@ -709,6 +661,44 @@ Matteo Lisi
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
