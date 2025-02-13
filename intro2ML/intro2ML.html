@@ -29,6 +29,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="intro2ML_files/libs/revealjs/dist/theme/quarto.css">
   <link href="intro2ML_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -338,131 +403,359 @@ Matteo Lisi
 
 </section>
 <section>
-<section id="introduction-to-machine-learning-concepts" class="title-slide slide level1 center">
-<h1>Introduction to Machine Learning Concepts</h1>
+<section id="introduction-to-machine-learning" class="title-slide slide level1 center">
+<h1>Introduction to Machine Learning</h1>
 
 </section>
-<section id="section" class="slide level2">
+<section id="section" class="slide level2" data-transition="slide-in slide-out">
 <h2></h2>
-<p>Some core components of ‘data science’</p>
+<h4 id="data-science">“Data science”</h4>
+<div>
 <ul>
-<li class="fragment">Data wrangling (data cleaning &amp; preparation)</li>
-<li class="fragment">Data visualization</li>
-<li class="fragment">Statistics &amp; probability</li>
-<li class="fragment">Machine learning &amp; predictive modeling</li>
-<li class="fragment">Causal inference</li>
-<li class="fragment">Big data &amp; data engineering</li>
-<li class="fragment">Applied context (actionable insights)</li>
-<li class="fragment">Communication</li>
+<li>Data wrangling (data cleaning &amp; preparation)</li>
+<li>Data visualization</li>
+<li>Statistics &amp; probability</li>
+<li><strong>Machine learning &amp; predictive modeling</strong></li>
+<li>Causal inference</li>
+<li>Big data &amp; data engineering</li>
+<li>Applied context (actionable insights)</li>
+<li>Communication</li>
 </ul>
+</div>
+<!-- ## Learning Outcomes for today -->
+<!-- -   Grasp **fundamental machine learning** concepts -->
+<!-- -   Recognize typical pitfalls -->
+<!-- -   Build and evaluate models in R -->
 </section>
-<section id="learning-outcomes-for-today" class="slide level2">
-<h2>Learning Outcomes for today</h2>
+<section id="machine-learning" class="slide level2">
+<h2>Machine learning</h2>
+<div class="fragment fade-up">
+<blockquote>
+<p><em>“as a set of methods that can automatically detect patterns in data, and then use the uncovered patterns to predict future data, or to perform other kinds of decision making under uncertainty”</em> (Murphy, 2012)</p>
+</blockquote>
+</div>
+<p>&nbsp;</p>
 <ul>
-<li class="fragment">Grasp <strong>fundamental machine learning</strong> concepts</li>
-<li class="fragment">Recognize typical pitfalls</li>
-<li class="fragment">Build and evaluate models in R</li>
+<li class="fragment">Machine learning (ML) is grounded in the same principles as statistical science.</li>
+<li class="fragment">ML differs from statistics in that it has a “technological” rather that scientific focus: the goal in ML is to solve a problem, e.g.&nbsp;predict which product a customer might buy, rather than understanding the world.</li>
+<li class="fragment">Close to artificial intelligence (AI) which is even more focused on creating machines that can carry out tasks that would normally require human involvement.</li>
 </ul>
 </section>
 <section id="types-of-machine-learning" class="slide level2">
 <h2>Types of machine learning</h2>
 <ul>
 <li class="fragment"><strong>Supervised learning</strong> predict the next value based on a set of examples (regression, classification).</li>
-<li class="fragment"><strong>Unsupervised learning</strong> data drive (clustering; dimensionality reduction, e.g.&nbsp;PCA).</li>
-<li class="fragment"><strong>Reinforcement learning</strong> learn from mistakes.</li>
+<li class="fragment"><strong>Unsupervised learning</strong> more descriptive and data driven (clustering).</li>
+<li class="fragment"><strong>Reinforcement learning</strong> learn how to act from reward and punishment signals.</li>
 </ul>
 </section>
 <section id="supervised-vs.-unsupervised-learning" class="slide level2">
 <h2>Supervised vs.&nbsp;Unsupervised Learning</h2>
+<p>&nbsp;</p>
+<div class="fragment">
 <p><strong>Supervised Learning</strong><br>
-- We have input features <span class="math inline">\(X\)</span> and target labels/outcomes <span class="math inline">\(y\)</span><br>
+- We have a <em>training</em> dataset containing some with input features <span class="math inline">\(X\)</span> and target labels/outcomes <span class="math inline">\(y\)</span><br>
 - The algorithm learns a function <span class="math inline">\(f(X)\)</span> that predicts <span class="math inline">\(y\)</span> accurately<br>
+- Learning is achieved by minimising a <em>cost</em> or <em>loss</em> function (i.e.&nbsp;an error metric that tells us how bad the predictions are compared to the observed <span class="math inline">\(y\)</span>)<br>
 - Examples: <strong>Regression</strong> (continuous outcomes), <strong>Classification</strong> (categorical outcomes)</p>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
 <p><strong>Unsupervised Learning</strong><br>
 - We only have input features <span class="math inline">\(X\)</span>, with no labeled outcome<br>
 - The algorithm finds structure in the data (e.g., clusters, latent factors)<br>
+- Much less well-defined problem since we don’t know usually know in advance what to look for.<br>
 - Examples: <strong>Clustering</strong> (e.g., gaussian mixture models), <strong>Dimensionality Reduction</strong> (PCA)</p>
+</div>
 </section>
-<section id="overfitting-out-of-sample-prediction" class="slide level2">
-<h2>Overfitting &amp; Out-of-Sample Prediction</h2>
-<ul>
-<li class="fragment"><strong>Overfitting</strong>: The model fits the training data too closely and fails to generalize<br>
-</li>
-<li class="fragment"><strong>Bias-Variance Tradeoff</strong>:
-<ul>
-<li class="fragment">High-variance models are flexible but prone to overfitting</li>
-<li class="fragment">High-bias models are simpler but may underfit</li>
-</ul></li>
-<li class="fragment"><strong>Out-of-Sample Prediction</strong>:
-<ul>
-<li class="fragment">True test of a model is its performance on unseen (new) data</li>
-</ul></li>
-</ul>
+<section id="linear-regression-as-a-supervised-ml-algorithm" class="slide level2">
+<h2>Linear regression as a supervised ML algorithm</h2>
+<div class="fragment">
+<p>Model: <span class="math display">\[y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k + \underbrace{\epsilon}_{\text{residual}\\ \text{error}}\]</span></p>
+</div>
+<div class="fragment">
+<p>Quadratic loss function (the sum of squared residual errors sacross all observations): <span class="math display">\[L = \sum_i \epsilon_i^2 \]</span></p>
+</div>
+</section></section>
+<section>
+<section id="machine-learning-concepts" class="title-slide slide level1 center">
+<h1>Machine-learning concepts</h1>
+
 </section>
-<section id="cross-validation" class="slide level2">
-<h2>Cross-Validation</h2>
-<ol type="1">
-<li class="fragment"><strong>Why Cross-Validation?</strong>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<h3 id="parametric-vs-non-parametric-models">Parametric vs non-parametric models</h3>
 <ul>
-<li class="fragment">Need a reliable estimate of how a model performs on unseen data<br>
-</li>
-<li class="fragment">Simply using one train/test split can be misleading</li>
-</ul></li>
-<li class="fragment"><strong>k-Fold Cross-Validation</strong>
-<ul>
-<li class="fragment">Split data into \(k\) folds (subsets)<br>
-</li>
-<li class="fragment">Train on \(k - 1\) folds, test on the remaining fold<br>
-</li>
-<li class="fragment">Repeat for each fold; average performance across folds for a robust metric</li>
-</ul></li>
-</ol>
-</section>
-<section id="case-study-linear-regression" class="slide level2">
-<h2>Case Study: Linear Regression</h2>
-<p><strong>Goal:</strong> Predict a continuous outcome \(y\) from predictors \(X\).</p>
-<p>\[ y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \epsilon \]</p>
-<ol type="1">
-<li class="fragment"><strong>Train/Test Split or Cross-Validation</strong><br>
-</li>
-<li class="fragment"><strong>Fit the Model</strong> on training data<br>
-</li>
-<li class="fragment"><strong>Evaluate</strong> using metrics like RMSE, \(R^2\), MAE</li>
-</ol>
-<p><strong>Example in R</strong>:</p>
-</section>
-<section id="critical-thinking-about-machine-learning" class="slide level2">
-<h2>Critical Thinking About Machine Learning</h2>
-<p><strong>Algorithmic Bias</strong></p>
-<ul>
-<li class="fragment">Biased training data can lead to unfair or discriminatory predictions</li>
-<li class="fragment">Must consider representation and fairness at each stage</li>
-</ul>
-<p><strong>Transparency &amp; Explainability</strong></p>
-<ul>
-<li class="fragment">Black-box models (e.g., deep nets) can be hard to interpret</li>
-<li class="fragment">Growing field of explainable AI (e.g., SHAP, LIME) to interpret predictions</li>
-</ul>
-<p><strong>Ethical &amp; Social Considerations</strong></p>
-<ul>
-<li class="fragment">Always consider impact on stakeholders and society</li>
-<li class="fragment">Responsible data collection and model deployment</li>
+<li class="fragment"><p><strong>Parametric</strong> models are those which can describe/predict the data with a fixed number of parameters.</p></li>
+<li class="fragment"><p><strong>Non-parametric</strong> models tend to now have a fixed number of parameters, and tend to make milder assumptions</p></li>
+<li class="fragment"><p><em>There isn’t a precise and universally accepted definition of the term ‘nonparametric’.</em></p></li>
 </ul>
 </section>
-<section id="summary-next-steps" class="slide level2">
-<h2>Summary &amp; Next Steps</h2>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<h3 id="curse-of-dimensionality">Curse of dimensionality</h3>
+<p>&nbsp;</p>
+<div class="fragment" data-fragment-index="1">
+<p>ML learning problems tend to be high-dimensional (e.g.&nbsp;datasets can easily have thousands or more feature <span class="math inline">\(X\)</span> that we can use for learning and prediction).</p>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment" data-fragment-index="2">
+<p>&nbsp;</p>
+<p>The amount of data that we need to learn effectively grows exponentially with the number of features</p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment" data-fragment-index="2">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-1-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="overfitting" class="slide level2">
+<h2>Overfitting</h2>
 <ul>
-<li class="fragment">Machine Learning aims to learn patterns from data for prediction or discovery</li>
-<li class="fragment">Supervised vs.&nbsp;Unsupervised: labeled vs.&nbsp;unlabeled data tasks</li>
-<li class="fragment">Overfitting is a core challenge; cross-validation helps mitigate it</li>
-<li class="fragment">Linear Regression serves as a foundational supervised method</li>
-<li class="fragment">Ethical considerations are crucial for real-world applications</li>
+<li class="fragment"><p>Main goal of supervised ML is to make predictions on novel inputs not seen before (<strong>generalization</strong>)</p></li>
+<li class="fragment"><p>When we fit highly complex/flexible model we need to be careful to not <strong>overfit</strong> the data, as this would lead to worse performance on unseen (new) data</p></li>
 </ul>
-<p><strong>Next Lecture</strong></p>
+</section>
+<section id="overfitting-example" class="slide level2">
+<h2>Overfitting example</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># assume a "true" underlying function</span></span>
+<span id="cb1-2"><a href=""></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>, <span class="at">length.out =</span> <span class="dv">200</span>)</span>
+<span id="cb1-3"><a href=""></a>y <span class="ot">&lt;-</span> x <span class="sc">+</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span><span class="fl">0.2</span><span class="sc">*</span>x<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb1-4"><a href=""></a></span>
+<span id="cb1-5"><a href=""></a><span class="co"># simulate some noisy observations</span></span>
+<span id="cb1-6"><a href=""></a>x_obs <span class="ot">&lt;-</span> x[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">200</span>, <span class="dv">10</span>)]</span>
+<span id="cb1-7"><a href=""></a>y_obs <span class="ot">&lt;-</span> x_obs <span class="sc">+</span> x_obs<span class="sc">^</span><span class="dv">2</span>  <span class="sc">-</span><span class="fl">0.2</span><span class="sc">*</span>x_obs<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span><span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span><span class="dv">50</span>)</span>
+<span id="cb1-8"><a href=""></a></span>
+<span id="cb1-9"><a href=""></a><span class="co"># store in a dataframe</span></span>
+<span id="cb1-10"><a href=""></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y=</span>y_obs,</span>
+<span id="cb1-11"><a href=""></a>                <span class="at">x=</span>x_obs)</span>
+<span id="cb1-12"><a href=""></a></span>
+<span id="cb1-13"><a href=""></a><span class="co"># plot</span></span>
+<span id="cb1-14"><a href=""></a><span class="fu">plot</span>(x,y, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">200</span>, <span class="dv">300</span>))</span>
+<span id="cb1-15"><a href=""></a><span class="fu">points</span>(x_obs, y_obs, <span class="at">pch=</span><span class="dv">19</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center" width="384"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="fragment">
+<p>Known “true” model: <span class="math display">\[y = x + x^2 -0.2x^3\]</span></p>
+</div>
+</section>
+<section id="overfitting-example-1" class="slide level2">
+<h2>Overfitting example</h2>
+<p>We can fit polynomial functions of increasing order using <code>lm()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>m <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb2-2"><a href=""></a>m[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span><span class="dv">1</span>, d)</span>
+<span id="cb2-3"><a href=""></a>m[[<span class="dv">2</span>]] <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>x, d)</span>
+<span id="cb2-4"><a href=""></a>m[[<span class="dv">3</span>]] <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>x <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>), d)</span>
+<span id="cb2-5"><a href=""></a>m[[<span class="dv">4</span>]] <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>x <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">3</span>), d)</span>
+<span id="cb2-6"><a href=""></a>m[[<span class="dv">5</span>]] <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>x <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">4</span>), d)</span>
+<span id="cb2-7"><a href=""></a>m[[<span class="dv">6</span>]] <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>x <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">4</span>) <span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">5</span>), d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="overfitting-example-2" class="slide level2">
+<h2>Overfitting example</h2>
+<p>We can fit polynomial functions of increasing order using <code>lm()</code></p>
+<p>&nbsp;</p>
+<p>We can use a <code>for</code> loop to programmatically fit models of increasing complexity</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>m <span class="ot">&lt;-</span> <span class="fu">list</span>() <span class="co"># an empty list</span></span>
+<span id="cb3-2"><a href=""></a></span>
+<span id="cb3-3"><a href=""></a><span class="co"># intercept-only model in the 1st slot</span></span>
+<span id="cb3-4"><a href=""></a>m[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span><span class="dv">1</span>, d)</span>
+<span id="cb3-5"><a href=""></a></span>
+<span id="cb3-6"><a href=""></a><span class="co"># fit models of increasing complexity</span></span>
+<span id="cb3-7"><a href=""></a><span class="cf">for</span> (p <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">8</span>) {</span>
+<span id="cb3-8"><a href=""></a>  formula <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">"y ~"</span>, <span class="fu">paste0</span>(<span class="st">"I(x^"</span>, <span class="dv">1</span><span class="sc">:</span>p, <span class="st">")"</span>, <span class="at">collapse=</span><span class="st">"+"</span>)))</span>
+<span id="cb3-9"><a href=""></a>  m[[p <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data =</span> d)</span>
+<span id="cb3-10"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="overfitting-example-3" class="slide level2">
+<h2>Overfitting example</h2>
+<p>For each model, let’s compute the error in the training set</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="co"># error on training set</span></span>
+<span id="cb4-2"><a href=""></a>training_error <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(m))</span>
+<span id="cb4-3"><a href=""></a></span>
+<span id="cb4-4"><a href=""></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(m)){</span>
+<span id="cb4-5"><a href=""></a>  </span>
+<span id="cb4-6"><a href=""></a>  <span class="co"># extract predicted values</span></span>
+<span id="cb4-7"><a href=""></a>  pred_y <span class="ot">&lt;-</span> <span class="fu">predict</span>(m[[i]]) </span>
+<span id="cb4-8"><a href=""></a>  </span>
+<span id="cb4-9"><a href=""></a>  <span class="co"># mean squared error</span></span>
+<span id="cb4-10"><a href=""></a>  training_error[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>((d<span class="sc">$</span>y <span class="sc">-</span>  pred_y)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb4-11"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="overfitting-example-4" class="slide level2">
+<h2>Overfitting example</h2>
+<p>We know the “true” generative model and we can use to generate new data unseen by our models</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="co"># generate unseen data</span></span>
+<span id="cb5-2"><a href=""></a>x_new <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="at">min=</span><span class="sc">-</span><span class="dv">10</span>, <span class="at">max=</span><span class="dv">10</span>)</span>
+<span id="cb5-3"><a href=""></a>y_new <span class="ot">&lt;-</span> x_new <span class="sc">+</span> x_new<span class="sc">^</span><span class="dv">2</span>  <span class="sc">-</span><span class="fl">0.2</span><span class="sc">*</span>x_new<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span><span class="dv">50</span>)</span>
+<span id="cb5-4"><a href=""></a>d_new <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x_new, <span class="at">y=</span>y_new)</span>
+<span id="cb5-5"><a href=""></a></span>
+<span id="cb5-6"><a href=""></a>test_error <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(m))</span>
+<span id="cb5-7"><a href=""></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(m)){</span>
+<span id="cb5-8"><a href=""></a>  pred_y <span class="ot">&lt;-</span> <span class="fu">predict</span>(m[[i]], <span class="at">newdata=</span>d_new)</span>
+<span id="cb5-9"><a href=""></a>  test_error[i] <span class="ot">&lt;-</span>  <span class="fu">mean</span>((d_new<span class="sc">$</span>y <span class="sc">-</span>  pred_y)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb5-10"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="overfitting-example-5" class="slide level2">
+<h2>Overfitting example</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(m), training_error,</span>
+<span id="cb6-2"><a href=""></a>     <span class="at">xlab=</span><span class="st">"n. parameters"</span>, <span class="at">ylab=</span><span class="st">"MSE"</span>,</span>
+<span id="cb6-3"><a href=""></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">9000</span>), <span class="at">type=</span><span class="st">"o"</span>, <span class="at">col=</span><span class="st">"blue"</span>)</span>
+<span id="cb6-4"><a href=""></a></span>
+<span id="cb6-5"><a href=""></a><span class="fu">lines</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(m), test_error, <span class="at">type=</span><span class="st">"o"</span>, <span class="at">col=</span><span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<section id="overfitting-example-6" class="slide level2">
+<h2>Overfitting example</h2>
+<p>The higher order polynomials are clearly too complex and overfit the data</p>
+
+<img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<section id="approached-to-mitigage-overfitting-cross-validation" class="slide level2">
+<h2>Approached to mitigage overfitting: cross-Validation</h2>
 <ul>
-<li class="fragment">Deeper dive into Classification and other Supervised Learning methods</li>
-<li class="fragment">Hands-on practice building models in R</li>
+<li class="fragment">Split data into <span class="math inline">\(k\)</span> folds (subsets)<br>
+</li>
+<li class="fragment">Train on <span class="math inline">\(k - 1\)</span> folds, test on the remaining, hold-out fold<br>
+</li>
+<li class="fragment">Repeat for each fold; average performance across folds for a robust metric.</li>
+<li class="fragment">When we leave out only 1 observation is known as leave-one-out (LOO) cross-validation</li>
 </ul>
+<p>&nbsp;</p>
+<div class="fragment">
+<p>The key idea is that we put aside some data when training the model, and then use it for evaluate its performance</p>
+</div>
+</section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+<p><strong>Example code 1</strong>: evaluating a linear model on a hold-out set</p>
+</section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+<p><strong>Example code 2</strong>: LOO cross-validation</p>
+</section>
+<section id="exercise" class="slide level2">
+<h2>Exercise</h2>
+<p>Load the <code>california_housing_train.csv</code> data from Moodle and find the best predictive model to predict house value (<code>medv</code>).</p>
+<p>&nbsp;</p>
+<section id="data-dictionary-for-california-housing-dataset" style="font-size: 60%;">
+<h3>Data Dictionary for California Housing Dataset</h3>
+<table class="caption-top">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>medv</td>
+<td>Median value of owner-occupied homes (in $1000s)</td>
+</tr>
+<tr class="even">
+<td>crim</td>
+<td>Per capita crime rate by town</td>
+</tr>
+<tr class="odd">
+<td>zn</td>
+<td>Proportion of residential land zoned for large lots</td>
+</tr>
+<tr class="even">
+<td>indus</td>
+<td>Proportion of non-retail business acres per town</td>
+</tr>
+<tr class="odd">
+<td>chas</td>
+<td>Charles River dummy variable (1 if tract bounds river, 0 otherwise)</td>
+</tr>
+<tr class="even">
+<td>nox</td>
+<td>Nitrogen oxide concentration (parts per 10 million)</td>
+</tr>
+<tr class="odd">
+<td>rm</td>
+<td>Average number of rooms per dwelling</td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>Proportion of owner-occupied units built before 1940</td>
+</tr>
+<tr class="odd">
+<td>dis</td>
+<td>Weighted distance to employment centers</td>
+</tr>
+<tr class="even">
+<td>rad</td>
+<td>Index of accessibility to highways</td>
+</tr>
+<tr class="odd">
+<td>tax</td>
+<td>Property tax rate per $10,000</td>
+</tr>
+<tr class="even">
+<td>ptratio</td>
+<td>Pupil-teacher ratio by town</td>
+</tr>
+<tr class="odd">
+<td>lstat</td>
+<td>% lower status of the population</td>
+</tr>
+</tbody>
+</table>
+</section>
+<!-- ## Critical Thinking About Machine Learning -->
+<!-- **Algorithmic Bias** -->
+<!-- -   Biased training data can lead to unfair or discriminatory predictions -->
+<!-- -   Must consider representation and fairness at each stage -->
+<!-- **Transparency & Explainability** -->
+<!-- -   Black-box models (e.g., deep nets) can be hard to interpret -->
+<!-- -   Growing field of explainable AI (e.g., SHAP, LIME) to interpret predictions -->
+<!-- **Ethical & Social Considerations** -->
+<!-- -   Always consider impact on stakeholders and society -->
+<!-- -   Responsible data collection and model deployment -->
+<!-- ## Summary & Next Steps -->
+<!-- -   Machine Learning aims to learn patterns from data for prediction or discovery -->
+<!-- -   Supervised vs. Unsupervised: labeled vs. unlabeled data tasks -->
+<!-- -   Overfitting is a core challenge; cross-validation helps mitigate it -->
+<!-- -   Linear Regression serves as a foundational supervised method -->
+<!-- -   Ethical considerations are crucial for real-world applications -->
+<!-- **Next Lecture** -->
+<!-- -   Deeper dive into Classification and other Supervised Learning methods -->
+<!-- -   Hands-on practice building models in R -->
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 

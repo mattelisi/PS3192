@@ -9,76 +9,398 @@ format:
 editor: visual
 ---
 
-# Introduction to Machine Learning Concepts
+# Introduction to Machine Learning
 
-## 
+## {transition="slide-in slide-out"}
 
-Some core components of 'data science'
+#### "Data science"
 
-- Data wrangling (data cleaning & preparation)
-- Data visualization
-- Statistics & probability
-- Machine learning & predictive modeling
-- Causal inference
-- Big data & data engineering
-- Applied context (actionable insights)
-- Communication
+::: nonincremental
 
+-   Data wrangling (data cleaning & preparation)
+-   Data visualization
+-   Statistics & probability
+-   **Machine learning & predictive modeling**
+-   Causal inference
+-   Big data & data engineering
+-   Applied context (actionable insights)
+-   Communication
 
-## Learning Outcomes for today
+:::
 
--   Grasp **fundamental machine learning** concepts
--   Recognize typical pitfalls
--   Build and evaluate models in R
+<!-- ## Learning Outcomes for today -->
+
+<!-- -   Grasp **fundamental machine learning** concepts -->
+<!-- -   Recognize typical pitfalls -->
+<!-- -   Build and evaluate models in R -->
+
+## Machine learning 
+
+::: {.fragment .fade-up}
+
+> _"as a set of methods that can automatically detect patterns in data, and then use the uncovered patterns to predict future data, or to perform other kinds of decision making under uncertainty"_ (Murphy, 2012)
+
+:::
+
+ 
+
+- Machine learning (ML) is grounded in the same principles as statistical science.
+- ML differs from statistics in that it has a "technological" rather that scientific focus: 
+the goal in ML is to solve a problem, e.g. predict which product a customer might buy, rather than understanding the world. 
+- Close to artificial intelligence (AI) which is even more focused on creating machines that can carry out tasks that would normally require human involvement.
+
 
 ## Types of machine learning
 
-- **Supervised learning** predict the next value based on a set of examples (regression, classification).
-- **Unsupervised learning** data drive (clustering; dimensionality reduction, e.g. PCA).
-- **Reinforcement learning** learn from mistakes.
+-   **Supervised learning** predict the next value based on a set of examples (regression, classification).
+-   **Unsupervised learning** more descriptive and data driven (clustering). 
+-   **Reinforcement learning** learn how to act from reward and punishment signals.
 
 ## Supervised vs. Unsupervised Learning
 
+ 
+
+::: fragment
+
 **Supervised Learning**\
-- We have input features $X$ and target labels/outcomes $y$\
+- We have a _training_ dataset containing some with input features $X$ and target labels/outcomes $y$\
 - The algorithm learns a function $f(X)$ that predicts $y$ accurately\
+- Learning is achieved by minimising a _cost_ or _loss_ function (i.e. an error metric that tells us how bad the predictions are compared to the observed $y$)\
 - Examples: **Regression** (continuous outcomes), **Classification** (categorical outcomes)
+
+:::
+
+ 
+
+::: fragment
 
 **Unsupervised Learning**\
 - We only have input features $X$, with no labeled outcome\
 - The algorithm finds structure in the data (e.g., clusters, latent factors)\
+- Much less well-defined problem since we don't know usually know in advance what to look for.\
 - Examples: **Clustering** (e.g., gaussian mixture models), **Dimensionality Reduction** (PCA)
 
-## Overfitting & Out-of-Sample Prediction
+:::
 
--   **Overfitting**: The model fits the training data too closely and fails to generalize\
--   **Bias-Variance Tradeoff**:
-    -   High-variance models are flexible but prone to overfitting
-    -   High-bias models are simpler but may underfit
--   **Out-of-Sample Prediction**:
-    -   True test of a model is its performance on unseen (new) data
 
-## Cross-Validation
+## Linear regression as a supervised ML algorithm
 
-1.  **Why Cross-Validation?**
-    -   Need a reliable estimate of how a model performs on unseen data\
-    -   Simply using one train/test split can be misleading
-2.  **k-Fold Cross-Validation**
-    -   Split data into \\(k\\) folds (subsets)\
-    -   Train on \\(k - 1\\) folds, test on the remaining fold\
-    -   Repeat for each fold; average performance across folds for a robust metric
+::: fragment
 
-## Case Study: Linear Regression
+Model: $$y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k + \underbrace{\epsilon}_{\text{residual}\\ \text{error}}$$
 
-**Goal:** Predict a continuous outcome \\(y\\) from predictors \\(X\\).
+:::
 
-\\\[ y = \\beta_0 + \\beta_1 X_1 + \\cdots + \\beta_p X_p + \\epsilon \\\]
+::: fragment 
 
-1.  **Train/Test Split or Cross-Validation**\
-2.  **Fit the Model** on training data\
-3.  **Evaluate** using metrics like RMSE, \\(R\^2\\), MAE
+Quadratic loss function (the sum of squared residual errors sacross all observations): $$L = \sum_i \epsilon_i^2 $$
 
-**Example in R**:
+:::
+
+
+
+# Machine-learning concepts
+
+##
+
+### Parametric vs non-parametric models
+
+- **Parametric** models are those which can describe/predict the data with a fixed number of parameters.
+
+- **Non-parametric** models tend to now have a fixed number of parameters, and tend to make milder assumptions
+
+- _There isn't a precise and universally accepted definition of the term 'nonparametric'._
+
+##
+
+### Curse of dimensionality
+
+ 
+
+::: {.fragment fragment-index=1}
+
+ML learning problems tend to be high-dimensional (e.g. datasets can easily have thousands or more feature $X$ that we can use for learning and prediction).
+
+:::
+
+::::: columns
+
+:::: {.column width="50%"}
+
+::: {.fragment fragment-index=2}
+
+ 
+
+The amount of data that we need to learn effectively grows exponentially with the number of features
+
+:::
+
+::::
+
+
+:::: {.column width="50%"}
+
+::: {.fragment fragment-index=2}
+
+```{r}
+#| fig-height: 3
+#| fig-width: 3  # Half the slider width when default slide width is 4
+#| fig-align: center
+#| echo: FALSE
+
+library(tidyverse)
+
+x <- seq(10, 20, length.out=100)
+y <- exp(x)
+
+data.frame(x,y) %>%
+  ggplot(aes(x=x, y=y))+
+  geom_line(lwd=2,col="red")+theme_void()+
+  theme(axis.title.x = element_text(),
+        axis.title.y = element_text(angle=90))+
+  labs(x="n. features",y="amount of data")
+
+```
+
+:::
+
+::::
+
+:::::
+
+## Overfitting
+
+- Main goal of supervised ML is to make predictions on novel inputs not seen before (**generalization**)
+
+- When we fit highly complex/flexible model we need to be careful to not **overfit** the data, as this would lead to worse performance on unseen (new) data
+
+
+## Overfitting example
+
+::::: columns
+
+:::: {.column width="60%"}
+
+```{r}
+#| echo: TRUE
+#| eval: FALSE
+
+# assume a "true" underlying function
+x <- seq(-10, 10, length.out = 200)
+y <- x + x^2 -0.2*x^3
+
+# simulate some noisy observations
+x_obs <- x[sample(1:200, 10)]
+y_obs <- x_obs + x_obs^2  -0.2*x_obs^3 +rnorm(10, mean=0, sd=50)
+
+# store in a dataframe
+d <- data.frame(y=y_obs,
+                x=x_obs)
+
+# plot
+plot(x,y, type="l", col="blue", lwd=2, ylim=c(-200, 300))
+points(x_obs, y_obs, pch=19)
+```
+
+
+::::
+
+:::: {.column width="40%"}
+
+```{r}
+#| fig-height: 4
+#| fig-width: 4  # Half the slider width when default slide width is 4
+#| fig-align: center
+#| echo: FALSE
+
+set.seed(23)
+
+par(mar=c(5,4,1.5,1)+0.1)
+
+# assume a "true" underlying function
+x <- seq(-10, 10, length.out = 200)
+y <- x + x^2 -0.2*x^3
+plot(x,y, type="l", col="blue", lwd=2, ylim=c(-200, 300))
+
+# simulate some noisy observations
+x_obs <- x[sample(1:200, 10)]
+y_obs <- x_obs + x_obs^2  -0.2*x_obs^3+ rnorm(10, mean=0, sd=50)
+points(x_obs, y_obs, pch=19)
+
+# observed data
+d <- data.frame(y=y_obs,
+                x=x_obs)
+```
+
+
+::::
+
+:::::
+
+::: fragment
+
+Known "true" model: $$y = x + x^2 -0.2x^3$$
+
+:::
+
+## Overfitting example
+
+We can fit polynomial functions of increasing order using `lm()`
+
+```{r}
+#| eval: FALSE
+#| echo: TRUE
+
+m <- list()
+m[[1]] <- lm(y~1, d)
+m[[2]] <- lm(y~x, d)
+m[[3]] <- lm(y~x +I(x^2), d)
+m[[4]] <- lm(y~x +I(x^2) +I(x^3), d)
+m[[5]] <- lm(y~x +I(x^2) +I(x^3) +I(x^4), d)
+m[[6]] <- lm(y~x +I(x^2) +I(x^3) +I(x^4) +I(x^5), d)
+
+```
+
+
+## Overfitting example
+
+We can fit polynomial functions of increasing order using `lm()`
+
+ 
+
+We can use a `for` loop to programmatically fit models of increasing complexity
+
+```{r}
+#| echo: TRUE
+
+m <- list() # an empty list
+
+# intercept-only model in the 1st slot
+m[[1]] <- lm(y~1, d)
+
+# fit models of increasing complexity
+for (p in 0:8) {
+  formula <- as.formula(paste("y ~", paste0("I(x^", 1:p, ")", collapse="+")))
+  m[[p + 1]] <- lm(formula, data = d)
+}
+```
+
+
+## Overfitting example
+
+For each model, let's compute the error in the training set
+
+```{r}
+#| echo: TRUE
+#| 
+# error on training set
+training_error <- rep(NA, length(m))
+
+for(i in 1:length(m)){
+  
+  # extract predicted values
+  pred_y <- predict(m[[i]]) 
+  
+  # mean squared error
+  training_error[i] <- mean((d$y -  pred_y)^2)
+}
+
+```
+
+
+## Overfitting example
+
+We know the "true" generative model and we can use to generate new data unseen by our models
+
+```{r}
+#| echo: TRUE
+# generate unseen data
+x_new <- runif(100, min=-10, max=10)
+y_new <- x_new + x_new^2  -0.2*x_new^3 + rnorm(100, mean=0, sd=50)
+d_new <- data.frame(x = x_new, y=y_new)
+
+test_error <- rep(NA, length(m))
+for(i in 1:length(m)){
+  pred_y <- predict(m[[i]], newdata=d_new)
+  test_error[i] <-  mean((d_new$y -  pred_y)^2)
+}
+
+```
+
+## Overfitting example
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 6  # Half the slider width when default slide width is 4
+#| fig-align: center
+#| echo: TRUE
+
+plot(1:length(m), training_error,
+     xlab="n. parameters", ylab="MSE",
+     ylim=c(0,9000), type="o", col="blue")
+
+lines(1:length(m), test_error, type="o", col="red")
+
+```
+
+## Overfitting example
+
+The higher order polynomials are clearly too complex and overfit the data
+
+```{r}
+#| fig-height: 4
+#| fig-width: 6  # Half the slider width when default slide width is 4
+#| fig-align: center
+#| echo: false
+
+library(viridis)
+
+# Generate predictions for plotting
+preds <- data.frame(x = rep(x, 9), Degree = rep(0:8, each = length(x)))
+preds$y_hat <- unlist(lapply(m, function(mod) predict(mod, newdata = data.frame(x = x))))
+
+# Define a perceptually uniform color palette
+palette_colors <- viridis(9)
+
+# Create the ggplot
+ggplot() +
+  # True function
+  geom_line(aes(x, y), color = "black", lwd = 2) +
+  # Fitted models
+  geom_line(data = preds, aes(x = x, y = y_hat, color = factor(Degree)), lwd = 1) +
+  # Noisy observations
+  geom_point(aes(x_obs, y_obs), color = "black", size = 4) +
+  # Aesthetic adjustments
+  scale_color_manual(values = palette_colors, name = "Polynomial Degree") +
+  labs(x = "x", y = "y") +
+  theme_minimal()+
+  coord_cartesian(ylim=c(-200,300))
+
+```
+
+
+
+
+## Approached to mitigage overfitting: cross-Validation
+
+-   Split data into $k$ folds (subsets)\
+-   Train on $k - 1$ folds, test on the remaining, hold-out fold\
+-   Repeat for each fold; average performance across folds for a robust metric.
+-   When we leave out only 1 observation is known as leave-one-out (LOO) cross-validation
+
+ 
+
+::: fragment
+
+The key idea is that we put aside some data when training the model, and then use it for evaluate its performance
+
+:::
+
+
+## 
+
+**Example code 1**: evaluating a linear model on a hold-out set
 
 ```{r, eval=FALSE}
 # Suppose 'mydata' has columns: y, X1, X2
@@ -89,7 +411,7 @@ train_index <- sample(seq_len(nrow(mydata)), size = 0.7*nrow(mydata))
 train_data <- mydata[train_index, ]
 test_data  <- mydata[-train_index, ]
 
-# Fit a linear model
+# Fit model
 model <- lm(y ~ X1 + X2, data = train_data)
 
 # Predict on test data
@@ -97,35 +419,94 @@ preds <- predict(model, newdata = test_data)
 
 # Calculate Mean Squared Error
 mse <- mean((test_data$y - preds)^2)
-mse
 ```
 
-## Critical Thinking About Machine Learning
+## 
 
-**Algorithmic Bias**
+**Example code 2**: LOO cross-validation
 
--   Biased training data can lead to unfair or discriminatory predictions
--   Must consider representation and fairness at each stage
+```{r, eval=FALSE}
+# Suppose 'mydata' has columns: y, X1, X2
+mydata <- read.csv("mydata.csv")
 
-**Transparency & Explainability**
+n <- nrow(mydata)  # Total number of observations
+preds <- numeric(n)  # Placeholder for predictions
 
--   Black-box models (e.g., deep nets) can be hard to interpret
--   Growing field of explainable AI (e.g., SHAP, LIME) to interpret predictions
+# Leave-One-Out Cross-Validation
 
-**Ethical & Social Considerations**
+for (i in 1:n) {
+  # Define training and test sets
+  train_data <- mydata[-i, ]  # All except the i-th observation
+  test_data  <- mydata[i,  ]  # The i-th observation
+  
+  # Fit the model
+  model <- lm(y ~ X1 + X2, data = train_data)
+  
+  # Predict for the left-out observation
+  preds[i] <- predict(model, newdata = test_data)
+}
 
--   Always consider impact on stakeholders and society
--   Responsible data collection and model deployment
+# Compute overall Mean Squared Error
+mse_loo <- mean((mydata$y - preds)^2)
 
-## Summary & Next Steps
+```
 
--   Machine Learning aims to learn patterns from data for prediction or discovery
--   Supervised vs. Unsupervised: labeled vs. unlabeled data tasks
--   Overfitting is a core challenge; cross-validation helps mitigate it
--   Linear Regression serves as a foundational supervised method
--   Ethical considerations are crucial for real-world applications
 
-**Next Lecture**
+## Exercise
 
--   Deeper dive into Classification and other Supervised Learning methods
--   Hands-on practice building models in R
+Load the `california_housing_train.csv` data from Moodle and find the best predictive model to predict house value (`medv`).
+
+ 
+
+::: {style="font-size: 60%;"}
+
+### Data Dictionary for California Housing Dataset
+
+| Variable  | Description |
+|-----------|------------|
+| medv      | Median value of owner-occupied homes (in $1000s) |
+| crim      | Per capita crime rate by town |
+| zn        | Proportion of residential land zoned for large lots |
+| indus     | Proportion of non-retail business acres per town |
+| chas      | Charles River dummy variable (1 if tract bounds river, 0 otherwise) |
+| nox       | Nitrogen oxide concentration (parts per 10 million) |
+| rm        | Average number of rooms per dwelling |
+| age       | Proportion of owner-occupied units built before 1940 |
+| dis       | Weighted distance to employment centers |
+| rad       | Index of accessibility to highways |
+| tax       | Property tax rate per $10,000 |
+| ptratio   | Pupil-teacher ratio by town |
+| lstat     | % lower status of the population |
+
+:::
+
+
+<!-- ## Critical Thinking About Machine Learning -->
+
+<!-- **Algorithmic Bias** -->
+
+<!-- -   Biased training data can lead to unfair or discriminatory predictions -->
+<!-- -   Must consider representation and fairness at each stage -->
+
+<!-- **Transparency & Explainability** -->
+
+<!-- -   Black-box models (e.g., deep nets) can be hard to interpret -->
+<!-- -   Growing field of explainable AI (e.g., SHAP, LIME) to interpret predictions -->
+
+<!-- **Ethical & Social Considerations** -->
+
+<!-- -   Always consider impact on stakeholders and society -->
+<!-- -   Responsible data collection and model deployment -->
+
+<!-- ## Summary & Next Steps -->
+
+<!-- -   Machine Learning aims to learn patterns from data for prediction or discovery -->
+<!-- -   Supervised vs. Unsupervised: labeled vs. unlabeled data tasks -->
+<!-- -   Overfitting is a core challenge; cross-validation helps mitigate it -->
+<!-- -   Linear Regression serves as a foundational supervised method -->
+<!-- -   Ethical considerations are crucial for real-world applications -->
+
+<!-- **Next Lecture** -->
+
+<!-- -   Deeper dive into Classification and other Supervised Learning methods -->
+<!-- -   Hands-on practice building models in R -->
