@@ -10,3 +10,10 @@ academic year: 2024-25
 
 [Solution to 5.1 exercises](01_IntroR/5.3.html)
 
+
+# Introduction to ML
+
+
+[Slides](intro2ML/intro2ML.html)
+
+

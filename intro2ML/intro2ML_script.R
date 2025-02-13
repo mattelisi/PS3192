@@ -165,24 +165,41 @@ library(mlbench)
 # Load the California Housing dataset
 data("BostonHousing2", package = "mlbench")
 
-# Remove non-numeric columns (town, tract, cmedv) for a clean regression dataset
+# # Remove non-numeric columns (town, tract, cmedv) for a clean regression dataset
 bh_data <- subset(BostonHousing2, select = -c(town, tract, cmedv))
+# bh_data <- BostonHousing2
 
 # Set seed for reproducibility
-set.seed(123)
+#set.seed(1)
 
 # Create a random index for splitting
 n <- nrow(bh_data)
-train_index <- sample(seq_len(n), size = n/2, replace = FALSE)
+train_index <- sample(seq_len(n), size = 100, replace = FALSE)
 
 # Split data into 50% training and 50% test
 train_data <- bh_data[train_index, ]
 test_data  <- bh_data[-train_index, ]
 
 # Save as CSV
-write.csv(train_data, "california_housing_train.csv", row.names = FALSE)
-write.csv(test_data, "california_housing_test.csv", row.names = FALSE)
+train_data <- subset(train_data, select = -c(b))
+test_data <- subset(test_data, select = -c(b))
+# write.csv(train_data, "california_housing_train.csv", row.names = FALSE)
+# write.csv(test_data, "california_housing_test.csv", row.names = FALSE)
 
 # Print confirmation
 print("Train and test datasets saved as CSV.")
+
+str(train_data)
+
+m0 <- lm(medv ~ ., data=train_data)
+pred_y_train <- predict(m0)
+
+mean((pred_y_train - train_data$medv)^2)
+
+pred_y <- predict(m0, newdata=test_data)
+
+mean((pred_y - test_data$medv)^2)
+
+mean((test_data$medv - mean(test_data$medv))^2)
+
 

@@ -11,12 +11,11 @@ editor: visual
 
 # Introduction to Machine Learning
 
-## {transition="slide-in slide-out"}
+##  {transition="slide-in slide-out"}
 
 #### "Data science"
 
 ::: nonincremental
-
 -   Data wrangling (data cleaning & preparation)
 -   Data visualization
 -   Statistics & probability
@@ -25,35 +24,32 @@ editor: visual
 -   Big data & data engineering
 -   Applied context (actionable insights)
 -   Communication
-
 :::
 
 <!-- ## Learning Outcomes for today -->
 
 <!-- -   Grasp **fundamental machine learning** concepts -->
+
 <!-- -   Recognize typical pitfalls -->
+
 <!-- -   Build and evaluate models in R -->
 
-## Machine learning 
+## Machine learning
 
 ::: {.fragment .fade-up}
-
-> _"as a set of methods that can automatically detect patterns in data, and then use the uncovered patterns to predict future data, or to perform other kinds of decision making under uncertainty"_ (Murphy, 2012)
-
+> *"as a set of methods that can automatically detect patterns in data, and then use the uncovered patterns to predict future data, or to perform other kinds of decision making under uncertainty"* (Murphy, 2012)
 :::
 
  
 
-- Machine learning (ML) is grounded in the same principles as statistical science.
-- ML differs from statistics in that it has a "technological" rather that scientific focus: 
-the goal in ML is to solve a problem, e.g. predict which product a customer might buy, rather than understanding the world. 
-- Close to artificial intelligence (AI) which is even more focused on creating machines that can carry out tasks that would normally require human involvement.
-
+-   Machine learning (ML) is grounded in the same principles as statistical science.
+-   ML differs from statistics in that it has a "technological" rather that scientific focus: the goal in ML is to solve a problem, e.g. predict which product a customer might buy, rather than understanding the world.
+-   Close to artificial intelligence (AI) which is even more focused on creating machines that can carry out tasks that would normally require human involvement.
 
 ## Types of machine learning
 
 -   **Supervised learning** predict the next value based on a set of examples (regression, classification).
--   **Unsupervised learning** more descriptive and data driven (clustering). 
+-   **Unsupervised learning** more descriptive and data driven (clustering).
 -   **Reinforcement learning** learn how to act from reward and punishment signals.
 
 ## Supervised vs. Unsupervised Learning
@@ -61,87 +57,107 @@ the goal in ML is to solve a problem, e.g. predict which product a customer migh
  
 
 ::: fragment
-
 **Supervised Learning**\
-- We have a _training_ dataset containing some with input features $X$ and target labels/outcomes $y$\
+- We have a *training* dataset containing some with input features $X$ and target labels/outcomes $y$\
 - The algorithm learns a function $f(X)$ that predicts $y$ accurately\
-- Learning is achieved by minimising a _cost_ or _loss_ function (i.e. an error metric that tells us how bad the predictions are compared to the observed $y$)\
+- Learning is achieved by minimising a *cost* or *loss* function (i.e. an error metric that tells us how bad the predictions are compared to the observed $y$)\
 - Examples: **Regression** (continuous outcomes), **Classification** (categorical outcomes)
-
 :::
 
  
 
 ::: fragment
-
 **Unsupervised Learning**\
 - We only have input features $X$, with no labeled outcome\
 - The algorithm finds structure in the data (e.g., clusters, latent factors)\
 - Much less well-defined problem since we don't know usually know in advance what to look for.\
 - Examples: **Clustering** (e.g., gaussian mixture models), **Dimensionality Reduction** (PCA)
-
 :::
-
 
 ## Linear regression as a supervised ML algorithm
 
 ::: fragment
-
 Model: $$y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k + \underbrace{\epsilon}_{\text{residual}\\ \text{error}}$$
-
 :::
 
-::: fragment 
-
+::: fragment
 Quadratic loss function (the sum of squared residual errors sacross all observations): $$L = \sum_i \epsilon_i^2 $$
-
 :::
-
-
 
 # Machine-learning concepts
 
-##
+## 
 
 ### Parametric vs non-parametric models
 
-- **Parametric** models are those which can describe/predict the data with a fixed number of parameters.
+-   **Parametric** models are those which can describe/predict the data with a fixed number of parameters.
 
-- **Non-parametric** models tend to now have a fixed number of parameters, and tend to make milder assumptions
+-   **Non-parametric** models tend to now have a fixed number of parameters, and tend to make milder assumptions
 
-- _There isn't a precise and universally accepted definition of the term 'nonparametric'._
+-   *There isn't a precise and universally accepted definition of the term 'nonparametric'.*
+
 
 ##
+
+#### Non-parametric supervised learning: decision trees
+
+```{r}
+#| fig-height: 4
+#| fig-width: 10  # Half the slider width when default slide width is 4
+#| fig-align: center
+
+# intro to ML notes
+library(rpart)
+library(palmerpenguins)
+library(partykit)
+
+# tree example
+
+p_m <- rpart(species~ ., data = penguins)
+
+# # Prettier plot
+# rpart.plot(
+#   p_m, 
+#   type = 2,         # Split labels are drawn at the decision nodes
+#   #extra = 104,      # Show predicted class and probability percentages
+#   box.palette = "RdYlGn",  # Color nodes by prediction (red → yellow → green)
+#   fallen.leaves = TRUE,    # Arrange terminal nodes at the same level
+#   tweak = 1,     # Slightly increase text size for readability
+#   shadow.col = "gray",  # Add shadows to the boxes
+#   branch = 0.6    # Make branches less steep
+# )
+
+p_m2 <- as.party(p_m)
+plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALSE, rot=0),
+     inner_panel = node_inner(p_m2, id = FALSE, pval = FALSE),
+     gp=gpar(fontsize=8,
+             height = 21))
+     
+
+```
+
+
+## 
 
 ### Curse of dimensionality
 
  
 
-::: {.fragment fragment-index=1}
-
+::: {.fragment fragment-index="1"}
 ML learning problems tend to be high-dimensional (e.g. datasets can easily have thousands or more feature $X$ that we can use for learning and prediction).
-
 :::
 
-::::: columns
-
-:::: {.column width="50%"}
-
-::: {.fragment fragment-index=2}
-
+::: columns
+::: {.column width="50%"}
+::: {.fragment fragment-index="2"}
  
 
 The amount of data that we need to learn effectively grows exponentially with the number of features
-
+:::
 :::
 
-::::
-
-
-:::: {.column width="50%"}
-
-::: {.fragment fragment-index=2}
-
+::: {.column width="50%"}
+::: {.fragment fragment-index="2"}
 ```{r}
 #| fig-height: 3
 #| fig-width: 3  # Half the slider width when default slide width is 4
@@ -161,26 +177,20 @@ data.frame(x,y) %>%
   labs(x="n. features",y="amount of data")
 
 ```
-
 :::
-
-::::
-
-:::::
+:::
+:::
 
 ## Overfitting
 
-- Main goal of supervised ML is to make predictions on novel inputs not seen before (**generalization**)
+-   Main goal of supervised ML is to make predictions on novel inputs not seen before (**generalization**)
 
-- When we fit highly complex/flexible model we need to be careful to not **overfit** the data, as this would lead to worse performance on unseen (new) data
-
+-   When we fit highly complex/flexible model we need to be careful to not **overfit** the data, as this would lead to worse performance on unseen (new) data
 
 ## Overfitting example
 
-::::: columns
-
-:::: {.column width="60%"}
-
+::: columns
+::: {.column width="60%"}
 ```{r}
 #| echo: TRUE
 #| eval: FALSE
@@ -201,12 +211,9 @@ d <- data.frame(y=y_obs,
 plot(x,y, type="l", col="blue", lwd=2, ylim=c(-200, 300))
 points(x_obs, y_obs, pch=19)
 ```
+:::
 
-
-::::
-
-:::: {.column width="40%"}
-
+::: {.column width="40%"}
 ```{r}
 #| fig-height: 4
 #| fig-width: 4  # Half the slider width when default slide width is 4
@@ -231,16 +238,11 @@ points(x_obs, y_obs, pch=19)
 d <- data.frame(y=y_obs,
                 x=x_obs)
 ```
-
-
-::::
-
-:::::
+:::
+:::
 
 ::: fragment
-
 Known "true" model: $$y = x + x^2 -0.2x^3$$
-
 :::
 
 ## Overfitting example
@@ -260,7 +262,6 @@ m[[5]] <- lm(y~x +I(x^2) +I(x^3) +I(x^4), d)
 m[[6]] <- lm(y~x +I(x^2) +I(x^3) +I(x^4) +I(x^5), d)
 
 ```
-
 
 ## Overfitting example
 
@@ -285,7 +286,6 @@ for (p in 0:8) {
 }
 ```
 
-
 ## Overfitting example
 
 For each model, let's compute the error in the training set
@@ -307,7 +307,6 @@ for(i in 1:length(m)){
 
 ```
 
-
 ## Overfitting example
 
 We know the "true" generative model and we can use to generate new data unseen by our models
@@ -328,7 +327,6 @@ for(i in 1:length(m)){
 ```
 
 ## Overfitting example
-
 
 ```{r}
 #| fig-height: 4
@@ -379,9 +377,6 @@ ggplot() +
 
 ```
 
-
-
-
 ## Approached to mitigage overfitting: cross-Validation
 
 -   Split data into $k$ folds (subsets)\
@@ -392,17 +387,14 @@ ggplot() +
  
 
 ::: fragment
-
 The key idea is that we put aside some data when training the model, and then use it for evaluate its performance
-
 :::
-
 
 ## 
 
 **Example code 1**: evaluating a linear model on a hold-out set
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=TRUE}
 # Suppose 'mydata' has columns: y, X1, X2
 mydata <- read.csv("mydata.csv")
 
@@ -425,7 +417,7 @@ mse <- mean((test_data$y - preds)^2)
 
 **Example code 2**: LOO cross-validation
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=TRUE}
 # Suppose 'mydata' has columns: y, X1, X2
 mydata <- read.csv("mydata.csv")
 
@@ -451,6 +443,14 @@ mse_loo <- mean((mydata$y - preds)^2)
 
 ```
 
+## "No Free Lunch Theorem" (Wolpert, 1996)
+
+-   No single model or approach is universally the best across all problems.  
+
+-   A method that performs well in one domain may fail in another.  
+
+-   Model selection depends on **problem-specific assumptions** and **data characteristics**. 
+
 
 ## Exercise
 
@@ -458,55 +458,76 @@ Load the `california_housing_train.csv` data from Moodle and find the best predi
 
  
 
+1. Aim to build a model that generalizes well to new data.
+
+2. Use any approach you find suitable—incorporate interactions, higher-order (polynomial) terms, and evaluate performance using hold-out samples.
+
+3. Once you've selected a model, assess its predictive performance on out-of-sample data.
+
+4. After these steps, I will release a test set on Moodle, allowing you to check your model’s true predictive performance on unseen data.
+
+
+## Data Dictionary for California Housing Dataset
+
 ::: {style="font-size: 60%;"}
 
-### Data Dictionary for California Housing Dataset
-
-| Variable  | Description |
-|-----------|------------|
-| medv      | Median value of owner-occupied homes (in $1000s) |
-| crim      | Per capita crime rate by town |
-| zn        | Proportion of residential land zoned for large lots |
-| indus     | Proportion of non-retail business acres per town |
-| chas      | Charles River dummy variable (1 if tract bounds river, 0 otherwise) |
-| nox       | Nitrogen oxide concentration (parts per 10 million) |
-| rm        | Average number of rooms per dwelling |
-| age       | Proportion of owner-occupied units built before 1940 |
-| dis       | Weighted distance to employment centers |
-| rad       | Index of accessibility to highways |
-| tax       | Property tax rate per $10,000 |
-| ptratio   | Pupil-teacher ratio by town |
-| lstat     | % lower status of the population |
+| Variable | Description                                                         |
+|-----------------------------------|--------------------------------------|
+| medv     | Median value of owner-occupied homes (in \$1000s)                   |
+| crim     | Per capita crime rate by town                                       |
+| zn       | Proportion of residential land zoned for large lots                 |
+| indus    | Proportion of non-retail business acres per town                    |
+| chas     | Charles River dummy variable (1 if tract bounds river, 0 otherwise) |
+| nox      | Nitrogen oxide concentration (parts per 10 million)                 |
+| rm       | Average number of rooms per dwelling                                |
+| age      | Proportion of owner-occupied units built before 1940                |
+| dis      | Weighted distance to employment centers                             |
+| rad      | Index of accessibility to highways                                  |
+| tax      | Property tax rate per \$10,000                                      |
+| ptratio  | Pupil-teacher ratio by town                                         |
+| lstat    | \% lower status of the population   
+| lon  | longitude                                        |
+| lat    | latitude   |
 
 :::
 
 
-<!-- ## Critical Thinking About Machine Learning -->
+# Common pitfalls
 
-<!-- **Algorithmic Bias** -->
+##
 
-<!-- -   Biased training data can lead to unfair or discriminatory predictions -->
-<!-- -   Must consider representation and fairness at each stage -->
+**Dataset bias** More data is not always better.
 
-<!-- **Transparency & Explainability** -->
+![](survey_bias.png){fig-align="center" width=90%}
 
-<!-- -   Black-box models (e.g., deep nets) can be hard to interpret -->
-<!-- -   Growing field of explainable AI (e.g., SHAP, LIME) to interpret predictions -->
 
-<!-- **Ethical & Social Considerations** -->
+## 
 
-<!-- -   Always consider impact on stakeholders and society -->
-<!-- -   Responsible data collection and model deployment -->
+**Leakage of information from test set to training set** ("feature hacking", "double-dipping")
 
-<!-- ## Summary & Next Steps -->
+::: fragment
 
-<!-- -   Machine Learning aims to learn patterns from data for prediction or discovery -->
-<!-- -   Supervised vs. Unsupervised: labeled vs. unlabeled data tasks -->
-<!-- -   Overfitting is a core challenge; cross-validation helps mitigate it -->
-<!-- -   Linear Regression serves as a foundational supervised method -->
-<!-- -   Ethical considerations are crucial for real-world applications -->
+![](ML_suicide_1.png){fig-align="center" width=90%}
 
-<!-- **Next Lecture** -->
+:::
 
-<!-- -   Deeper dive into Classification and other Supervised Learning methods -->
-<!-- -   Hands-on practice building models in R -->
+
+##
+
+Retraction
+
+![](ML_suicide_2.png){fig-align="center" width=60%}
+
+> _Using information from data in a validation set to determine the structure of a model leads to inflated estimates of performance. This can happen either by selecting the observations (for example, only including the subset of participants that maximize validation set performance) or features (for example, applying arbitrary transformations of variables based on validation set performance) based on information from what should be a protected part of the sample. Our re-analysis shows that the classification results reported by ref. 3 are probably inflated due to the presence of information leakage somewhere in the feature selection process._
+
+
+# Ethics of ML
+
+-   **Algorithmic Bias**.  ML models can reinforce or amplify existing biases in data, leading to unfair or discriminatory outcomes.
+
+-   **Transparency & interpretability**. Black-box models (e.g., deep neural; networks) can be hard to interpret. Would you trust an AI to make life-changing decisions (hiring, loans, medical diagnoses) if it can't explain why? 
+
+- **Accountability**. Who is responsible when ML systems make wrong decisions? (Companies? Developers? Users? Governments?). There is a need for clear regulations.
+
+
+

@@ -493,6 +493,11 @@ Matteo Lisi
 </section>
 <section id="section-2" class="slide level2">
 <h2></h2>
+<h4 id="non-parametric-supervised-learning-decision-trees">Non-parametric supervised learning: decision trees</h4>
+
+<img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-1-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="section-3" class="slide level2">
+<h2></h2>
 <h3 id="curse-of-dimensionality">Curse of dimensionality</h3>
 <p>&nbsp;</p>
 <div class="fragment" data-fragment-index="1">
@@ -510,7 +515,7 @@ Matteo Lisi
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-1-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
+<p><img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
 </figure>
 </div>
 </div>
@@ -551,7 +556,7 @@ Matteo Lisi
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center" width="384"></p>
+<p><img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" width="384"></p>
 </figure>
 </div>
 </div>
@@ -635,12 +640,12 @@ Matteo Lisi
 <span id="cb6-5"><a href=""></a><span class="fu">lines</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(m), test_error, <span class="at">type=</span><span class="st">"o"</span>, <span class="at">col=</span><span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="overfitting-example-6" class="slide level2">
 <h2>Overfitting example</h2>
 <p>The higher order polynomials are clearly too complex and overfit the data</p>
 
-<img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<img data-src="intro2ML_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="approached-to-mitigage-overfitting-cross-validation" class="slide level2">
 <h2>Approached to mitigage overfitting: cross-Validation</h2>
 <ul>
@@ -656,20 +661,78 @@ Matteo Lisi
 <p>The key idea is that we put aside some data when training the model, and then use it for evaluate its performance</p>
 </div>
 </section>
-<section id="section-3" class="slide level2">
-<h2></h2>
-<p><strong>Example code 1</strong>: evaluating a linear model on a hold-out set</p>
-</section>
 <section id="section-4" class="slide level2">
 <h2></h2>
+<p><strong>Example code 1</strong>: evaluating a linear model on a hold-out set</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="co"># Suppose 'mydata' has columns: y, X1, X2</span></span>
+<span id="cb7-2"><a href=""></a>mydata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"mydata.csv"</span>)</span>
+<span id="cb7-3"><a href=""></a></span>
+<span id="cb7-4"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># for reproducibility</span></span>
+<span id="cb7-5"><a href=""></a>train_index <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(mydata)), <span class="at">size =</span> <span class="fl">0.7</span><span class="sc">*</span><span class="fu">nrow</span>(mydata))</span>
+<span id="cb7-6"><a href=""></a>train_data <span class="ot">&lt;-</span> mydata[train_index, ]</span>
+<span id="cb7-7"><a href=""></a>test_data  <span class="ot">&lt;-</span> mydata[<span class="sc">-</span>train_index, ]</span>
+<span id="cb7-8"><a href=""></a></span>
+<span id="cb7-9"><a href=""></a><span class="co"># Fit model</span></span>
+<span id="cb7-10"><a href=""></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> X1 <span class="sc">+</span> X2, <span class="at">data =</span> train_data)</span>
+<span id="cb7-11"><a href=""></a></span>
+<span id="cb7-12"><a href=""></a><span class="co"># Predict on test data</span></span>
+<span id="cb7-13"><a href=""></a>preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> test_data)</span>
+<span id="cb7-14"><a href=""></a></span>
+<span id="cb7-15"><a href=""></a><span class="co"># Calculate Mean Squared Error</span></span>
+<span id="cb7-16"><a href=""></a>mse <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>y <span class="sc">-</span> preds)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-5" class="slide level2">
+<h2></h2>
 <p><strong>Example code 2</strong>: LOO cross-validation</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="co"># Suppose 'mydata' has columns: y, X1, X2</span></span>
+<span id="cb8-2"><a href=""></a>mydata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"mydata.csv"</span>)</span>
+<span id="cb8-3"><a href=""></a></span>
+<span id="cb8-4"><a href=""></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(mydata)  <span class="co"># Total number of observations</span></span>
+<span id="cb8-5"><a href=""></a>preds <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n)  <span class="co"># Placeholder for predictions</span></span>
+<span id="cb8-6"><a href=""></a></span>
+<span id="cb8-7"><a href=""></a><span class="co"># Leave-One-Out Cross-Validation</span></span>
+<span id="cb8-8"><a href=""></a></span>
+<span id="cb8-9"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb8-10"><a href=""></a>  <span class="co"># Define training and test sets</span></span>
+<span id="cb8-11"><a href=""></a>  train_data <span class="ot">&lt;-</span> mydata[<span class="sc">-</span>i, ]  <span class="co"># All except the i-th observation</span></span>
+<span id="cb8-12"><a href=""></a>  test_data  <span class="ot">&lt;-</span> mydata[i,  ]  <span class="co"># The i-th observation</span></span>
+<span id="cb8-13"><a href=""></a>  </span>
+<span id="cb8-14"><a href=""></a>  <span class="co"># Fit the model</span></span>
+<span id="cb8-15"><a href=""></a>  model <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> X1 <span class="sc">+</span> X2, <span class="at">data =</span> train_data)</span>
+<span id="cb8-16"><a href=""></a>  </span>
+<span id="cb8-17"><a href=""></a>  <span class="co"># Predict for the left-out observation</span></span>
+<span id="cb8-18"><a href=""></a>  preds[i] <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> test_data)</span>
+<span id="cb8-19"><a href=""></a>}</span>
+<span id="cb8-20"><a href=""></a></span>
+<span id="cb8-21"><a href=""></a><span class="co"># Compute overall Mean Squared Error</span></span>
+<span id="cb8-22"><a href=""></a>mse_loo <span class="ot">&lt;-</span> <span class="fu">mean</span>((mydata<span class="sc">$</span>y <span class="sc">-</span> preds)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="no-free-lunch-theorem-wolpert-1996" class="slide level2">
+<h2>“No Free Lunch Theorem” (Wolpert, 1996)</h2>
+<ul>
+<li class="fragment"><p>No single model or approach is universally the best across all problems.</p></li>
+<li class="fragment"><p>A method that performs well in one domain may fail in another.</p></li>
+<li class="fragment"><p>Model selection depends on <strong>problem-specific assumptions</strong> and <strong>data characteristics</strong>.</p></li>
+</ul>
 </section>
 <section id="exercise" class="slide level2">
 <h2>Exercise</h2>
 <p>Load the <code>california_housing_train.csv</code> data from Moodle and find the best predictive model to predict house value (<code>medv</code>).</p>
 <p>&nbsp;</p>
-<section id="data-dictionary-for-california-housing-dataset" style="font-size: 60%;">
-<h3>Data Dictionary for California Housing Dataset</h3>
+<ol type="1">
+<li class="fragment"><p>Aim to build a model that generalizes well to new data.</p></li>
+<li class="fragment"><p>Use any approach you find suitable—incorporate interactions, higher-order (polynomial) terms, and evaluate performance using hold-out samples.</p></li>
+<li class="fragment"><p>Once you’ve selected a model, assess its predictive performance on out-of-sample data.</p></li>
+<li class="fragment"><p>After these steps, I will release a test set on Moodle, allowing you to check your model’s true predictive performance on unseen data.</p></li>
+</ol>
+</section>
+<section id="data-dictionary-for-california-housing-dataset" class="slide level2">
+<h2>Data Dictionary for California Housing Dataset</h2>
+<div style="font-size: 60%;">
 <table class="caption-top">
 <colgroup>
 <col style="width: 47%">
@@ -734,34 +797,60 @@ Matteo Lisi
 <td>lstat</td>
 <td>% lower status of the population</td>
 </tr>
+<tr class="even">
+<td>lon</td>
+<td>longitude</td>
+</tr>
+<tr class="odd">
+<td>lat</td>
+<td>latitude</td>
+</tr>
 </tbody>
 </table>
+</div>
+</section></section>
+<section>
+<section id="common-pitfalls" class="title-slide slide level1 center">
+<h1>Common pitfalls</h1>
+
 </section>
-<!-- ## Critical Thinking About Machine Learning -->
-<!-- **Algorithmic Bias** -->
-<!-- -   Biased training data can lead to unfair or discriminatory predictions -->
-<!-- -   Must consider representation and fairness at each stage -->
-<!-- **Transparency & Explainability** -->
-<!-- -   Black-box models (e.g., deep nets) can be hard to interpret -->
-<!-- -   Growing field of explainable AI (e.g., SHAP, LIME) to interpret predictions -->
-<!-- **Ethical & Social Considerations** -->
-<!-- -   Always consider impact on stakeholders and society -->
-<!-- -   Responsible data collection and model deployment -->
-<!-- ## Summary & Next Steps -->
-<!-- -   Machine Learning aims to learn patterns from data for prediction or discovery -->
-<!-- -   Supervised vs. Unsupervised: labeled vs. unlabeled data tasks -->
-<!-- -   Overfitting is a core challenge; cross-validation helps mitigate it -->
-<!-- -   Linear Regression serves as a foundational supervised method -->
-<!-- -   Ethical considerations are crucial for real-world applications -->
-<!-- **Next Lecture** -->
-<!-- -   Deeper dive into Classification and other Supervised Learning methods -->
-<!-- -   Hands-on practice building models in R -->
+<section id="section-6" class="slide level2">
+<h2></h2>
+<p><strong>Dataset bias</strong> More data is not always better.</p>
+
+<img data-src="survey_bias.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"></section>
+<section id="section-7" class="slide level2">
+<h2></h2>
+<p><strong>Leakage of information from test set to training set</strong> (“feature hacking”, “double-dipping”)</p>
+<div class="fragment">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="ML_suicide_1.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="section-8" class="slide level2">
+<h2></h2>
+<p>Retraction</p>
+
+<img data-src="ML_suicide_2.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"><blockquote>
+<p><em>Using information from data in a validation set to determine the structure of a model leads to inflated estimates of performance. This can happen either by selecting the observations (for example, only including the subset of participants that maximize validation set performance) or features (for example, applying arbitrary transformations of variables based on validation set performance) based on information from what should be a protected part of the sample. Our re-analysis shows that the classification results reported by ref. 3 are probably inflated due to the presence of information leakage somewhere in the feature selection process.</em></p>
+</blockquote>
+</section></section>
+<section id="ethics-of-ml" class="title-slide slide level1 center">
+<h1>Ethics of ML</h1>
+<ul>
+<li class="fragment"><p><strong>Algorithmic Bias</strong>. ML models can reinforce or amplify existing biases in data, leading to unfair or discriminatory outcomes.</p></li>
+<li class="fragment"><p><strong>Transparency &amp; interpretability</strong>. Black-box models (e.g., deep neural; networks) can be hard to interpret. Would you trust an AI to make life-changing decisions (hiring, loans, medical diagnoses) if it can’t explain why?</p></li>
+<li class="fragment"><p><strong>Accountability</strong>. Who is responsible when ML systems make wrong decisions? (Companies? Developers? Users? Governments?). There is a need for clear regulations.</p></li>
+</ul>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
