@@ -77,11 +77,17 @@ editor: visual
 ## Linear regression as a supervised ML algorithm
 
 ::: fragment
-Model: $$y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k + \underbrace{\epsilon}_{\text{residual}\\ \text{error}}$$
+Model: $$\hat y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k$$
 :::
 
 ::: fragment
-The loss function is the mean squared error: $$\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 $$
+Residuals errors: $$\epsilon_i = y_i - \hat y_i$$
+
+:::
+
+
+::: fragment
+The _loss_ function is the mean squared error: $$\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 $$
 :::
 
 # Machine-learning concepts

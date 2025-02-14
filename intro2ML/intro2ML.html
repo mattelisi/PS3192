@@ -471,10 +471,13 @@ Matteo Lisi
 <section id="linear-regression-as-a-supervised-ml-algorithm" class="slide level2">
 <h2>Linear regression as a supervised ML algorithm</h2>
 <div class="fragment">
-<p>Model: <span class="math display">\[y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k + \underbrace{\epsilon}_{\text{residual}\\ \text{error}}\]</span></p>
+<p>Model: <span class="math display">\[\hat y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k\]</span></p>
 </div>
 <div class="fragment">
-<p>The loss function is the mean squared error: <span class="math display">\[\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 \]</span></p>
+<p>Residuals errors: <span class="math display">\[\epsilon_i = y_i - \hat y_i\]</span></p>
+</div>
+<div class="fragment">
+<p>The <em>loss</em> function is the mean squared error: <span class="math display">\[\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 \]</span></p>
 </div>
 </section></section>
 <section>
