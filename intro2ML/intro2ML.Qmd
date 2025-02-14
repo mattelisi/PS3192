@@ -81,7 +81,7 @@ Model: $$y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k + \underbrace{\epsilon
 :::
 
 ::: fragment
-Quadratic loss function (the sum of squared residual errors sacross all observations): $$L = \sum_i \epsilon_i^2 $$
+The loss function is the mean squared error: $$\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 $$
 :::
 
 # Machine-learning concepts
