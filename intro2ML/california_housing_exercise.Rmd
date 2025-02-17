@@ -39,7 +39,7 @@ for(i in 1:length(var_list)){
   # loop over combinations and create formulas
   for(j in 1:num_combinations){
     formula <- paste(dependent_var, "~", 
-                     paste(combinations[,j], collapse="+"))
+                     paste(combinations[,j], collapse = " + "))
     
     all_formulas <- c(all_formulas, formula)
   }
@@ -237,9 +237,20 @@ with(results, plot(MSE, test_MSE, pch=21, cex=0.2, col=rgb(0.4,0.4,0.4,0.5),
                    xlab="MSE train set (cross-validated)",
                    ylab="MSE test set"))
 
-points(results$MSE[results$MSE==min(results$MSE)], test_mse, pch=19, col="blue")
 
-legend('topleft', col="blue", pch=19, legend="selected by LOO-cross validation", bty="n")
+full_index <- which(nchar(results$formula)==max(nchar(results$formula)))
+crossval_index <- which(results$MSE==min(results$MSE))
+testset_index <- which(results$test_MSE==min(results$test_MSE))
+
+points(results$MSE[crossval_index], results$test_MSE[crossval_index], pch=19, col="blue")
+# points(results$MSE[full_index], results$test_MSE[full_index], pch=19, col="red")
+
+# results$formula[full_index]
+# results$formula[crossval_index]
+# results$formula[testset_index]
+
+# legend('topleft', col=c("blue","red"), pch=19, legend=c("selected by LOO cross-validation", "model with all 14 variables"), bty="n")
+legend('topleft', col=c("blue"), pch=19, legend=c("selected by LOO cross-validation"), bty="n")
 
 abline(a=0, b=1, lty=2)
 

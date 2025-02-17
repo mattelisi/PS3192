@@ -11,71 +11,66 @@ editor: visual
 
 ## Classification in Supervised Learning
 
----
+------------------------------------------------------------------------
 
 ## Overview
 
-- **Classification problems** in supervised learning
-- Introduction to two key algorithms:
-  1. **Logistic Regression** (already covered previously)
-  2. **Decision Trees** (focus of this session)
-- **Implementing** classification algorithms with R (e.g., `rpart` for decision trees)
-- **Evaluating** classification models and preventing **overfitting**
+-   **Classification problems** in supervised learning
+-   Introduction to two key algorithms:
+    1.  **Logistic Regression** (already covered previously)
+    2.  **Decision Trees** (focus of this session)
+-   **Implementing** classification algorithms with R (e.g., `rpart` for decision trees)
+-   **Evaluating** classification models and preventing **overfitting**
 
----
+------------------------------------------------------------------------
 
 ## Learning Outcomes
 
-- **Implement** logistic regression and decision tree algorithms in R
-- **Evaluate** model performance using appropriate metrics (accuracy, precision, recall, etc.)
-- **Recognize** common pitfalls (e.g., overfitting) and learn how to mitigate them
+-   **Implement** logistic regression and decision tree algorithms in R
+-   **Evaluate** model performance using appropriate metrics (accuracy, precision, recall, etc.)
+-   **Recognize** common pitfalls (e.g., overfitting) and learn how to mitigate them
 
----
+------------------------------------------------------------------------
 
 ## Decision Trees: The Big Picture
 
-1. **Basic Idea**  
-   - A decision tree splits data into subsets based on feature values  
-   - Each split aims to **homogeneously group** instances of the same class
+1.  **Basic Idea**
+    -   A decision tree splits data into subsets based on feature values\
+    -   Each split aims to **homogeneously group** instances of the same class
+2.  **Why Use Trees?**
+    -   **Interpretability**: The rules are easy to visualize\
+    -   **Nonlinear Boundaries**: Trees naturally model complex relationships\
+    -   **Feature Selection** is implicitly performed (splits on most important features first)
 
-2. **Why Use Trees?**  
-   - **Interpretability**: The rules are easy to visualize  
-   - **Nonlinear Boundaries**: Trees naturally model complex relationships  
-   - **Feature Selection** is implicitly performed (splits on most important features first)
-
----
+------------------------------------------------------------------------
 
 ## Decision Trees: A Bit of Math
 
 A simple conceptual view (for classification):
 
-- Start with a dataset $D$ having features $X$ and class labels $y$
-- Choose a feature (say $X_j$) and a **threshold** $t$ that best **splits** the data into two subsets:
-  1. $\{ x \in D : x_j \le t \}$
-  2. $\{ x \in D : x_j > t \}$
+-   Start with a dataset $D$ having features $X$ and class labels $y$
+-   Choose a feature (say $X_j$) and a **threshold** $t$ that best **splits** the data into two subsets:
+    1.  $\{ x \in D : x_j \le t \}$
+    2.  $\{ x \in D : x_j > t \}$
+-   **Best split** is typically the one that **minimizes impurity** in child nodes.
+    -   Common impurity measure: **Gini index**: $G = 1 - \sum_{k=1}^K p_k^2$
+    -   Here, $p_k$ is the proportion of class $k$ instances in a node.
+-   **Repeat** recursively until some stopping criterion (e.g., max depth, minimum samples per leaf) is met.
 
-- **Best split** is typically the one that **minimizes impurity** in child nodes.  
-  - Common impurity measure: **Gini index**: $G = 1 - \sum_{k=1}^K p_k^2$
-  - Here, $p_k$ is the proportion of class $k$ instances in a node.
-
-- **Repeat** recursively until some stopping criterion (e.g., max depth, minimum samples per leaf) is met.
-
----
+------------------------------------------------------------------------
 
 ## Preventing Overfitting in Decision Trees
 
-- **Pruning**:  
-  - After fully growing a tree, remove leaf nodes that add little predictive value.  
-  - Balances model complexity and generalizability.
+-   **Pruning**:
+    -   After fully growing a tree, remove leaf nodes that add little predictive value.\
+    -   Balances model complexity and generalizability.
+-   **Min Samples / Max Depth**:
+    -   Restrict how deep the tree grows or how few instances are allowed in a leaf.\
+    -   Avoids overly complex trees.
+-   **Cross-Validation**:
+    -   Evaluate tree performance on multiple folds of data to ensure robust estimates and parameter tuning.
 
-- **Min Samples / Max Depth**:  
-  - Restrict how deep the tree grows or how few instances are allowed in a leaf.  
-  - Avoids overly complex trees.
-
-- **Cross-Validation**:  
-  - Evaluate tree performance on multiple folds of data to ensure robust estimates and parameter tuning.
-
----
+------------------------------------------------------------------------
 
 ## Implementing Decision Trees in R
 

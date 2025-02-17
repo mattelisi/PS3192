@@ -1,0 +1,362 @@
+---
+title: "PS3192: Classification"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    incremental: true
+    auto-stretch: true
+    theme: [default, matteo_rhul.css]
+editor: visual
+---
+
+```{r, echo = FALSE}
+library(rpart)
+library(palmerpenguins)
+library(ggplot2)
+library(partykit)
+library(dplyr)
+```
+
+
+# Supervised learning & classification
+
+------------------------------------------------------------------------
+
+## Supervised learning
+
+Learn from examples in order to make predictions that generalise to new data.
+
+ 
+
+::: fragment
+**Supervised Learning**\
+- We have a *training* dataset containing some with input features (predictors) $X$ and target labels/outcomes $y$\
+- The algorithm learns a function $f(X)$ that predicts $y$ accurately\
+- Learning is achieved by minimising a *cost* or *loss* function (i.e. an error metric that tells us how bad the predictions are compared to the observed $y$)\
+:::
+
+------------------------------------------------------------------------
+
+## Linear regression as a supervised ML algorithm
+
+::: fragment
+Model: $$\hat y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k$$
+:::
+
+::: fragment
+Residuals errors: $$\epsilon_i = y_i - \hat y_i$$
+:::
+
+::: fragment
+The *loss* function is the mean squared error: $$\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 $$
+:::
+
+------------------------------------------------------------------------
+
+## Woes of supervised learning
+
+- **Overfitting**: when the model learns aspects of the training data that are just "noise" and fail to predict well new data. 
+    - It can be due to having a model that is too complex (too many free parameter).
+    - Methods like cross-validation, information criteria (e.g. AIC), and splitting in training/test sets, help reducing the chance of overfitting.
+    - If we care about estimating the predictive performance of our model, we need to be careful about leakage of information from test data.
+
+
+- **Dataset bias**: when the training data is incomplete or systematically different from the broader set of future data that we would like to predict.
+
+## California Housing Dataset 
+
+::: {style="font-size: 60%;"}
+| Variable | Description |
+|----------------------------------|-------------------------------------|
+| medv | Median value of owner-occupied homes (in \$1000s) |
+| crim | Per capita crime rate by town |
+| zn | Proportion of residential land zoned for large lots |
+| indus | Proportion of non-retail business acres per town |
+| chas | Charles River dummy variable (1 if tract bounds river, 0 otherwise) |
+| nox | Nitrogen oxide concentration (parts per 10 million) |
+| rm | Average number of rooms per dwelling |
+| age | Proportion of owner-occupied units built before 1940 |
+| dis | Weighted distance to employment centers |
+| rad | Index of accessibility to highways |
+| tax | Property tax rate per \$10,000 |
+| ptratio | Pupil-teacher ratio by town |
+| lstat | \% lower status of the population |
+| lon | longitude |
+| lat | latitude |
+:::
+
+------------------------------------------------------------------------
+
+## California Housing Dataset 
+
+- 14 possible predictor variables
+- Which subset of variable is the most useful for predicting the house value?
+- With 14 variables we have $2^{14}-1=16383$ possible subsets.
+
+------------------------------------------------------------------------
+
+##
+
+```{r, echo=FALSE, fig.height=5.7, fig.width=5, fig.align='center', fig.cap="Each grey dot  is a distinct model (16383 in total), characterised by a different combinations of predictors. On the horizontla axis is the cross-validated mean squared error (MSE) in the training data, whereas on the vertical axis is the MSE on the test data. The blue dot indicates the best model according to the LOO cross-validation procedure run on the training data."}
+
+results <- readRDS("../intro2ML/cali_results.RDS")
+
+with(results, plot(MSE, test_MSE, pch=21, cex=0.2, col=rgb(0.4,0.4,0.4,0.5), 
+                   xlim=c(10, 90), 
+                   ylim=c(10, 90),
+                   xlab="MSE train set (cross-validated)",
+                   ylab="MSE test set"))
+
+
+full_index <- which(nchar(results$formula)==max(nchar(results$formula)))
+crossval_index <- which(results$MSE==min(results$MSE))
+testset_index <- which(results$test_MSE==min(results$test_MSE))
+
+points(results$MSE[crossval_index], results$test_MSE[crossval_index], pch=19, col="blue")
+# points(results$MSE[full_index], results$test_MSE[full_index], pch=19, col="red")
+
+# results$formula[full_index]
+# results$formula[crossval_index]
+# results$formula[testset_index]
+
+# legend('topleft', col=c("blue","red"), pch=19, legend=c("selected by LOO cross-validation", "model with all 14 variables"), bty="n")
+legend('topleft', col=c("blue"), pch=19, legend=c("selected by LOO cross-validation"), bty="n")
+
+abline(a=0, b=1, lty=2)
+
+# library(tidyverse)
+# 
+# # Add a new column indicating whether the formula contains "rm"
+# results <- results %>%
+#   mutate(contains_rm = str_detect(formula, "\\brm\\b"))
+# 
+# # Scatterplot of test_MSE vs. MSE, colored by presence of "rm"
+# ggplot(results, aes(x = MSE, y = test_MSE, color = contains_rm)) +
+#   geom_point(alpha = 0.6) +
+#   labs(
+#     title = "Test MSE vs MSE",
+#     x = "MSE",
+#     y = "Test MSE",
+#     color = "Contains 'rm'"
+#   ) +
+#   theme_minimal()
+
+```
+
+------------------------------------------------------------------------
+
+## California Housing Dataset 
+
+::: nonincremental
+- 14 possible predictor variables
+- Which subset of variable is the most useful for predicting the house value?
+- With 14 variables we have $2^{14}-1=16383$ possible models (each a different subset of predictors).
+:::
+- Other methods are available for addressing the problem of selecting variables in regression (e.g. LASSO regression).
+
+------------------------------------------------------------------------
+
+# Classification
+
+## Classification
+
+- Linear regression require a continuous outcome variables; however in many real world problems our target variables is a categorical label.
+
+- If the label can only take one of two values (like a coin flip) then we can model our data using logistic regression (discussed in PS3193).
+
+- Dataset with >2 labels requires different approaches.
+
+------------------------------------------------------------------------
+
+## Decision trees
+
+```{r}
+#| fig-height: 4
+#| fig-width: 10  # Half the slider width when default slide width is 4
+#| fig-align: center
+
+# intro to ML notes
+library(rpart)
+library(palmerpenguins)
+library(partykit)
+
+# tree example
+
+p_m <- rpart(species~ ., data = penguins)
+
+# # Prettier plot
+# rpart.plot(
+#   p_m, 
+#   type = 2,         # Split labels are drawn at the decision nodes
+#   #extra = 104,      # Show predicted class and probability percentages
+#   box.palette = "RdYlGn",  # Color nodes by prediction (red → yellow → green)
+#   fallen.leaves = TRUE,    # Arrange terminal nodes at the same level
+#   tweak = 1,     # Slightly increase text size for readability
+#   shadow.col = "gray",  # Add shadows to the boxes
+#   branch = 0.6    # Make branches less steep
+# )
+
+p_m2 <- as.party(p_m)
+plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALSE, rot=0),
+     inner_panel = node_inner(p_m2, id = FALSE, pval = FALSE),
+     gp=gpar(fontsize=8,
+             height = 21))
+     
+
+```
+
+## Decision trees: basic ideas
+
+- Decision trees _split_ the data multiple times according to certain cutoff values in the features/predictors.
+
+- Subsequent splits create a partition of the data into a set of distinct, non-overlapping regions, each aiming to contains instances of the same class.
+
+
+##  {.smaller .scrollable transition="slide"}
+
+```{r}
+#| fig-height: 4
+#| fig-width: 10  # Half the slider width when default slide width is 4
+#| fig-align: center
+
+
+p_m2 <- as.party(p_m)
+plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALSE, rot=0),
+     inner_panel = node_inner(p_m2, id = FALSE, pval = FALSE),
+     gp=gpar(fontsize=8,
+             height = 21))
+     
+
+```
+
+
+##  {.smaller .scrollable transition="slide"}
+
+```{r}
+#| fig-height: 6
+#| fig-width: 7
+#| fig-align: center
+
+# Remove missing values
+penguins <- na.omit(penguins)
+
+# Fit a simple decision tree (pruned for clarity)
+p_m <- rpart(species ~ flipper_length_mm + bill_length_mm, data = penguins, method = "class")
+
+# Convert to party object for better visualization
+p_m2 <- as.party(p_m)
+
+# Create a grid of values for flipper length and bill length
+flipper_seq <- seq(min(penguins$flipper_length_mm)-10, max(penguins$flipper_length_mm)+10, length.out = 200)
+bill_seq <- seq(min(penguins$bill_length_mm)-5, max(penguins$bill_length_mm)+5, length.out = 200)
+
+grid <- expand.grid(
+  flipper_length_mm = flipper_seq,
+  bill_length_mm = bill_seq
+)
+
+# Predict species for each grid point
+grid$species <- predict(p_m, newdata = grid, type = "class")
+
+# Plot the decision boundaries
+ggplot() +
+  geom_tile(data = grid, aes(x = flipper_length_mm, y = bill_length_mm, fill = species), alpha = 0.8) +
+  geom_point(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species), pch=21, size = 2) +
+  labs(
+    x = "Flipper length (mm)",
+    y = "Bill length (mm)",
+    title = "Decision boundaries"
+  ) +
+  scale_fill_manual(values = c("Adelie" = "lightblue", "Chinstrap" = "lightgreen", "Gentoo" = "lightpink")) +
+  scale_color_manual(values = c("Adelie" = "blue", "Chinstrap" = "dark green", "Gentoo" = "red")) +
+  theme_minimal()+
+  coord_cartesian(xlim=range(penguins$flipper_length_mm),ylim=range(penguins$bill_length_mm))
+
+```
+
+## {.smaller .scrollable transition="slide"}
+
+
+```{r}
+#| fig-height: 5
+#| fig-width: 10
+#| fig-align: center
+
+# Remove missing values
+penguins <- na.omit(penguins)
+
+# Fit a simple decision tree including island
+p_m <- rpart(species ~ flipper_length_mm + bill_length_mm + island, data = penguins, method = "class")
+
+# Convert to party object (optional, useful for tree visualization)
+p_m2 <- as.party(p_m)
+
+# Create a grid of values for flipper length, bill length, and include island
+flipper_seq <- seq(min(penguins$flipper_length_mm)-10, max(penguins$flipper_length_mm)+10, length.out = 300)
+bill_seq <- seq(min(penguins$bill_length_mm)-5, max(penguins$bill_length_mm)+5, length.out = 300)
+
+# Expand grid for each island
+grid <- expand.grid(
+  flipper_length_mm = flipper_seq,
+  bill_length_mm = bill_seq,
+  island = unique(penguins$island) # Include all island values
+)
+
+# Predict species for each grid point
+grid$species <- predict(p_m, newdata = grid, type = "class")
+
+grid$island2 <- ifelse(grid$island=="Biscoe", "Biscoe", "Dream OR Torgersen")
+penguins$island2 <- ifelse(penguins$island=="Biscoe","Biscoe", "Dream OR Torgersen")
+
+# Plot decision boundaries with facets for each island
+ggplot() +
+  geom_tile(data = grid, aes(x = flipper_length_mm, y = bill_length_mm, fill = species), alpha = 0.8) +
+  geom_point(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species), pch=21, size = 2) +
+  facet_wrap(~island2) +  # Separate plot for each island
+  labs(
+    x = "Flipper Length (mm)",
+    y = "Bill Length (mm)",
+    title = "Decision boundaries (split by island)"
+  ) +
+  scale_fill_manual(values = c("Adelie" = "lightblue", "Chinstrap" = "lightgreen", "Gentoo" = "lightpink")) +
+  scale_color_manual(values = c("Adelie" = "blue", "Chinstrap" = "dark green", "Gentoo" = "red")) +
+  theme_minimal()+
+  coord_cartesian(xlim=range(penguins$flipper_length_mm),ylim=range(penguins$bill_length_mm))
+
+```
+
+## Decision trees: advantages
+
+- **Interpretability**: the rules are easy to visualize and understand
+- **Flexibility**: trees can handle a large number of data modelling situations, not limited to classification; they can also be used for regression (are also known as classification and regression trees, or CART).
+- **Nonlinear Boundaries**: trees naturally model complex relationships
+
+<!-- ------------------------------------------------------------------------ -->
+
+<!-- ## Decision Trees: A Bit of Math -->
+
+<!-- A simple conceptual view (for classification): -->
+
+<!-- -   Start with a dataset $D$ having features $X$ and class labels $y$ -->
+<!-- -   Choose a feature (say $X_j$) and a **threshold** $t$ that best **splits** the data into two subsets: -->
+<!--     1.  $\{ x \in D : x_j \le t \}$ -->
+<!--     2.  $\{ x \in D : x_j > t \}$ -->
+<!-- -   **Best split** is typically the one that **minimizes impurity** in child nodes. -->
+<!--     -   Common impurity measure: **Gini index**: $G = 1 - \sum_{k=1}^K p_k^2$ -->
+<!--     -   Here, $p_k$ is the proportion of class $k$ instances in a node. -->
+<!-- -   **Repeat** recursively until some stopping criterion (e.g., max depth, minimum samples per leaf) is met. -->
+
+<!-- ------------------------------------------------------------------------ -->
+
+<!-- ## Preventing Overfitting in Decision Trees -->
+
+<!-- -   **Pruning**: -->
+<!--     -   After fully growing a tree, remove leaf nodes that add little predictive value.\ -->
+<!--     -   Balances model complexity and generalizability. -->
+<!-- -   **Min Samples / Max Depth**: -->
+<!--     -   Restrict how deep the tree grows or how few instances are allowed in a leaf.\ -->
+<!--     -   Avoids overly complex trees. -->
+<!-- -   **Cross-Validation**: -->
+<!--     -   Evaluate tree performance on multiple folds of data to ensure robust estimates and parameter tuning. -->
+
+
