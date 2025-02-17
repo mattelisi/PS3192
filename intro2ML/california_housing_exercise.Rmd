@@ -1,0 +1,252 @@
+---
+title: "Analysis of `california_housing` dataset"
+author: "Matteo Lisi"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+
+Load the training data into R
+
+```{r}
+d_train <- read.csv("california_housing_train.csv")
+str(d_train)
+```
+
+
+## Model specification
+
+Rather than committing to a single model here I want to consider all possible models, that is including all possible subsets and combinations of the variables. I can do this automatically in R as follow:
+
+```{r}
+
+var_list <- colnames(d_train[,-which(colnames(d_train)=="medv")])
+dependent_var <- "medv"
+
+# empty list to hold all formulae
+all_formulas <- list()
+
+# generate combinations of variables
+for(i in 1:length(var_list)){
+  combinations <- combn(var_list, i)
+  num_combinations <- ncol(combinations)
+  
+  # loop over combinations and create formulas
+  for(j in 1:num_combinations){
+    formula <- paste(dependent_var, "~", 
+                     paste(combinations[,j], collapse="+"))
+    
+    all_formulas <- c(all_formulas, formula)
+  }
+}
+
+```
+
+
+This creates `r length(all_formulas)` possible models
+
+```{r}
+length(all_formulas)
+```
+
+As an example, here are 5 randomly selected formulas out of all possible ones:
+
+```{r}
+all_formulas[sample(length(all_formulas), 5)]
+```
+
+## Model evaluation and selection via cross-validation
+
+### Custom function for LOO cross-validation
+
+First I prepare a custom function that takes the dataset and a formula as input, run a leave-one-out cross-validation. The function return the cross-validated estimates of the mean squared error and the $R^2$, that is the proportion of variance explained.
+
+```{r}
+loocrossval <- function(mydata, formula){
+  n <- nrow(mydata)  # Total number of observations
+  preds <- numeric(n)  # Placeholder for predictions
+  
+  # Extract the outcome name from the formula
+  outcome_var <- all.vars(as.formula(formula))[1]
+  
+  # Leave-One-Out Cross-Validation
+  for (i in 1:n) {
+    
+    # Define training and test sets
+    train_data <- mydata[-i, ]  # All except the i-th observation
+    test_data  <- mydata[i,  ]  # The i-th observation
+    
+    # Fit the model
+    model <- lm(formula, data = train_data)
+    
+    # Predict for the left-out observation
+    preds[i] <- predict(model, newdata = test_data)
+  }
+  
+  # Compute Mean Squared Error
+  mse_loo <- mean((mydata[[outcome_var]] - preds)^2)
+  rsquared_loo <- 1 - (mse_loo/mean((mydata[[outcome_var]] - mean(mydata[[outcome_var]]))^2))
+  
+  # return results as named vector
+  res <- c(mse_loo, rsquared_loo)
+  names(res) <- c("MSE","r-squared")
+  
+  # result
+  return(res)
+}
+
+```
+
+### Test all models
+
+Now I can fit all the `r length(all_formulas)` possible models using a loop, and estimate their out-of-sample predictive performance using LOO cross-validation (the formula that we have defined above).
+
+**Warning: this may take a long time to complete!**
+
+```{r, eval=FALSE}
+
+m <- list() # an empty list
+results <- data.frame()
+
+# warning: this step may take some time to complete!
+for (i in 1:length(all_formulas)) {
+  m[[i]] <- lm(all_formulas[[i]], data = d_train)
+  
+  crossval_res <- loocrossval(d_train, all_formulas[[i]])
+  
+  # print some output to show progress
+  cat("model ",i, "out of ", length(all_formulas), "completed:\n")
+  print(crossval_res)
+  cat("\n\n")
+  
+  results <- rbind(results, 
+                   data.frame(MSE= crossval_res["MSE"],
+                            r_squared = crossval_res["r-squared"],
+                            formula = all_formulas[[i]]))
+}
+
+```
+
+```{r, echo=FALSE}
+
+results <- readRDS("cali_results.RDS")
+results <- results[,c("MSE","r_squared","formula")]
+
+```
+
+The results will look like this (using the `head()` function to display the first few rows)
+
+```{r}
+head(results)
+
+```
+
+
+### Find best model
+
+The best model is the one that achieve the smallest MSE error in the LOO cross-validation. WE can find it by indexing the MSE column in the results
+
+```{r}
+best_formula <- results$formula[results$MSE==min(results$MSE)]
+print(best_formula)
+```
+
+In terms of performance, the best model has the following cross-validated MSE error and r-squared:
+
+```{r}
+# LOO MSE error of best model
+results$MSE[results$MSE==min(results$MSE)]
+
+# LOO r-squared of best model
+results$r_squared[results$MSE==min(results$MSE)]
+```
+
+The cross-validation tells us that this model is likely to generalise well to new, unseen data. 
+
+**However because we have used the cross-validation to select the model feature  we should not take the MSE and r-squared at face value, as they are likely to overestimate the true predictive performance of the model. Since the same data was used for both feature selection and evaluation, these performance metrics do not provide a truly unbiased estimate of the model’s ability to generalize to new data.**
+
+**In the study on suicidal ideation (see Moodle) the authors made a similar mistake, and claimed to have over 90% accuracy in discriminating suicidal ideators from control. This estimate was inflated, which led to the retraction of the study.**
+
+## Out-of-sample test
+
+When we test our best model in the real test set, we see that the performance is less impressive. Firstly, load the test set
+
+```{r}
+# load test set
+d_test <- read.csv("california_housing_test.csv")
+
+```
+
+Next, let's estimate the parameters of the best model --- _importantly this need to be done using the training data!_
+
+```{r}
+# estimate the model parameters using training set data
+best_model <- lm(best_formula, data = d_train)
+
+```
+
+Compute the predicted values:
+
+```{r}
+# Predict values of test data
+preds <- predict(best_model, newdata = d_test)
+
+```
+
+Calculate performance in test set:
+
+```{r}
+test_mse <- mean((d_test$medv - preds)^2)
+test_rsquared <- 1 - (test_mse/mean((d_test$medv- mean(d_test$medv))^2))
+```
+
+We can see that the MSE is larger (the MSE cross-validated in the training set was `r round(results$MSE[results$MSE==min(results$MSE)],digits=2)`), indicating larger errors:
+
+```{r}
+test_mse
+```
+
+And the r-squared (proportion of variance explained) is lower (the r-squared cross-validated in the training set was `r round(results$r_squared[results$MSE==min(results$MSE)],digits=2)`)
+
+```{r}
+test_rsquared
+```
+
+
+## Take-home
+
+- Approaches like cross-validation allows us to estimate how a model may perform on new, unseen data.
+
+-  If cross-validation is used not only for model evaluation but also for feature selection, the reported performance will be optimistic. Since the same data is used for selecting variables and evaluating the model, we lack an unbiased estimate of its true generalization ability. This is evident from the test set results, where the proportion of explained variance drops from ~85% to ~53%.
+
+- Choosing the best model via cross-validation is a reasonable approach, but it does not guarantee that the selected model is truly the best. In our case, evaluating all possible models on the test set shows that the one chosen via LOO cross-validation is not the best-performing model on the test set (marked by the red dot in the figure below).
+
+
+```{r, echo=FALSE, fig.height=5.7, fig.width=5, fig.align='center', fig.cap="Each grey dot  is a distinct model (16383 in total), characterised by a different combinations of predictors. On the horizontla axis is the cross-validated mean squared error (MSE) in the training data, whereas on the vertical axis is the MSE on the test data. The blue dot indicates the best model according to the LOO cross-validation procedure run on the training data."}
+
+results <- readRDS("cali_results.RDS")
+
+with(results, plot(MSE, test_MSE, pch=21, cex=0.2, col=rgb(0.4,0.4,0.4,0.5), 
+                   xlim=c(10, 90), 
+                   ylim=c(10, 90),
+                   xlab="MSE train set (cross-validated)",
+                   ylab="MSE test set"))
+
+points(results$MSE[results$MSE==min(results$MSE)], test_mse, pch=19, col="blue")
+
+legend('topleft', col="blue", pch=19, legend="selected by LOO-cross validation", bty="n")
+
+abline(a=0, b=1, lty=2)
+
+```
+
+
+
+
+
+
