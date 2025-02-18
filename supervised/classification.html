@@ -620,32 +620,34 @@ Matteo Lisi
 <img data-src="classification_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="growing-a-decision-tree" class="slide level2 scrollable">
 <h2>Growing a decision tree</h2>
-<p>How do we choose the split?</p>
-<ul>
-<li class="fragment">The most popular approach is <strong>recursive binary splitting</strong>, a <em>top-down, greedy</em> algorithm:
+<p>How do we choose the split? The most popular approach is <strong>recursive binary splitting</strong>, a <em>top-down, greedy</em> algorithm:</p>
+<div style="font-size: 80%;">
 <ul>
 <li class="fragment"><em>top-down</em> because it starts at the top of the tree</li>
 <li class="fragment"><em>greedy</em> because it works by optimising the splits <em>locally</em>, at each node sequentially, rather than all the splits at once.</li>
-</ul></li>
-<li class="fragment">Start with a dataset having features <span class="math inline">\(X\)</span> and class labels <span class="math inline">\(y = \left\{ 1, \ldots, k\right\}\)</span></li>
-<li class="fragment">Choose a feature (say <span class="math inline">\(X_j\)</span>) and a <strong>threshold</strong> <span class="math inline">\(t\)</span> that best <strong>splits</strong> the data into two subsets:
+</ul>
+</div>
 <ol type="1">
-<li class="fragment"><span class="math inline">\(\{ x \in D : x_j \le t \}\)</span></li>
-<li class="fragment"><span class="math inline">\(\{ x \in D : x_j &gt; t \}\)</span></li>
-</ol></li>
-<li class="fragment"><strong>Best split</strong> is the one that minimizes an <strong>impurity measure</strong> in child nodes.
+<li class="fragment">Start with a dataset having features <span class="math inline">\(X\)</span> and class labels <span class="math inline">\(y = \left\{ 1, \ldots, k\right\}\)</span></li>
+<li class="fragment">Choose a feature (say <span class="math inline">\(X_j\)</span>) and a <strong>threshold</strong> <span class="math inline">\(t\)</span> that best <strong>splits</strong> the data into two subsets, depending on whether <span class="math inline">\(\{x_j \le t \}\)</span> or <span class="math inline">\(\{x_j &gt; t \}\)</span>.<br>
+The <strong>best split</strong> is the one that minimizes an <strong>impurity measure</strong> in child nodes.</li>
+</ol>
+<div style="font-size: 80%;">
 <ul>
 <li class="fragment">Common impurity measure: <strong>Gini index</strong>: <span class="math inline">\(G = 1 - \sum_{k=1}^K p_k^2\)</span></li>
 <li class="fragment">Here, <span class="math inline">\(p_k\)</span> is the proportion of class <span class="math inline">\(k\)</span> instances in a node.</li>
-</ul></li>
-<li class="fragment"><strong>Repeat</strong> recursively (by splitting one of the previously identified nodes) until some stopping criterion (e.g., max depth, n.&nbsp;of datapoints per leaf) is met.</li>
+<li class="fragment">Gini index is small if all values are close to 0 or 1.</li>
 </ul>
+</div>
+<ol start="3" type="1">
+<li class="fragment"><strong>Repeat</strong> recursively (by splitting one of the previously identified nodes) until some stopping criterion (e.g., max depth, n.&nbsp;of datapoints per leaf) is met.</li>
+</ol>
 </section>
 <section id="pruning-the-tree" class="slide level2">
 <h2>Pruning the tree</h2>
 <ul>
 <li class="fragment"><p><strong>The tree-growing algorithm is likely to <em>overfit</em> the training data</strong>, producing too complex trees that may not generalise well to new data.</p></li>
-<li class="fragment"><p>One could grow the tree only as long as the decrease in the impurity measure due to each split exceeds a relatively high threshold, however this is too short-sighted — a seemingly worthless split early on in the tree might be followed by a very good split.</p></li>
+<li class="fragment"><p>One could grow the tree only as long as the decrease in the impurity measure due to each split exceeds a relatively high threshold.&nbsp; However this is too short-sighted — a seemingly worthless split early on in the tree might be followed by a very good split.</p></li>
 <li class="fragment"><p>A better strategy is to <strong>grow a large tree, and then <em>prune</em> it back to a smaller <em>sub</em>-tree</strong>, by removing leaf nodes that add little predictive value.</p></li>
 </ul>
 <p>&nbsp;</p>
@@ -659,7 +661,17 @@ Matteo Lisi
 </section>
 <section id="section-3" class="slide level2">
 <h2></h2>
-<h3 id="growing-and-pruining-a-tree-in-r-rpart-package">Growing and pruining a tree in R (<code>rpart</code> package)</h3>
+<p><em>Unpruned</em> tree for <code>penguins</code> data</p>
+
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1248"></section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+<p>Pruning the tree via cross-validation</p>
+
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<section id="section-5" class="slide level2">
+<h2></h2>
+<h3 id="estimating-a-decision-tree-in-r-rpart-package">Estimating a decision tree in R (<code>rpart</code> package)</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(rpart)</span>
 <span id="cb1-2"><a href=""></a></span>
@@ -682,24 +694,89 @@ node), split, n, loss, yval, (yprob)
 </div>
 </div>
 <div class="fragment">
+<p>&nbsp;</p>
+<div style="font-size: 80%;">
+<p>This tree has 4 terminal leafs (terminal nodes).<br>
+This is because by default <code>rpart</code> does not attempt to split a node if it has 20 datapoints or less.</p>
+</div>
+</div>
+</section>
+<section id="section-6" class="slide level2">
+<h2></h2>
+<p>We can change parameters to allows smaller splits:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">summary</span>(p_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>p_m <span class="ot">&lt;-</span> <span class="fu">rpart</span>(species<span class="sc">~</span> ., <span class="at">data =</span> penguins,</span>
+<span id="cb3-2"><a href=""></a>             <span class="at">minsplit =</span> <span class="dv">4</span>,  <span class="co"># minumun N in a node to attempt a split</span></span>
+<span id="cb3-3"><a href=""></a>             <span class="at">xval=</span><span class="dv">50</span>)       <span class="co"># N. of cross-validations</span></span>
+<span id="cb3-4"><a href=""></a></span>
+<span id="cb3-5"><a href=""></a>p_m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n= 333 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+ 1) root 333 187 Adelie (0.438438438 0.204204204 0.357357357)  
+   2) flipper_length_mm&lt; 206.5 208  64 Adelie (0.692307692 0.302884615 0.004807692)  
+     4) bill_length_mm&lt; 43.35 145   5 Adelie (0.965517241 0.034482759 0.000000000)  
+       8) bill_length_mm&lt; 42.35 134   1 Adelie (0.992537313 0.007462687 0.000000000) *
+       9) bill_length_mm&gt;=42.35 11   4 Adelie (0.636363636 0.363636364 0.000000000)  
+        18) bill_depth_mm&gt;=17.45 7   0 Adelie (1.000000000 0.000000000 0.000000000) *
+        19) bill_depth_mm&lt; 17.45 4   0 Chinstrap (0.000000000 1.000000000 0.000000000) *
+     5) bill_length_mm&gt;=43.35 63   5 Chinstrap (0.063492063 0.920634921 0.015873016)  
+      10) island=Biscoe,Torgersen 4   1 Adelie (0.750000000 0.000000000 0.250000000) *
+      11) island=Dream 59   1 Chinstrap (0.016949153 0.983050847 0.000000000) *
+   3) flipper_length_mm&gt;=206.5 125   7 Gentoo (0.016000000 0.040000000 0.944000000)  
+     6) island=Dream,Torgersen 7   2 Chinstrap (0.285714286 0.714285714 0.000000000)  
+      12) bill_length_mm&lt; 46.55 2   0 Adelie (1.000000000 0.000000000 0.000000000) *
+      13) bill_length_mm&gt;=46.55 5   0 Chinstrap (0.000000000 1.000000000 0.000000000) *
+     7) island=Biscoe 118   0 Gentoo (0.000000000 0.000000000 1.000000000) *</code></pre>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size: 80%;">
+<p>Now the tree has 8 leafs (which correspond to the minimum of the cross-validation error as shown in the cross-validation plot)</p>
+</div>
+</div>
+</section>
+<section id="section-7" class="slide level2">
+<h2></h2>
+<div style="font-size: 80%;">
+<ul>
+<li class="fragment">In practice <code>rpart</code> normally choose the simplest model that is within 1 standard error from the minimum.</li>
+<li class="fragment">(The error typically shows a sharp drop frollowed by a flat plateau; so the 1 - SE rule allows to choose the simmples model among all those “tied” on the plateau)</li>
+</ul>
+</div>
+
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<section id="section-8" class="slide level2">
+<h2></h2>
+<p><em>Pruned</em> tree for <code>penguins</code> data, after allowing split also in nodes with as little as <code>minsplit = 4</code> observations.</p>
+
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1248"></section>
+<section id="section-9" class="slide level2 scrollable">
+<h2></h2>
+<p>The <code>summary()</code> function provides further information</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">summary</span>(p_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
-rpart(formula = species ~ ., data = penguins)
+rpart(formula = species ~ ., data = penguins, minsplit = 4, xval = 50)
   n= 333 
 
-          CP nsplit  rel error    xerror       xstd
-1 0.62032086      0 1.00000000 1.0000000 0.04842097
-2 0.28877005      1 0.37967914 0.3850267 0.04017194
-3 0.02673797      2 0.09090909 0.1176471 0.02423973
-4 0.01000000      3 0.06417112 0.1122995 0.02372047
+          CP nsplit  rel error     xerror       xstd
+1 0.62032086      0 1.00000000 1.00000000 0.04842097
+2 0.28877005      1 0.37967914 0.38502674 0.04017194
+3 0.02673797      2 0.09090909 0.11764706 0.02423973
+4 0.01604278      3 0.06417112 0.08556150 0.02087017
+5 0.01069519      4 0.04812834 0.08556150 0.02087017
+6 0.01000000      7 0.01604278 0.06951872 0.01890092
 
 Variable importance
 flipper_length_mm    bill_length_mm     bill_depth_mm       body_mass_g 
-               21                21                18                15 
+               21                21                18                16 
            island           island2 
-               13                11 
+               14                11 
 
 Node number 1: 333 observations,    complexity param=0.6203209
   predicted class=Adelie     expected loss=0.5615616  P(node) =1
@@ -707,17 +784,17 @@ Node number 1: 333 observations,    complexity param=0.6203209
    probabilities: 0.438 0.204 0.357 
   left son=2 (208 obs) right son=3 (125 obs)
   Primary splits:
-      flipper_length_mm &lt; 206.5 to the left,  improve=109.97940, (0 missing)
-      bill_length_mm    &lt; 42.35 to the left,  improve=102.52910, (0 missing)
-      bill_depth_mm     &lt; 16.45 to the right, improve= 96.64493, (0 missing)
-      body_mass_g       &lt; 4525  to the left,  improve= 83.06712, (0 missing)
-      island            splits as  RLL,       improve= 66.73118, (0 missing)
+      flipper_length_mm &lt; 206.5  to the left,  improve=109.97940, (0 missing)
+      bill_length_mm    &lt; 42.35  to the left,  improve=102.52910, (0 missing)
+      bill_depth_mm     &lt; 16.45  to the right, improve= 96.64493, (0 missing)
+      body_mass_g       &lt; 4525   to the left,  improve= 83.06712, (0 missing)
+      island            splits as  RLL,        improve= 66.73118, (0 missing)
   Surrogate splits:
-      bill_depth_mm  &lt; 16.35 to the right, agree=0.931, adj=0.816, (0 split)
-      body_mass_g    &lt; 4525  to the left,  agree=0.907, adj=0.752, (0 split)
-      island         splits as  RLL,       agree=0.844, adj=0.584, (0 split)
-      island2        splits as  RL,        agree=0.844, adj=0.584, (0 split)
-      bill_length_mm &lt; 43.25 to the left,  agree=0.784, adj=0.424, (0 split)
+      bill_depth_mm  &lt; 16.35  to the right, agree=0.931, adj=0.816, (0 split)
+      body_mass_g    &lt; 4525   to the left,  agree=0.907, adj=0.752, (0 split)
+      island         splits as  RLL,        agree=0.844, adj=0.584, (0 split)
+      island2        splits as  RL,         agree=0.844, adj=0.584, (0 split)
+      bill_length_mm &lt; 43.25  to the left,  agree=0.784, adj=0.424, (0 split)
 
 Node number 2: 208 observations,    complexity param=0.2887701
   predicted class=Adelie     expected loss=0.3076923  P(node) =0.6246246
@@ -725,14 +802,14 @@ Node number 2: 208 observations,    complexity param=0.2887701
    probabilities: 0.692 0.303 0.005 
   left son=4 (145 obs) right son=5 (63 obs)
   Primary splits:
-      bill_length_mm    &lt; 43.35 to the left,  improve=70.232650, (0 missing)
-      island            splits as  LRL,       improve=29.089290, (0 missing)
-      island2           splits as  LR,        improve= 9.964985, (0 missing)
-      flipper_length_mm &lt; 192.5 to the left,  improve= 8.887353, (0 missing)
-      body_mass_g       &lt; 3225  to the left,  improve= 2.340859, (0 missing)
+      bill_length_mm    &lt; 43.35  to the left,  improve=70.232650, (0 missing)
+      island            splits as  LRL,        improve=29.089290, (0 missing)
+      island2           splits as  LR,         improve= 9.964985, (0 missing)
+      flipper_length_mm &lt; 192.5  to the left,  improve= 8.887353, (0 missing)
+      body_mass_g       &lt; 3225   to the left,  improve= 2.340859, (0 missing)
   Surrogate splits:
-      flipper_length_mm &lt; 195.5 to the left,  agree=0.740, adj=0.143, (0 split)
-      island            splits as  LRL,       agree=0.702, adj=0.016, (0 split)
+      flipper_length_mm &lt; 195.5  to the left,  agree=0.740, adj=0.143, (0 split)
+      island            splits as  LRL,        agree=0.702, adj=0.016, (0 split)
 
 Node number 3: 125 observations,    complexity param=0.02673797
   predicted class=Gentoo     expected loss=0.056  P(node) =0.3753754
@@ -740,64 +817,336 @@ Node number 3: 125 observations,    complexity param=0.02673797
    probabilities: 0.016 0.040 0.944 
   left son=6 (7 obs) right son=7 (118 obs)
   Primary splits:
-      island            splits as  RLL,       improve=10.518860, (0 missing)
-      bill_depth_mm     &lt; 17.65 to the right, improve=10.518860, (0 missing)
-      island2           splits as  RL,        improve=10.518860, (0 missing)
-      body_mass_g       &lt; 4325  to the left,  improve= 3.701549, (0 missing)
-      flipper_length_mm &lt; 212.5 to the left,  improve= 1.428632, (0 missing)
+      island         splits as  RLL,        improve=10.518860, (0 missing)
+      bill_depth_mm  &lt; 17.65  to the right, improve=10.518860, (0 missing)
+      island2        splits as  RL,         improve=10.518860, (0 missing)
+      body_mass_g    &lt; 4125   to the left,  improve= 4.692667, (0 missing)
+      bill_length_mm &lt; 40.85  to the left,  improve= 1.876000, (0 missing)
   Surrogate splits:
-      bill_depth_mm &lt; 17.65 to the right, agree=1.000, adj=1.000, (0 split)
-      body_mass_g   &lt; 4125  to the left,  agree=0.968, adj=0.429, (0 split)
+      bill_depth_mm &lt; 17.65  to the right, agree=1.000, adj=1.000, (0 split)
+      body_mass_g   &lt; 4125   to the left,  agree=0.968, adj=0.429, (0 split)
 
-Node number 4: 145 observations
+Node number 4: 145 observations,    complexity param=0.01069519
   predicted class=Adelie     expected loss=0.03448276  P(node) =0.4354354
     class counts:   140     5     0
    probabilities: 0.966 0.034 0.000 
+  left son=8 (134 obs) right son=9 (11 obs)
+  Primary splits:
+      bill_length_mm    &lt; 42.35  to the left,  improve=2.5791890, (0 missing)
+      bill_depth_mm     &lt; 16.75  to the right, improve=1.0019550, (0 missing)
+      flipper_length_mm &lt; 187.5  to the right, improve=0.5480296, (0 missing)
+      island            splits as  LRL,        improve=0.5172414, (0 missing)
+      body_mass_g       &lt; 3375   to the right, improve=0.4548910, (0 missing)
+  Surrogate splits:
+      body_mass_g &lt; 4687.5 to the left,  agree=0.931, adj=0.091, (0 split)
 
-Node number 5: 63 observations
+Node number 5: 63 observations,    complexity param=0.01604278
   predicted class=Chinstrap  expected loss=0.07936508  P(node) =0.1891892
     class counts:     4    58     1
    probabilities: 0.063 0.921 0.016 
+  left son=10 (4 obs) right son=11 (59 obs)
+  Primary splits:
+      island         splits as  LRL,        improve=5.867232, (0 missing)
+      body_mass_g    &lt; 4125   to the right, improve=2.833333, (0 missing)
+      island2        splits as  RL,         improve=2.628415, (0 missing)
+      bill_depth_mm  &lt; 15.4   to the right, improve=1.849462, (0 missing)
+      bill_length_mm &lt; 46.05  to the left,  improve=1.659864, (0 missing)
+  Surrogate splits:
+      body_mass_g &lt; 4575   to the right, agree=0.968, adj=0.5, (0 split)
+      island2     splits as  LR,         agree=0.968, adj=0.5, (0 split)
 
-Node number 6: 7 observations
+Node number 6: 7 observations,    complexity param=0.01069519
   predicted class=Chinstrap  expected loss=0.2857143  P(node) =0.02102102
     class counts:     2     5     0
    probabilities: 0.286 0.714 0.000 
+  left son=12 (2 obs) right son=13 (5 obs)
+  Primary splits:
+      bill_length_mm    &lt; 46.55  to the left,  improve=2.8571430, (0 missing)
+      bill_depth_mm     &lt; 18.95  to the left,  improve=2.8571430, (0 missing)
+      island            splits as  -RL,        improve=1.1904760, (0 missing)
+      flipper_length_mm &lt; 209    to the left,  improve=0.2571429, (0 missing)
+      body_mass_g       &lt; 3975   to the right, improve=0.1904762, (0 missing)
+  Surrogate splits:
+      bill_depth_mm &lt; 18.95  to the left,  agree=1, adj=1, (0 split)
 
 Node number 7: 118 observations
   predicted class=Gentoo     expected loss=0  P(node) =0.3543544
     class counts:     0     0   118
-   probabilities: 0.000 0.000 1.000 </code></pre>
-</div>
+   probabilities: 0.000 0.000 1.000 
+
+Node number 8: 134 observations
+  predicted class=Adelie     expected loss=0.007462687  P(node) =0.4024024
+    class counts:   133     1     0
+   probabilities: 0.993 0.007 0.000 
+
+Node number 9: 11 observations,    complexity param=0.01069519
+  predicted class=Adelie     expected loss=0.3636364  P(node) =0.03303303
+    class counts:     7     4     0
+   probabilities: 0.636 0.364 0.000 
+  left son=18 (7 obs) right son=19 (4 obs)
+  Primary splits:
+      bill_depth_mm     &lt; 17.45  to the right, improve=5.090909, (0 missing)
+      flipper_length_mm &lt; 189.5  to the right, improve=5.090909, (0 missing)
+      sex               splits as  RL,         improve=5.090909, (0 missing)
+      island            splits as  LRL,        improve=3.490909, (0 missing)
+      body_mass_g       &lt; 3837.5 to the right, improve=3.490909, (0 missing)
+  Surrogate splits:
+      flipper_length_mm &lt; 189.5  to the right, agree=1.000, adj=1.00, (0 split)
+      body_mass_g       &lt; 3425   to the right, agree=0.909, adj=0.75, (0 split)
+      bill_length_mm    &lt; 42.6   to the right, agree=0.818, adj=0.50, (0 split)
+      year              &lt; 2007.5 to the right, agree=0.727, adj=0.25, (0 split)
+
+Node number 10: 4 observations
+  predicted class=Adelie     expected loss=0.25  P(node) =0.01201201
+    class counts:     3     0     1
+   probabilities: 0.750 0.000 0.250 
+
+Node number 11: 59 observations
+  predicted class=Chinstrap  expected loss=0.01694915  P(node) =0.1771772
+    class counts:     1    58     0
+   probabilities: 0.017 0.983 0.000 
+
+Node number 12: 2 observations
+  predicted class=Adelie     expected loss=0  P(node) =0.006006006
+    class counts:     2     0     0
+   probabilities: 1.000 0.000 0.000 
+
+Node number 13: 5 observations
+  predicted class=Chinstrap  expected loss=0  P(node) =0.01501502
+    class counts:     0     5     0
+   probabilities: 0.000 1.000 0.000 
+
+Node number 18: 7 observations
+  predicted class=Adelie     expected loss=0  P(node) =0.02102102
+    class counts:     7     0     0
+   probabilities: 1.000 0.000 0.000 
+
+Node number 19: 4 observations
+  predicted class=Chinstrap  expected loss=0  P(node) =0.01201201
+    class counts:     0     4     0
+   probabilities: 0.000 1.000 0.000 </code></pre>
 </div>
 </div>
 </section>
-<section id="section-4" class="slide level2">
+<section id="section-10" class="slide level2">
+<h2></h2>
+<p>Notes on <code>summary()</code> output</p>
+<ul>
+<li class="fragment"><p><strong>Primary vs <em>surrogate</em> splits</strong>: surrogate splits are rules to make deccisions when the variables in a split point is missing</p></li>
+<li class="fragment"><p><strong>Variable importance</strong> summarise how useful is a variable for prediction (based on unpruned tree and including surrogate splits)</p></li>
+</ul>
+</section>
+<section id="plotting-trees-1" class="slide level2">
+<h2>Plotting trees (1)</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">par</span>(<span class="at">xpd =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-2"><a href=""></a><span class="fu">plot</span>(p_m, <span class="at">compress=</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-3"><a href=""></a><span class="fu">text</span>(p_m, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><div style="font-size: 80%;">
+<p>See <code>?plot.rpart</code> for available options.</p>
+</div>
+</section>
+<section id="plotting-trees-2" class="slide level2 scrollable" data-transition="convex">
+<h2>Plotting trees (2)</h2>
+<p>Using the <code>rpart.plot</code> library.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb8-2"><a href=""></a><span class="fu">rpart.plot</span>(p_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><div style="font-size: 80%;">
+<p>See <code>?rpart.plot</code> for options.</p>
+</div>
+</section>
+<section id="plotting-trees-3" class="slide level2 scrollable" data-transition="convex">
+<h2>Plotting trees (3)</h2>
+<p>Using the <code>partykit</code> library.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">library</span>(partykit)</span>
+<span id="cb9-2"><a href=""></a>p_m2 <span class="ot">&lt;-</span> <span class="fu">as.party</span>(p_m)</span>
+<span id="cb9-3"><a href=""></a></span>
+<span id="cb9-4"><a href=""></a><span class="fu">plot</span>(p_m2, </span>
+<span id="cb9-5"><a href=""></a>     <span class="at">terminal_panel =</span>  <span class="fu">node_barplot</span>(p_m2, <span class="at">gp =</span> <span class="fu">gpar</span>(<span class="at">fontsize=</span><span class="dv">8</span>)),</span>
+<span id="cb9-6"><a href=""></a>     <span class="at">inner_panel =</span> <span class="fu">node_inner</span>(p_m2, <span class="at">id =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb9-7"><a href=""></a>     <span class="at">gp=</span><span class="fu">gpar</span>(<span class="at">fontsize=</span><span class="dv">8</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1152"></section>
+<section id="confusion-matrix" class="slide level2 scrollable">
+<h2>Confusion matrix</h2>
+<p>A way to examine the accuracy of classification (<em>note that the this would be accuracy on the training set; to assess predictive accuracy for new, unseen data we need to use something like cross-validation</em>)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="co"># fit tree</span></span>
+<span id="cb10-2"><a href=""></a>p_m <span class="ot">&lt;-</span> <span class="fu">rpart</span>(species<span class="sc">~</span> ., <span class="at">data =</span> penguins)</span>
+<span id="cb10-3"><a href=""></a></span>
+<span id="cb10-4"><a href=""></a><span class="co"># compute predictions on training set</span></span>
+<span id="cb10-5"><a href=""></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(p_m, penguins, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb10-6"><a href=""></a></span>
+<span id="cb10-7"><a href=""></a><span class="co"># compute confusion matrix</span></span>
+<span id="cb10-8"><a href=""></a><span class="fu">library</span>(caret)</span>
+<span id="cb10-9"><a href=""></a>conf_mat <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predictions, penguins<span class="sc">$</span>species)</span>
+<span id="cb10-10"><a href=""></a></span>
+<span id="cb10-11"><a href=""></a><span class="fu">print</span>(conf_mat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+           Reference
+Prediction  Adelie Chinstrap Gentoo
+  Adelie       140         5      0
+  Chinstrap      6        63      1
+  Gentoo         0         0    118
+
+Overall Statistics
+                                          
+               Accuracy : 0.964           
+                 95% CI : (0.9379, 0.9812)
+    No Information Rate : 0.4384          
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+                                          
+                  Kappa : 0.9437          
+                                          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: Adelie Class: Chinstrap Class: Gentoo
+Sensitivity                 0.9589           0.9265        0.9916
+Specificity                 0.9733           0.9736        1.0000
+Pos Pred Value              0.9655           0.9000        1.0000
+Neg Pred Value              0.9681           0.9810        0.9953
+Prevalence                  0.4384           0.2042        0.3574
+Detection Rate              0.4204           0.1892        0.3544
+Detection Prevalence        0.4354           0.2102        0.3544
+Balanced Accuracy           0.9661           0.9500        0.9958</code></pre>
+</div>
+</div>
+</section>
+<section id="plotting-a-confusion-matrix" class="slide level2">
+<h2>Plotting a confusion matrix</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="co"># Convert confusion matrix to a data frame for ggplot</span></span>
+<span id="cb12-2"><a href=""></a>conf_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(conf_mat<span class="sc">$</span>table)</span>
+<span id="cb12-3"><a href=""></a></span>
+<span id="cb12-4"><a href=""></a><span class="co"># Create a heatmap plot</span></span>
+<span id="cb12-5"><a href=""></a><span class="fu">ggplot</span>(conf_df, <span class="fu">aes</span>(<span class="at">x =</span> Prediction, <span class="at">y =</span> Reference, <span class="at">fill =</span> Freq)) <span class="sc">+</span></span>
+<span id="cb12-6"><a href=""></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb12-7"><a href=""></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span>  <span class="co"># Add text labels</span></span>
+<span id="cb12-8"><a href=""></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">high =</span> <span class="st">"red"</span>) <span class="sc">+</span>  <span class="co"># Color scale</span></span>
+<span id="cb12-9"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confusion Matrix"</span>,</span>
+<span id="cb12-10"><a href=""></a>       <span class="at">x =</span> <span class="st">"Predicted Class"</span>,</span>
+<span id="cb12-11"><a href=""></a>       <span class="at">y =</span> <span class="st">"Actual Class"</span>) <span class="sc">+</span></span>
+<span id="cb12-12"><a href=""></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb12-13"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="480"></section>
+<section id="exercise" class="slide level2">
+<h2>Exercise</h2>
+<ul>
+<li class="fragment">Use one of the dataset for classification in the ‘coursework’ folder on Moodle and fit a decision tree model.</li>
+</ul>
+</section>
+<section id="section-11" class="slide level2 scrollable">
 <h2></h2>
 <h4 id="advantages">Advantages</h4>
 <ul>
-<li class="fragment"><p><strong>Interpretability</strong>: the rules are easy to visualize and understand.</p></li>
-<li class="fragment"><p><strong>Flexibility</strong>: trees can handle a large number of data modelling situations, not limited to classification; they can also be used for regression (are also known as classification and regression trees, or CART).</p></li>
-<li class="fragment"><p><strong>Nonlinear Boundaries</strong>: trees naturally model complex relationships.</p></li>
+<li class="fragment"><p><strong>Interpretability</strong>: trees are easy to visualize, interpret and explain.</p></li>
+<li class="fragment"><p><strong>Flexibility</strong>: trees can easily handle many types of variables; they can also be used for regression (are also known as classification and regression trees, or CART).</p></li>
+<li class="fragment"><p><strong>Nonlinear Boundaries</strong>: trees naturally model complex, non-linear relationships.</p></li>
 </ul>
 <div class="fragment">
 <!-- -->
 <h4 id="disadvantages">Disadvantages</h4>
 <ul>
-<li class="fragment"><p><strong>Unstable</strong>: a small change in the training set can create an entirely different tree (each split depends on the <em>parent</em> split, and if a different root node is selecteds the whole tree will be different).</p></li>
-<li class="fragment"><p>If used for regression: Trees approximates linear relationships with a piece-wise function, which is not the most efficient way to model a linear relationship. They are also not <em>smooth</em>: a small change in one of the features can make it cross a threshold and have a large impact in the predicted value.</p></li>
+<li class="fragment"><p>For regression, decision trees approximate linear relationships with <em>piecewise</em> functions, which can be inefficient compared to direct linear modeling. They also lack <em>smoothness</em> — a small change in a feature can push it past a threshold, causing a sudden jump in predictions.</p></li>
+<li class="fragment"><p><strong>Non-robust</strong>: a small change in the training data can create a large difference in the final estimated tree<br>
+(each split depends on the <em>parent</em> split, and if a different root node is selecteds the whole tree will be different).</p></li>
 </ul>
 </div>
-<!-- ------------------------------------------------------------------------ -->
-<!-- ## Preventing Overfitting in Decision Trees -->
-<!-- -   **Pruning**: -->
-<!--     -   After fully growing a tree, remove leaf nodes that add little predictive value.\ -->
-<!--     -   Balances model complexity and generalizability. -->
-<!-- -   **Min Samples / Max Depth**: -->
-<!--     -   Restrict how deep the tree grows or how few instances are allowed in a leaf.\ -->
-<!--     -   Avoids overly complex trees. -->
-<!-- -   **Cross-Validation**: -->
-<!--     -   Evaluate tree performance on multiple folds of data to ensure robust estimates and parameter tuning. -->
+</section></section>
+<section>
+<section id="ensemble-methods" class="title-slide slide level1 center">
+<h1>Ensemble methods</h1>
+
+</section>
+<section id="ensemble-methods-to-improve-robustness" class="slide level2">
+<h2>Ensemble methods to improve robustness</h2>
+<ul>
+<li class="fragment"><p>Trees suffer from <em>high variance</em>: if we split the training data into two parts at random, and fit a decision tree to both halves, the results that we get could be quite different.</p></li>
+<li class="fragment"><p>One approach to improve robustness is <em>bootstrap aggregation</em> or <em>bagging</em>:</p>
+<ol type="1">
+<li class="fragment">take repeated samples (with replacement) from the training data (<em>bootstrapping</em>)</li>
+<li class="fragment">train a tree on each of these <em>bootstrapped</em> dataset</li>
+<li class="fragment">combine the predictions (<em>mojority vote</em>)</li>
+</ol></li>
+<li class="fragment"><p>Bagging can be used to combine together hundreds or thousands of trees in a single procedure, and can give more robust and accurate results.</p></li>
+</ul>
+</section>
+<section id="random-forests" class="slide level2">
+<h2>Random forests</h2>
+<ul>
+<li class="fragment"><p>Random forests provide a further improvements over bagged trees: in addition to resampling the observations (the rows in our data) in each resampled training dataset we include only a subset of the predictor variables.</p></li>
+<li class="fragment"><p>This small tweak decorrelate the trees in each resampled dataset and make the ensemble even less variable and more robust.</p></li>
+<li class="fragment"><p>Particularly helpful when we hav a large number of correlated predictors</p></li>
+</ul>
+
+<img data-src="Random_Forest_Bagging_Illustration.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"></section>
+<section id="random-forests-in-r" class="slide level2">
+<h2>Random forests in R</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">library</span>(randomForest)</span>
+<span id="cb13-2"><a href=""></a></span>
+<span id="cb13-3"><a href=""></a><span class="co"># Fit Random Forest model</span></span>
+<span id="cb13-4"><a href=""></a>rf_model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(species <span class="sc">~</span> ., <span class="at">data =</span> penguins, <span class="at">ntree =</span> <span class="dv">500</span>, <span class="at">importance =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-5"><a href=""></a></span>
+<span id="cb13-6"><a href=""></a><span class="co"># Print summary</span></span>
+<span id="cb13-7"><a href=""></a><span class="fu">print</span>(rf_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+ randomForest(formula = species ~ ., data = penguins, ntree = 500,      importance = TRUE) 
+               Type of random forest: classification
+                     Number of trees: 500
+No. of variables tried at each split: 2
+
+        OOB estimate of  error rate: 0.9%
+Confusion matrix:
+          Adelie Chinstrap Gentoo class.error
+Adelie       145         1      0 0.006849315
+Chinstrap      2        66      0 0.029411765
+Gentoo         0         0    119 0.000000000</code></pre>
+</div>
+</div>
+<ul>
+<li class="fragment">One advantage of random forest is that they provide automatically an estimate of predictive performance.</li>
+<li class="fragment">On average each boostrapped dataset include about 2/3 of training data, and we can assess how well the model predict the remaining 1/3 of data (Out-of-Bag, or OOB accuracy).</li>
+</ul>
+</section>
+<section id="oob-confusion-matrix" class="slide level2">
+<h2>OOB confusion matrix</h2>
+<p>We can use a confusion matrix to assess the out-of-bag predictive accuracy</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">as.data.frame</span>(conf_mat<span class="sc">$</span>table), <span class="fu">aes</span>(Prediction, Reference, <span class="at">fill =</span> Freq)) <span class="sc">+</span></span>
+<span id="cb15-2"><a href=""></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb15-3"><a href=""></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb15-4"><a href=""></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">high =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb15-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confusion Matrix"</span>,</span>
+<span id="cb15-6"><a href=""></a>       <span class="at">x =</span> <span class="st">"Predicted Class"</span>,</span>
+<span id="cb15-7"><a href=""></a>       <span class="at">y =</span> <span class="st">"Actual Class"</span>) <span class="sc">+</span></span>
+<span id="cb15-8"><a href=""></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb15-9"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" width="480"></section>
+<section id="boosting" class="slide level2">
+<h2>Boosting</h2>
+<ul>
+<li class="fragment"><p>Boosting is also an ensemble method, in the sense that combine many models to produce a result that is more accurate and robust.</p></li>
+<li class="fragment"><p>However, rather than combining many decision trees that were estimated independently, boosting work by sequentially improving a single model, focusing in particular in areas where it does not perform well.</p></li>
+<li class="fragment"><p>A state-of-the-art improvement of boosting is gradient boosting, and is implemented in the R package <a href="https://xgboost.readthedocs.io/en/stable/#"><code>xgboost</code></a></p></li>
+</ul>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
