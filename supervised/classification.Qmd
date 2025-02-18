@@ -209,8 +209,11 @@ plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALS
 
 - Decision trees _split_ the data multiple times according to certain cutoff values in the features/predictors.
 
-- Subsequent splits create a partition of the data into a set of distinct, non-overlapping regions, each aiming to contains instances of the same class.
+- Starting from the _root_ node each subsequent node in the tree implements further split of the data; subsequent splits are connected by  (_if feature $X$ is [smaller/bigger] than threshold AND ... then the predicted class is ..._)
 
+- The splits create a partition of the data into a set of distinct, non-overlapping regions (high-dimensional rectangles or _boxes_), each aiming to contains instances of the same class.
+
+- The terminal nodes are also known as _leafs_
 
 ##  {.smaller .scrollable transition="slide"}
 
@@ -230,49 +233,49 @@ plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALS
 ```
 
 
-##  {.smaller .scrollable transition="slide"}
+<!-- ##  {.smaller .scrollable transition="slide"} -->
 
-```{r}
-#| fig-height: 6
-#| fig-width: 7
-#| fig-align: center
+<!-- ```{r} -->
+<!-- #| fig-height: 6 -->
+<!-- #| fig-width: 7 -->
+<!-- #| fig-align: center -->
 
-# Remove missing values
-penguins <- na.omit(penguins)
+<!-- # Remove missing values -->
+<!-- penguins <- na.omit(penguins) -->
 
-# Fit a simple decision tree (pruned for clarity)
-p_m <- rpart(species ~ flipper_length_mm + bill_length_mm, data = penguins, method = "class")
+<!-- # Fit a simple decision tree (pruned for clarity) -->
+<!-- p_m <- rpart(species ~ flipper_length_mm + bill_length_mm, data = penguins, method = "class") -->
 
-# Convert to party object for better visualization
-p_m2 <- as.party(p_m)
+<!-- # Convert to party object for better visualization -->
+<!-- p_m2 <- as.party(p_m) -->
 
-# Create a grid of values for flipper length and bill length
-flipper_seq <- seq(min(penguins$flipper_length_mm)-10, max(penguins$flipper_length_mm)+10, length.out = 200)
-bill_seq <- seq(min(penguins$bill_length_mm)-5, max(penguins$bill_length_mm)+5, length.out = 200)
+<!-- # Create a grid of values for flipper length and bill length -->
+<!-- flipper_seq <- seq(min(penguins$flipper_length_mm)-10, max(penguins$flipper_length_mm)+10, length.out = 200) -->
+<!-- bill_seq <- seq(min(penguins$bill_length_mm)-5, max(penguins$bill_length_mm)+5, length.out = 200) -->
 
-grid <- expand.grid(
-  flipper_length_mm = flipper_seq,
-  bill_length_mm = bill_seq
-)
+<!-- grid <- expand.grid( -->
+<!--   flipper_length_mm = flipper_seq, -->
+<!--   bill_length_mm = bill_seq -->
+<!-- ) -->
 
-# Predict species for each grid point
-grid$species <- predict(p_m, newdata = grid, type = "class")
+<!-- # Predict species for each grid point -->
+<!-- grid$species <- predict(p_m, newdata = grid, type = "class") -->
 
-# Plot the decision boundaries
-ggplot() +
-  geom_tile(data = grid, aes(x = flipper_length_mm, y = bill_length_mm, fill = species), alpha = 0.8) +
-  geom_point(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species), pch=21, size = 2) +
-  labs(
-    x = "Flipper length (mm)",
-    y = "Bill length (mm)",
-    title = "Decision boundaries"
-  ) +
-  scale_fill_manual(values = c("Adelie" = "lightblue", "Chinstrap" = "lightgreen", "Gentoo" = "lightpink")) +
-  scale_color_manual(values = c("Adelie" = "blue", "Chinstrap" = "dark green", "Gentoo" = "red")) +
-  theme_minimal()+
-  coord_cartesian(xlim=range(penguins$flipper_length_mm),ylim=range(penguins$bill_length_mm))
+<!-- # Plot the decision boundaries -->
+<!-- ggplot() + -->
+<!--   geom_tile(data = grid, aes(x = flipper_length_mm, y = bill_length_mm, fill = species), alpha = 0.8) + -->
+<!--   geom_point(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species), pch=21, size = 2) + -->
+<!--   labs( -->
+<!--     x = "Flipper length (mm)", -->
+<!--     y = "Bill length (mm)", -->
+<!--     title = "Decision boundaries" -->
+<!--   ) + -->
+<!--   scale_fill_manual(values = c("Adelie" = "lightblue", "Chinstrap" = "lightgreen", "Gentoo" = "lightpink")) + -->
+<!--   scale_color_manual(values = c("Adelie" = "blue", "Chinstrap" = "dark green", "Gentoo" = "red")) + -->
+<!--   theme_minimal()+ -->
+<!--   coord_cartesian(xlim=range(penguins$flipper_length_mm),ylim=range(penguins$bill_length_mm)) -->
 
-```
+<!-- ``` -->
 
 ## {.smaller .scrollable transition="slide"}
 
@@ -325,26 +328,85 @@ ggplot() +
 
 ```
 
-## Decision trees: advantages
+------------------------------------------------------------------------
 
-- **Interpretability**: the rules are easy to visualize and understand
+## Growing a decision tree {.scrollable}
+
+How do we choose the split?
+
+-   The most popular approach is **recursive binary splitting**, a _top-down, greedy_ algorithm:
+    -   _top-down_ because it starts at the top of the tree 
+    -   _greedy_ because it works by optimising the splits _locally_, at each node sequentially, rather than all the splits at once.
+
+-   Start with a dataset having features $X$ and class labels $y = \left\{ 1, \ldots, k\right\}$
+-   Choose a feature (say $X_j$) and a **threshold** $t$ that best **splits** the data into two subsets:
+    1.  $\{ x \in D : x_j \le t \}$
+    2.  $\{ x \in D : x_j > t \}$
+-   **Best split** is the one that minimizes an **impurity measure** in child nodes.
+    -   Common impurity measure: **Gini index**: $G = 1 - \sum_{k=1}^K p_k^2$
+    -   Here, $p_k$ is the proportion of class $k$ instances in a node.
+-   **Repeat** recursively (by splitting one of the previously identified nodes) until some stopping criterion (e.g., max depth, n. of datapoints per leaf) is met.
+
+
+## Pruning the tree
+
+- **The tree-growing algorithm is likely to _overfit_ the training data**, producing too complex trees that may not generalise well to new data.
+
+- One could grow the tree only as long as the decrease in the impurity measure due to each split exceeds a relatively high threshold, however this is too short-sighted --- a seemingly worthless split early on in the tree might be followed by a very good split. 
+
+- A better strategy is to **grow a large tree, and then _prune_ it back to a smaller _sub_-tree**, by removing leaf nodes that add little predictive value. 
+
+ 
+
+- In practice pruning works as follow:
+  - a tuning parameter $\alpha$ penalizes the loss function based on complexity (number of leaf nodes).
+  - cross-validation to select a best value for $\alpha$
+
+
+## 
+
+### Growing and pruining a tree in R (`rpart` package)
+
+
+```{r, echo=TRUE}
+library(rpart)
+
+p_m <- rpart(species~ ., data = penguins)
+
+p_m
+```
+
+::: fragment
+
+```{r, echo=TRUE}
+
+summary(p_m)
+```
+
+:::
+
+## 
+
+#### Advantages
+
+- **Interpretability**: the rules are easy to visualize and understand.
+
 - **Flexibility**: trees can handle a large number of data modelling situations, not limited to classification; they can also be used for regression (are also known as classification and regression trees, or CART).
-- **Nonlinear Boundaries**: trees naturally model complex relationships
 
-<!-- ------------------------------------------------------------------------ -->
+- **Nonlinear Boundaries**: trees naturally model complex relationships. 
 
-<!-- ## Decision Trees: A Bit of Math -->
 
-<!-- A simple conceptual view (for classification): -->
+::: fragment
 
-<!-- -   Start with a dataset $D$ having features $X$ and class labels $y$ -->
-<!-- -   Choose a feature (say $X_j$) and a **threshold** $t$ that best **splits** the data into two subsets: -->
-<!--     1.  $\{ x \in D : x_j \le t \}$ -->
-<!--     2.  $\{ x \in D : x_j > t \}$ -->
-<!-- -   **Best split** is typically the one that **minimizes impurity** in child nodes. -->
-<!--     -   Common impurity measure: **Gini index**: $G = 1 - \sum_{k=1}^K p_k^2$ -->
-<!--     -   Here, $p_k$ is the proportion of class $k$ instances in a node. -->
-<!-- -   **Repeat** recursively until some stopping criterion (e.g., max depth, minimum samples per leaf) is met. -->
+#### Disadvantages
+
+- **Unstable**: a small change in the training set can create an entirely different tree (each split depends on the _parent_ split, and if a different root node is selecteds the whole tree will be different).
+
+- If used for regression: Trees approximates linear relationships with a piece-wise function, which is not the most efficient way to model a linear relationship. They are also not _smooth_: a small change in one of the features can make it cross a threshold and have a large impact in the predicted value. 
+
+
+:::
+
 
 <!-- ------------------------------------------------------------------------ -->
 

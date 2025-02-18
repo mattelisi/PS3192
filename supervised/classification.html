@@ -29,6 +29,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="classification_files/libs/revealjs/dist/theme/quarto.css">
   <link href="classification_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -506,39 +571,223 @@ Matteo Lisi
 <h2>Decision trees: basic ideas</h2>
 <ul>
 <li class="fragment"><p>Decision trees <em>split</em> the data multiple times according to certain cutoff values in the features/predictors.</p></li>
-<li class="fragment"><p>Subsequent splits create a partition of the data into a set of distinct, non-overlapping regions, each aiming to contains instances of the same class.</p></li>
+<li class="fragment"><p>Starting from the <em>root</em> node each subsequent node in the tree implements further split of the data; subsequent splits are connected by (<em>if feature <span class="math inline">\(X\)</span> is [smaller/bigger] than threshold AND … then the predicted class is …</em>)</p></li>
+<li class="fragment"><p>The splits create a partition of the data into a set of distinct, non-overlapping regions (high-dimensional rectangles or <em>boxes</em>), each aiming to contains instances of the same class.</p></li>
+<li class="fragment"><p>The terminal nodes are also known as <em>leafs</em></p></li>
 </ul>
 </section>
 <section id="section-1" class="slide level2 smaller scrollable" data-transition="slide">
 <h2></h2>
 
+<!-- ##  {.smaller .scrollable transition="slide"} -->
+<!-- ```{r} -->
+<!-- #| fig-height: 6 -->
+<!-- #| fig-width: 7 -->
+<!-- #| fig-align: center -->
+<!-- # Remove missing values -->
+<!-- penguins <- na.omit(penguins) -->
+<!-- # Fit a simple decision tree (pruned for clarity) -->
+<!-- p_m <- rpart(species ~ flipper_length_mm + bill_length_mm, data = penguins, method = "class") -->
+<!-- # Convert to party object for better visualization -->
+<!-- p_m2 <- as.party(p_m) -->
+<!-- # Create a grid of values for flipper length and bill length -->
+<!-- flipper_seq <- seq(min(penguins$flipper_length_mm)-10, max(penguins$flipper_length_mm)+10, length.out = 200) -->
+<!-- bill_seq <- seq(min(penguins$bill_length_mm)-5, max(penguins$bill_length_mm)+5, length.out = 200) -->
+<!-- grid <- expand.grid( -->
+<!--   flipper_length_mm = flipper_seq, -->
+<!--   bill_length_mm = bill_seq -->
+<!-- ) -->
+<!-- # Predict species for each grid point -->
+<!-- grid$species <- predict(p_m, newdata = grid, type = "class") -->
+<!-- # Plot the decision boundaries -->
+<!-- ggplot() + -->
+<!--   geom_tile(data = grid, aes(x = flipper_length_mm, y = bill_length_mm, fill = species), alpha = 0.8) + -->
+<!--   geom_point(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species), pch=21, size = 2) + -->
+<!--   labs( -->
+<!--     x = "Flipper length (mm)", -->
+<!--     y = "Bill length (mm)", -->
+<!--     title = "Decision boundaries" -->
+<!--   ) + -->
+<!--   scale_fill_manual(values = c("Adelie" = "lightblue", "Chinstrap" = "lightgreen", "Gentoo" = "lightpink")) + -->
+<!--   scale_color_manual(values = c("Adelie" = "blue", "Chinstrap" = "dark green", "Gentoo" = "red")) + -->
+<!--   theme_minimal()+ -->
+<!--   coord_cartesian(xlim=range(penguins$flipper_length_mm),ylim=range(penguins$bill_length_mm)) -->
+<!-- ``` -->
 <img data-src="classification_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="section-2" class="slide level2 smaller scrollable" data-transition="slide">
 <h2></h2>
 
-<img data-src="classification_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"></section>
-<section id="section-3" class="slide level2 smaller scrollable" data-transition="slide">
-<h2></h2>
-
-<img data-src="classification_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="decision-trees-advantages" class="slide level2">
-<h2>Decision trees: advantages</h2>
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="growing-a-decision-tree" class="slide level2 scrollable">
+<h2>Growing a decision tree</h2>
+<p>How do we choose the split?</p>
 <ul>
-<li class="fragment"><strong>Interpretability</strong>: the rules are easy to visualize and understand</li>
-<li class="fragment"><strong>Flexibility</strong>: trees can handle a large number of data modelling situations, not limited to classification; they can also be used for regression (are also known as classification and regression trees, or CART).</li>
-<li class="fragment"><strong>Nonlinear Boundaries</strong>: trees naturally model complex relationships</li>
+<li class="fragment">The most popular approach is <strong>recursive binary splitting</strong>, a <em>top-down, greedy</em> algorithm:
+<ul>
+<li class="fragment"><em>top-down</em> because it starts at the top of the tree</li>
+<li class="fragment"><em>greedy</em> because it works by optimising the splits <em>locally</em>, at each node sequentially, rather than all the splits at once.</li>
+</ul></li>
+<li class="fragment">Start with a dataset having features <span class="math inline">\(X\)</span> and class labels <span class="math inline">\(y = \left\{ 1, \ldots, k\right\}\)</span></li>
+<li class="fragment">Choose a feature (say <span class="math inline">\(X_j\)</span>) and a <strong>threshold</strong> <span class="math inline">\(t\)</span> that best <strong>splits</strong> the data into two subsets:
+<ol type="1">
+<li class="fragment"><span class="math inline">\(\{ x \in D : x_j \le t \}\)</span></li>
+<li class="fragment"><span class="math inline">\(\{ x \in D : x_j &gt; t \}\)</span></li>
+</ol></li>
+<li class="fragment"><strong>Best split</strong> is the one that minimizes an <strong>impurity measure</strong> in child nodes.
+<ul>
+<li class="fragment">Common impurity measure: <strong>Gini index</strong>: <span class="math inline">\(G = 1 - \sum_{k=1}^K p_k^2\)</span></li>
+<li class="fragment">Here, <span class="math inline">\(p_k\)</span> is the proportion of class <span class="math inline">\(k\)</span> instances in a node.</li>
+</ul></li>
+<li class="fragment"><strong>Repeat</strong> recursively (by splitting one of the previously identified nodes) until some stopping criterion (e.g., max depth, n.&nbsp;of datapoints per leaf) is met.</li>
 </ul>
-<!-- ------------------------------------------------------------------------ -->
-<!-- ## Decision Trees: A Bit of Math -->
-<!-- A simple conceptual view (for classification): -->
-<!-- -   Start with a dataset $D$ having features $X$ and class labels $y$ -->
-<!-- -   Choose a feature (say $X_j$) and a **threshold** $t$ that best **splits** the data into two subsets: -->
-<!--     1.  $\{ x \in D : x_j \le t \}$ -->
-<!--     2.  $\{ x \in D : x_j > t \}$ -->
-<!-- -   **Best split** is typically the one that **minimizes impurity** in child nodes. -->
-<!--     -   Common impurity measure: **Gini index**: $G = 1 - \sum_{k=1}^K p_k^2$ -->
-<!--     -   Here, $p_k$ is the proportion of class $k$ instances in a node. -->
-<!-- -   **Repeat** recursively until some stopping criterion (e.g., max depth, minimum samples per leaf) is met. -->
+</section>
+<section id="pruning-the-tree" class="slide level2">
+<h2>Pruning the tree</h2>
+<ul>
+<li class="fragment"><p><strong>The tree-growing algorithm is likely to <em>overfit</em> the training data</strong>, producing too complex trees that may not generalise well to new data.</p></li>
+<li class="fragment"><p>One could grow the tree only as long as the decrease in the impurity measure due to each split exceeds a relatively high threshold, however this is too short-sighted — a seemingly worthless split early on in the tree might be followed by a very good split.</p></li>
+<li class="fragment"><p>A better strategy is to <strong>grow a large tree, and then <em>prune</em> it back to a smaller <em>sub</em>-tree</strong>, by removing leaf nodes that add little predictive value.</p></li>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<li class="fragment">In practice pruning works as follow:
+<ul>
+<li class="fragment">a tuning parameter <span class="math inline">\(\alpha\)</span> penalizes the loss function based on complexity (number of leaf nodes).</li>
+<li class="fragment">cross-validation to select a best value for <span class="math inline">\(\alpha\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+<h3 id="growing-and-pruining-a-tree-in-r-rpart-package">Growing and pruining a tree in R (<code>rpart</code> package)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-2"><a href=""></a></span>
+<span id="cb1-3"><a href=""></a>p_m <span class="ot">&lt;-</span> <span class="fu">rpart</span>(species<span class="sc">~</span> ., <span class="at">data =</span> penguins)</span>
+<span id="cb1-4"><a href=""></a></span>
+<span id="cb1-5"><a href=""></a>p_m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n= 333 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+1) root 333 187 Adelie (0.438438438 0.204204204 0.357357357)  
+  2) flipper_length_mm&lt; 206.5 208  64 Adelie (0.692307692 0.302884615 0.004807692)  
+    4) bill_length_mm&lt; 43.35 145   5 Adelie (0.965517241 0.034482759 0.000000000) *
+    5) bill_length_mm&gt;=43.35 63   5 Chinstrap (0.063492063 0.920634921 0.015873016) *
+  3) flipper_length_mm&gt;=206.5 125   7 Gentoo (0.016000000 0.040000000 0.944000000)  
+    6) island=Dream,Torgersen 7   2 Chinstrap (0.285714286 0.714285714 0.000000000) *
+    7) island=Biscoe 118   0 Gentoo (0.000000000 0.000000000 1.000000000) *</code></pre>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">summary</span>(p_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+rpart(formula = species ~ ., data = penguins)
+  n= 333 
+
+          CP nsplit  rel error    xerror       xstd
+1 0.62032086      0 1.00000000 1.0000000 0.04842097
+2 0.28877005      1 0.37967914 0.3850267 0.04017194
+3 0.02673797      2 0.09090909 0.1176471 0.02423973
+4 0.01000000      3 0.06417112 0.1122995 0.02372047
+
+Variable importance
+flipper_length_mm    bill_length_mm     bill_depth_mm       body_mass_g 
+               21                21                18                15 
+           island           island2 
+               13                11 
+
+Node number 1: 333 observations,    complexity param=0.6203209
+  predicted class=Adelie     expected loss=0.5615616  P(node) =1
+    class counts:   146    68   119
+   probabilities: 0.438 0.204 0.357 
+  left son=2 (208 obs) right son=3 (125 obs)
+  Primary splits:
+      flipper_length_mm &lt; 206.5 to the left,  improve=109.97940, (0 missing)
+      bill_length_mm    &lt; 42.35 to the left,  improve=102.52910, (0 missing)
+      bill_depth_mm     &lt; 16.45 to the right, improve= 96.64493, (0 missing)
+      body_mass_g       &lt; 4525  to the left,  improve= 83.06712, (0 missing)
+      island            splits as  RLL,       improve= 66.73118, (0 missing)
+  Surrogate splits:
+      bill_depth_mm  &lt; 16.35 to the right, agree=0.931, adj=0.816, (0 split)
+      body_mass_g    &lt; 4525  to the left,  agree=0.907, adj=0.752, (0 split)
+      island         splits as  RLL,       agree=0.844, adj=0.584, (0 split)
+      island2        splits as  RL,        agree=0.844, adj=0.584, (0 split)
+      bill_length_mm &lt; 43.25 to the left,  agree=0.784, adj=0.424, (0 split)
+
+Node number 2: 208 observations,    complexity param=0.2887701
+  predicted class=Adelie     expected loss=0.3076923  P(node) =0.6246246
+    class counts:   144    63     1
+   probabilities: 0.692 0.303 0.005 
+  left son=4 (145 obs) right son=5 (63 obs)
+  Primary splits:
+      bill_length_mm    &lt; 43.35 to the left,  improve=70.232650, (0 missing)
+      island            splits as  LRL,       improve=29.089290, (0 missing)
+      island2           splits as  LR,        improve= 9.964985, (0 missing)
+      flipper_length_mm &lt; 192.5 to the left,  improve= 8.887353, (0 missing)
+      body_mass_g       &lt; 3225  to the left,  improve= 2.340859, (0 missing)
+  Surrogate splits:
+      flipper_length_mm &lt; 195.5 to the left,  agree=0.740, adj=0.143, (0 split)
+      island            splits as  LRL,       agree=0.702, adj=0.016, (0 split)
+
+Node number 3: 125 observations,    complexity param=0.02673797
+  predicted class=Gentoo     expected loss=0.056  P(node) =0.3753754
+    class counts:     2     5   118
+   probabilities: 0.016 0.040 0.944 
+  left son=6 (7 obs) right son=7 (118 obs)
+  Primary splits:
+      island            splits as  RLL,       improve=10.518860, (0 missing)
+      bill_depth_mm     &lt; 17.65 to the right, improve=10.518860, (0 missing)
+      island2           splits as  RL,        improve=10.518860, (0 missing)
+      body_mass_g       &lt; 4325  to the left,  improve= 3.701549, (0 missing)
+      flipper_length_mm &lt; 212.5 to the left,  improve= 1.428632, (0 missing)
+  Surrogate splits:
+      bill_depth_mm &lt; 17.65 to the right, agree=1.000, adj=1.000, (0 split)
+      body_mass_g   &lt; 4125  to the left,  agree=0.968, adj=0.429, (0 split)
+
+Node number 4: 145 observations
+  predicted class=Adelie     expected loss=0.03448276  P(node) =0.4354354
+    class counts:   140     5     0
+   probabilities: 0.966 0.034 0.000 
+
+Node number 5: 63 observations
+  predicted class=Chinstrap  expected loss=0.07936508  P(node) =0.1891892
+    class counts:     4    58     1
+   probabilities: 0.063 0.921 0.016 
+
+Node number 6: 7 observations
+  predicted class=Chinstrap  expected loss=0.2857143  P(node) =0.02102102
+    class counts:     2     5     0
+   probabilities: 0.286 0.714 0.000 
+
+Node number 7: 118 observations
+  predicted class=Gentoo     expected loss=0  P(node) =0.3543544
+    class counts:     0     0   118
+   probabilities: 0.000 0.000 1.000 </code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+<h4 id="advantages">Advantages</h4>
+<ul>
+<li class="fragment"><p><strong>Interpretability</strong>: the rules are easy to visualize and understand.</p></li>
+<li class="fragment"><p><strong>Flexibility</strong>: trees can handle a large number of data modelling situations, not limited to classification; they can also be used for regression (are also known as classification and regression trees, or CART).</p></li>
+<li class="fragment"><p><strong>Nonlinear Boundaries</strong>: trees naturally model complex relationships.</p></li>
+</ul>
+<div class="fragment">
+<!-- -->
+<h4 id="disadvantages">Disadvantages</h4>
+<ul>
+<li class="fragment"><p><strong>Unstable</strong>: a small change in the training set can create an entirely different tree (each split depends on the <em>parent</em> split, and if a different root node is selecteds the whole tree will be different).</p></li>
+<li class="fragment"><p>If used for regression: Trees approximates linear relationships with a piece-wise function, which is not the most efficient way to model a linear relationship. They are also not <em>smooth</em>: a small change in one of the features can make it cross a threshold and have a large impact in the predicted value.</p></li>
+</ul>
+</div>
 <!-- ------------------------------------------------------------------------ -->
 <!-- ## Preventing Overfitting in Decision Trees -->
 <!-- -   **Pruning**: -->
