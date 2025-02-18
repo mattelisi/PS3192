@@ -16,4 +16,9 @@ academic year: 2024-25
 
 [Slides](intro2ML/intro2ML.html)
 
+[Worked example California housing data](intro2ML/california_housing_exercise.html)
 
+
+# Classification
+
+[Slides](supervised/classification.html)
