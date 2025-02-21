@@ -18,7 +18,6 @@ library(dplyr)
 library(caret)
 ```
 
-
 # Supervised learning & classification
 
 ------------------------------------------------------------------------
@@ -56,47 +55,45 @@ The *loss* function is the mean squared error: $$\text{MSE} = \frac{1}{n}\sum_{i
 
 ## Woes of supervised learning
 
-- **Overfitting**: when the model learns aspects of the training data that are just "noise" and fail to predict well new data. 
-    - It can be due to having a model that is too complex (too many free parameter).
-    - Methods like cross-validation, information criteria (e.g. AIC), and splitting in training/test sets, help reducing the chance of overfitting.
-    - If we care about estimating the predictive performance of our model, we need to be careful about leakage of information from test data.
+-   **Overfitting**: when the model learns aspects of the training data that are just "noise" and fail to predict well new data.
+    -   It can be due to having a model that is too complex (too many free parameter).
+    -   Methods like cross-validation, information criteria (e.g. AIC), and splitting in training/test sets, help reducing the chance of overfitting.
+    -   If we care about estimating the predictive performance of our model, we need to be careful about leakage of information from test data.
+-   **Dataset bias**: when the training data is incomplete or systematically different from the broader set of future data that we would like to predict.
 
-
-- **Dataset bias**: when the training data is incomplete or systematically different from the broader set of future data that we would like to predict.
-
-## California Housing Dataset 
+## California Housing Dataset
 
 ::: {style="font-size: 60%;"}
-| Variable | Description |
-|----------------------------------|-------------------------------------|
-| medv | Median value of owner-occupied homes (in \$1000s) |
-| crim | Per capita crime rate by town |
-| zn | Proportion of residential land zoned for large lots |
-| indus | Proportion of non-retail business acres per town |
-| chas | Charles River dummy variable (1 if tract bounds river, 0 otherwise) |
-| nox | Nitrogen oxide concentration (parts per 10 million) |
-| rm | Average number of rooms per dwelling |
-| age | Proportion of owner-occupied units built before 1940 |
-| dis | Weighted distance to employment centers |
-| rad | Index of accessibility to highways |
-| tax | Property tax rate per \$10,000 |
-| ptratio | Pupil-teacher ratio by town |
-| lstat | \% lower status of the population |
-| lon | longitude |
-| lat | latitude |
+| Variable | Description                                                         |
+|-----------------------------------|-------------------------------------|
+| medv     | Median value of owner-occupied homes (in \$1000s)                   |
+| crim     | Per capita crime rate by town                                       |
+| zn       | Proportion of residential land zoned for large lots                 |
+| indus    | Proportion of non-retail business acres per town                    |
+| chas     | Charles River dummy variable (1 if tract bounds river, 0 otherwise) |
+| nox      | Nitrogen oxide concentration (parts per 10 million)                 |
+| rm       | Average number of rooms per dwelling                                |
+| age      | Proportion of owner-occupied units built before 1940                |
+| dis      | Weighted distance to employment centers                             |
+| rad      | Index of accessibility to highways                                  |
+| tax      | Property tax rate per \$10,000                                      |
+| ptratio  | Pupil-teacher ratio by town                                         |
+| lstat    | \% lower status of the population                                   |
+| lon      | longitude                                                           |
+| lat      | latitude                                                            |
 :::
 
 ------------------------------------------------------------------------
 
-## California Housing Dataset 
+## California Housing Dataset
 
-- 14 possible predictor variables
-- Which subset of variable is the most useful for predicting the house value?
-- With 14 variables we have $2^{14}-1=16383$ possible subsets.
+-   14 possible predictor variables
+-   Which subset of variable is the most useful for predicting the house value?
+-   With 14 variables we have $2^{14}-1=16383$ possible subsets.
 
 ------------------------------------------------------------------------
 
-##
+## 
 
 ```{r, echo=FALSE, fig.height=5.7, fig.width=5, fig.align='center', fig.cap="Each grey dot  is a distinct model (16383 in total), characterised by a different combinations of predictors. On the horizontla axis is the cross-validated mean squared error (MSE) in the training data, whereas on the vertical axis is the MSE on the test data. The blue dot indicates the best model according to the LOO cross-validation procedure run on the training data."}
 
@@ -146,14 +143,15 @@ abline(a=0, b=1, lty=2)
 
 ------------------------------------------------------------------------
 
-## California Housing Dataset 
+## California Housing Dataset
 
 ::: nonincremental
-- 14 possible predictor variables
-- Which subset of variable is the most useful for predicting the house value?
-- With 14 variables we have $2^{14}-1=16383$ possible models (each a different subset of predictors).
+-   14 possible predictor variables
+-   Which subset of variable is the most useful for predicting the house value?
+-   With 14 variables we have $2^{14}-1=16383$ possible models (each a different subset of predictors).
 :::
-- Other methods are available for addressing the problem of selecting variables in regression (e.g. LASSO regression).
+
+-   Other methods are available for addressing the problem of selecting variables in regression (e.g. LASSO regression).
 
 ------------------------------------------------------------------------
 
@@ -161,11 +159,11 @@ abline(a=0, b=1, lty=2)
 
 ## Classification
 
-- Linear regression require a continuous outcome variables; however in many real world problems our target variables is a categorical label.
+-   Linear regression require a continuous outcome variables; however in many real world problems our target variables is a categorical label.
 
-- If the label can only take one of two values (like a coin flip) then we can model our data using logistic regression (discussed in PS3193).
+-   If the label can only take one of two values (like a coin flip) then we can model our data using logistic regression (discussed in PS3193).
 
-- Dataset with >2 labels requires different approaches.
+-   Dataset with \>2 labels requires different approaches.
 
 ------------------------------------------------------------------------
 
@@ -208,13 +206,14 @@ plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALS
 
 ## Decision trees: basic ideas
 
-- Decision trees _split_ the data multiple times according to certain cutoff values in the features/predictors.
+-   Decision trees *split* the data multiple times according to certain cutoff values in the features/predictors.
 
-- Starting from the _root_ node each subsequent node in the tree implements further split of the data; subsequent splits are connected by  (_if feature $X$ is [smaller/bigger] than threshold AND ... then the predicted class is ..._)
+-   Starting from the *root* node each subsequent node in the tree implements further split of the data; subsequent splits are connected by AND logical connectives\
+(*if feature $X$ is \[smaller/bigger\] than threshold AND ... then the predicted class is ...*)
 
-- The splits create a partition of the data into a set of distinct, non-overlapping regions (high-dimensional rectangles or _boxes_), each aiming to contains instances of the same class.
+-   The splits create a partition of the data into a set of distinct, non-overlapping regions (high-dimensional rectangles or *boxes*), each aiming to contains instances of the same class.
 
-- The terminal nodes are also known as _leafs_
+-   The terminal nodes are also known as *leafs*
 
 ##  {.smaller .scrollable transition="slide"}
 
@@ -233,53 +232,75 @@ plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALS
 
 ```
 
-
 <!-- ##  {.smaller .scrollable transition="slide"} -->
 
 <!-- ```{r} -->
+
 <!-- #| fig-height: 6 -->
+
 <!-- #| fig-width: 7 -->
+
 <!-- #| fig-align: center -->
 
 <!-- # Remove missing values -->
+
 <!-- penguins <- na.omit(penguins) -->
 
 <!-- # Fit a simple decision tree (pruned for clarity) -->
+
 <!-- p_m <- rpart(species ~ flipper_length_mm + bill_length_mm, data = penguins, method = "class") -->
 
 <!-- # Convert to party object for better visualization -->
+
 <!-- p_m2 <- as.party(p_m) -->
 
 <!-- # Create a grid of values for flipper length and bill length -->
+
 <!-- flipper_seq <- seq(min(penguins$flipper_length_mm)-10, max(penguins$flipper_length_mm)+10, length.out = 200) -->
+
 <!-- bill_seq <- seq(min(penguins$bill_length_mm)-5, max(penguins$bill_length_mm)+5, length.out = 200) -->
 
 <!-- grid <- expand.grid( -->
+
 <!--   flipper_length_mm = flipper_seq, -->
+
 <!--   bill_length_mm = bill_seq -->
+
 <!-- ) -->
 
 <!-- # Predict species for each grid point -->
+
 <!-- grid$species <- predict(p_m, newdata = grid, type = "class") -->
 
 <!-- # Plot the decision boundaries -->
+
 <!-- ggplot() + -->
+
 <!--   geom_tile(data = grid, aes(x = flipper_length_mm, y = bill_length_mm, fill = species), alpha = 0.8) + -->
+
 <!--   geom_point(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species), pch=21, size = 2) + -->
+
 <!--   labs( -->
+
 <!--     x = "Flipper length (mm)", -->
+
 <!--     y = "Bill length (mm)", -->
+
 <!--     title = "Decision boundaries" -->
+
 <!--   ) + -->
+
 <!--   scale_fill_manual(values = c("Adelie" = "lightblue", "Chinstrap" = "lightgreen", "Gentoo" = "lightpink")) + -->
+
 <!--   scale_color_manual(values = c("Adelie" = "blue", "Chinstrap" = "dark green", "Gentoo" = "red")) + -->
+
 <!--   theme_minimal()+ -->
+
 <!--   coord_cartesian(xlim=range(penguins$flipper_length_mm),ylim=range(penguins$bill_length_mm)) -->
 
 <!-- ``` -->
 
-## {.smaller .scrollable transition="slide"}
-
+##  {.smaller .scrollable transition="slide"}
 
 ```{r}
 #| fig-height: 5
@@ -333,47 +354,42 @@ ggplot() +
 
 ## Growing a decision tree {.scrollable}
 
-How do we choose the split? The most popular approach is **recursive binary splitting**, a _top-down, greedy_ algorithm: 
+How do we choose the split? The most popular approach is **recursive binary splitting**, a *top-down, greedy* algorithm:
 
 ::: {style="font-size: 80%;"}
-  - _top-down_ because it starts at the top of the tree 
-  - _greedy_ because it works by optimising the splits _locally_, at each node sequentially, rather than all the splits at once.
-
+-   *top-down* because it starts at the top of the tree
+-   *greedy* because it works by optimising the splits *locally*, at each node sequentially, rather than all the splits at once.
 :::
 
-1.   Start with a dataset having features $X$ and class labels $y = \left\{ 1, \ldots, k\right\}$
-2.   Choose a feature (say $X_j$) and a **threshold** $t$ that best **splits** the data into two subsets, depending on whether $\{x_j \le t \}$ or $\{x_j > t \}$.\
-The **best split** is the one that minimizes an **impurity measure** in child nodes. 
+1.  Start with a dataset having features $X$ and class labels $y = \left\{ 1, \ldots, k\right\}$
+2.  Choose a feature (say $X_j$) and a **threshold** $t$ that best **splits** the data into two subsets, depending on whether $\{x_j \le t \}$ or $\{x_j > t \}$.\
+    The **best split** is the one that minimizes an **impurity measure** in child nodes.
 
 ::: {style="font-size: 80%;"}
-  - Common impurity measure: **Gini index**: $G = 1 - \sum_{k=1}^K p_k^2$
-  - Here, $p_k$ is the proportion of class $k$ instances in a node.
-  - Gini index is small if all values are close to 0 or 1.
-
+-   Common impurity measure: **Gini index**: $G = 1 - \sum_{k=1}^K p_k^2$
+-   Here, $p_k$ is the proportion of class $k$ instances in a node.
+-   Gini index is small if all values are close to 0 or 1.
 :::
 
-3.   **Repeat** recursively (by splitting one of the previously identified nodes) until some stopping criterion (e.g., max depth, n. of datapoints per leaf) is met.
-
+3.  **Repeat** recursively (by splitting one of the previously identified nodes) until some stopping criterion (e.g., max depth, n. of datapoints per leaf) is met.
 
 ## Pruning the tree
 
-- **The tree-growing algorithm is likely to _overfit_ the training data**, producing too complex trees that may not generalise well to new data.
+-   **The tree-growing algorithm is likely to *overfit* the training data**, producing too complex trees that may not generalise well to new data.
 
-- One could grow the tree only as long as the decrease in the impurity measure due to each split exceeds a relatively high threshold.\ 
-However this is too short-sighted --- a seemingly worthless split early on in the tree might be followed by a very good split. 
+-   One could grow the tree only as long as the decrease in the impurity measure due to each split exceeds a relatively high threshold.  However this is too short-sighted --- a seemingly worthless split early on in the tree might be followed by a very good split.
 
-- A better strategy is to **grow a large tree, and then _prune_ it back to a smaller _sub_-tree**, by removing leaf nodes that add little predictive value. 
+-   A better strategy is to **grow a large tree, and then *prune* it back to a smaller *sub*-tree**, by removing leaf nodes that add little predictive value.
 
  
 
-- In practice pruning works as follow:
-  - a tuning parameter $\alpha$ penalizes the loss function based on complexity (number of leaf nodes).
-  - cross-validation to select a best value for $\alpha$
+-   In practice pruning works as follow:
+    1.   set a tuning parameter $\alpha$ penalizes the loss function based on complexity (number of leaf nodes).
+    2.   use cross-validation to select a best value for $\alpha$
 
+## 
 
-##
-
-_Unpruned_ tree for `penguins` data
+*Unpruned* tree for `penguins` data
 
 ```{r}
 #| fig-height: 6
@@ -443,12 +459,9 @@ ggplot(cp_data, aes(x = size)) +
 
 ```
 
-
-
 ## 
 
 ### Estimating a decision tree in R (`rpart` package)
-
 
 ```{r, echo=TRUE}
 library(rpart)
@@ -459,18 +472,15 @@ p_m
 ```
 
 ::: fragment
-
  
 
 ::: {style="font-size: 80%;"}
-This tree has 4 terminal leafs (terminal nodes).\
+This tree has 4 terminal leafs (terminal nodes), rather 8 suggested by the cross-validation.\
 This is because by default `rpart` does not attempt to split a node if it has 20 datapoints or less.
 :::
-
 :::
 
-
-##
+## 
 
 We can change parameters to allows smaller splits:
 
@@ -483,26 +493,17 @@ p_m
 ```
 
 ::: fragment
-
 ::: {style="font-size: 80%;"}
-
 Now the tree has 8 leafs (which correspond to the minimum of the cross-validation error as shown in the cross-validation plot)
-
 :::
-
 :::
-
 
 ## 
 
-
 ::: {style="font-size: 80%;"}
-
-- In practice `rpart` normally choose the simplest model that is within 1 standard error from the minimum. 
-- (The error typically shows a sharp drop frollowed by a flat plateau; so the 1 - SE rule allows to choose the simmples model among all those "tied" on the plateau)
-
+-   In practice `rpart` would choose the simplest model that is within 1 standard error from the minimum, rather than the minimum itself.
+-   (The error typically shows a sharp drop followed by a flat plateau; so the 1 - SE rule allows to choose the simplest model among all those "tied" on the plateau)
 :::
-
 
 ```{r}
 #| fig-height: 6
@@ -546,13 +547,9 @@ ggplot(cp_data, aes(x = size)) +
 
 ```
 
+## 
 
-
-##
-
-_Pruned_ tree for `penguins` data, after allowing split also in nodes with as little as `minsplit = 4` observations.
-
-
+*Pruned* tree for `penguins` data, after allowing split also in nodes with as little as `minsplit = 4` observations.
 
 ```{r}
 #| fig-height: 6
@@ -578,7 +575,6 @@ plot(p_m2, digits = 0, id = FALSE,
 
 ```
 
-
 ##  {.scrollable}
 
 The `summary()` function provides further information
@@ -588,13 +584,13 @@ The `summary()` function provides further information
 summary(p_m)
 ```
 
-##
+## 
 
 Notes on `summary()` output
 
-- **Primary vs _surrogate_ splits**: surrogate splits are rules to make deccisions when the variables in a split point is missing
+-   **Primary vs *surrogate* splits**: surrogate splits are rules to make deccisions when the variables in a split point is missing
 
-- **Variable importance** summarise how useful is a variable for prediction (based on unpruned tree and including surrogate splits)
+-   **Variable importance** summarise how useful is a variable for prediction (based on unpruned tree and including surrogate splits)
 
 ## Plotting trees (1)
 
@@ -610,9 +606,7 @@ text(p_m, use.n = TRUE, cex=0.8)
 ```
 
 ::: {style="font-size: 80%;"}
-
 See `?plot.rpart` for available options.
-
 :::
 
 ## Plotting trees (2) {.scrollable transition="convex"}
@@ -629,13 +623,9 @@ library(rpart.plot)
 rpart.plot(p_m)
 ```
 
-
 ::: {style="font-size: 80%;"}
-
 See `?rpart.plot` for options.
-
 :::
-
 
 ## Plotting trees (3) {.scrollable transition="convex"}
 
@@ -660,8 +650,7 @@ plot(p_m2,
 
 ## Confusion matrix {.scrollable}
 
-A way to examine the accuracy of classification (_note that the this would be accuracy on the training set; to assess predictive accuracy for new, unseen data we need to use something like cross-validation_)
-
+A way to examine the accuracy of classification (*note that the this would be accuracy on the training set; to assess predictive accuracy for new, unseen data we need to use something like cross-validation*)
 
 ```{r, echo=TRUE}
 # fit tree
@@ -678,7 +667,6 @@ print(conf_mat)
 ```
 
 ## Plotting a confusion matrix
-
 
 ```{r}
 #| fig-height: 5
@@ -701,55 +689,50 @@ ggplot(conf_df, aes(x = Prediction, y = Reference, fill = Freq)) +
   theme_minimal()
 ```
 
-
 ## Exercise
 
-- Use one of the dataset for classification in the 'coursework' folder on Moodle and fit a decision tree model.
-
+-   Use one of the dataset for classification in the 'coursework' folder on Moodle and fit a decision tree model.
 
 ##  {.scrollable}
 
 #### Advantages
 
-- **Interpretability**: trees are easy to visualize, interpret and explain.
+-   **Interpretability**: trees are easy to visualize, interpret and explain.
 
-- **Flexibility**: trees can easily handle many types of variables; they can also be used for regression (are also known as classification and regression trees, or CART).
+-   **Flexibility**: trees can easily handle many types of variables; they can also be used for regression (are also known as classification and regression trees, or CART).
 
-- **Nonlinear Boundaries**: trees naturally model complex, non-linear relationships. 
-
+-   **Nonlinear Boundaries**: trees naturally model complex, non-linear relationships.
 
 ::: fragment
-
 #### Disadvantages
 
-- For regression, decision trees approximate linear relationships with _piecewise_ functions, which can be inefficient compared to direct linear modeling. They also lack _smoothness_ — a small change in a feature can push it past a threshold, causing a sudden jump in predictions. 
+-   For regression, decision trees approximate linear relationships with *piecewise* functions, which can be inefficient compared to direct linear modeling. They also lack *smoothness* — a small change in a feature can push it past a threshold, causing a sudden jump in predictions.
 
-- **Non-robust**: a small change in the training data can create a large difference in the final estimated tree\
-(each split depends on the _parent_ split, and if a different root node is selecteds the whole tree will be different).
-
+-   **Non-robust**: a small change in the training data can create a large difference in the final estimated tree\
+    (each split depends on the *parent* split, and if a different root node is selecteds the whole tree will be different).
 :::
 
 # Ensemble methods
 
 ## Ensemble methods to improve robustness
 
-- Trees suffer from _high variance_: if we split the training data into two parts at random, and fit a decision tree to both halves, the results that we get could be quite different.
+-   Trees suffer from *high variance*: if we split the training data into two parts at random, and fit a decision tree to both halves, the results that we get could be quite different.
 
-- One approach to improve robustness is _bootstrap aggregation_ or _bagging_:
-    1. take repeated samples (with replacement) from the training data (_bootstrapping_)
-    2. train a tree on each of these _bootstrapped_ dataset 
-    3. combine the predictions (_mojority vote_)
+-   One approach to improve robustness is *bootstrap aggregation* or *bagging*:
 
-- Bagging can be used to combine together hundreds or thousands of trees in a single procedure, and can give more robust and accurate results.    
+    1.  take repeated samples (with replacement) from the training data (*bootstrapping*)
+    2.  train a tree on each of these *bootstrapped* dataset
+    3.  combine the predictions (*mojority vote*)
 
+-   Bagging can be used to combine together hundreds or thousands of trees in a single procedure, and can give more robust and accurate results.
 
 ## Random forests
 
-- Random forests provide a further improvements over bagged trees: in addition to resampling the observations (the rows in our data) in each resampled training dataset we include only a subset of the predictor variables.
+-   Random forests provide a further improvements over bagged trees: in addition to resampling the observations (the rows in our data) in each resampled training dataset we include only a subset of the predictor variables.
 
-- This small tweak decorrelate the trees in each resampled dataset and make the ensemble even less variable and more robust.
+-   This small tweak decorrelate the trees in each resampled dataset and make the ensemble even less variable and more robust.
 
-- Particularly helpful when we hav a large number of correlated predictors
+-   Particularly helpful when we hav a large number of correlated predictors
 
 ![](Random_Forest_Bagging_Illustration.png){fig-align="center" width="90%"}
 
@@ -765,12 +748,12 @@ rf_model <- randomForest(species ~ ., data = penguins, ntree = 500, importance =
 print(rf_model)
 ```
 
-- One advantage of random forest is that they provide automatically an estimate of predictive performance.
-- On average each boostrapped dataset include about 2/3 of training data, and we can assess how well the model predict the remaining 1/3 of data (Out-of-Bag, or OOB accuracy).
+-   One advantage of random forest is that they provide automatically an estimate of predictive performance.
+-   On average each boostrapped dataset include about 2/3 of training data, and we can assess how well the model predict the remaining 1/3 of data (Out-of-Bag, or OOB accuracy).
 
-## OOB confusion matrix 
+## OOB confusion matrix
 
-We can use a confusion matrix to assess the out-of-bag predictive accuracy 
+We can use a confusion matrix to assess the out-of-bag predictive accuracy
 
 ```{r}
 #| fig-height: 5
@@ -789,13 +772,10 @@ ggplot(data = as.data.frame(conf_mat$table), aes(Prediction, Reference, fill = F
   theme_minimal()
 ```
 
-
 ## Boosting
 
-- Boosting is also an ensemble method, in the sense that combine many models to produce a result that is more accurate and robust.
+-   Boosting is also an ensemble method, in the sense that combine many models to produce a result that is more accurate and robust.
 
-- However, rather than combining many decision trees that were estimated independently, boosting work by sequentially improving a single model, focusing in particular in areas where it does not perform well.
+-   However, rather than combining many decision trees that were estimated independently, boosting work by sequentially improving a single model, focusing in particular in areas where it does not perform well.
 
-- A state-of-the-art improvement of boosting is gradient boosting, and is implemented in the R package [`xgboost`](https://xgboost.readthedocs.io/en/stable/#)
-
-
+-   A state-of-the-art improvement of boosting is gradient boosting, and is implemented in the R package [`xgboost`](https://xgboost.readthedocs.io/en/stable/#)

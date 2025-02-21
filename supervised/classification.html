@@ -448,8 +448,8 @@ Matteo Lisi
 <div style="font-size: 60%;">
 <table class="caption-top">
 <colgroup>
-<col style="width: 47%">
-<col style="width: 52%">
+<col style="width: 48%">
+<col style="width: 51%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -571,7 +571,8 @@ Matteo Lisi
 <h2>Decision trees: basic ideas</h2>
 <ul>
 <li class="fragment"><p>Decision trees <em>split</em> the data multiple times according to certain cutoff values in the features/predictors.</p></li>
-<li class="fragment"><p>Starting from the <em>root</em> node each subsequent node in the tree implements further split of the data; subsequent splits are connected by (<em>if feature <span class="math inline">\(X\)</span> is [smaller/bigger] than threshold AND … then the predicted class is …</em>)</p></li>
+<li class="fragment"><p>Starting from the <em>root</em> node each subsequent node in the tree implements further split of the data; subsequent splits are connected by AND logical connectives<br>
+(<em>if feature <span class="math inline">\(X\)</span> is [smaller/bigger] than threshold AND … then the predicted class is …</em>)</p></li>
 <li class="fragment"><p>The splits create a partition of the data into a set of distinct, non-overlapping regions (high-dimensional rectangles or <em>boxes</em>), each aiming to contains instances of the same class.</p></li>
 <li class="fragment"><p>The terminal nodes are also known as <em>leafs</em></p></li>
 </ul>
@@ -653,10 +654,10 @@ The <strong>best split</strong> is the one that minimizes an <strong>impurity me
 <p>&nbsp;</p>
 <ul>
 <li class="fragment">In practice pruning works as follow:
-<ul>
-<li class="fragment">a tuning parameter <span class="math inline">\(\alpha\)</span> penalizes the loss function based on complexity (number of leaf nodes).</li>
-<li class="fragment">cross-validation to select a best value for <span class="math inline">\(\alpha\)</span></li>
-</ul></li>
+<ol type="1">
+<li class="fragment">set a tuning parameter <span class="math inline">\(\alpha\)</span> penalizes the loss function based on complexity (number of leaf nodes).</li>
+<li class="fragment">use cross-validation to select a best value for <span class="math inline">\(\alpha\)</span></li>
+</ol></li>
 </ul>
 </section>
 <section id="section-3" class="slide level2">
@@ -696,7 +697,7 @@ node), split, n, loss, yval, (yprob)
 <div class="fragment">
 <p>&nbsp;</p>
 <div style="font-size: 80%;">
-<p>This tree has 4 terminal leafs (terminal nodes).<br>
+<p>This tree has 4 terminal leafs (terminal nodes), rather 8 suggested by the cross-validation.<br>
 This is because by default <code>rpart</code> does not attempt to split a node if it has 20 datapoints or less.</p>
 </div>
 </div>
@@ -743,8 +744,8 @@ node), split, n, loss, yval, (yprob)
 <h2></h2>
 <div style="font-size: 80%;">
 <ul>
-<li class="fragment">In practice <code>rpart</code> normally choose the simplest model that is within 1 standard error from the minimum.</li>
-<li class="fragment">(The error typically shows a sharp drop frollowed by a flat plateau; so the 1 - SE rule allows to choose the simmples model among all those “tied” on the plateau)</li>
+<li class="fragment">In practice <code>rpart</code> would choose the simplest model that is within 1 standard error from the minimum, rather than the minimum itself.</li>
+<li class="fragment">(The error typically shows a sharp drop followed by a flat plateau; so the 1 - SE rule allows to choose the simplest model among all those “tied” on the plateau)</li>
 </ul>
 </div>
 
@@ -769,8 +770,8 @@ rpart(formula = species ~ ., data = penguins, minsplit = 4, xval = 50)
 2 0.28877005      1 0.37967914 0.38502674 0.04017194
 3 0.02673797      2 0.09090909 0.11764706 0.02423973
 4 0.01604278      3 0.06417112 0.08556150 0.02087017
-5 0.01069519      4 0.04812834 0.08556150 0.02087017
-6 0.01000000      7 0.01604278 0.06951872 0.01890092
+5 0.01069519      4 0.04812834 0.08021390 0.02023930
+6 0.01000000      7 0.01604278 0.06417112 0.01818777
 
 Variable importance
 flipper_length_mm    bill_length_mm     bill_depth_mm       body_mass_g 
