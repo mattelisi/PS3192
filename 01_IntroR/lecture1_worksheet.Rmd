@@ -16,8 +16,11 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 
 # The R prompt
 
+The R command prompt looks like `>` (see picture below). You can type in commands and they will run once you hit `Enter`. 
 
-![The R command prompt looks like `>`. You can type in commands and they will run once you hit `Enter`. At its simplest, you can think of this as a fancy calculator.](r_prompt.PNG) As such you can use operators like `+`, `-`, `*` (for multiplication), `/`, etc. to do calculations:
+![](r_prompt.PNG) 
+
+At its simplest, you can think of this as a fancy calculator. For instance, you can use operators like `+`, `-`, `*` (for multiplication), `/`, etc. to do calculations:
 
 ```{r}
 2+2
@@ -499,6 +502,7 @@ It includes the following variables:
 
 
 You can use this dataset to explore questions such as:
+
 - what proportion of movies fails to pass the test
 - do movies that fails to pass the test have larger budget? do they make more or less revenue?
 
