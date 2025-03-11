@@ -1,0 +1,119 @@
+---
+title: "PS3192: Unsupervised learning"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    incremental: true
+    auto-stretch: true
+    theme: [default, matteo_rhul.css]
+editor: visual
+keep-md: true
+filters: [bg_style.lua]
+---
+
+
+
+
+# *Unsupervised* learning
+
+------------------------------------------------------------------------
+
+## Supervised vs. unsupervised learning
+
+ 
+
+::: nonincremental
+
+-   **Supervised learning:** training data contains a set of input features (predictors) and target labels/outcome.
+
+-   **Unsupervised learning:** learning patterns from *unlabeled data*.
+
+:::
+
+## Supervised vs. unsupervised learning
+
+ 
+
+::: fragment
+**Supervised Learning**\
+- We have a *training* dataset containing some with input features $X$ and target labels/outcomes $y$\
+- The algorithm learns a function $f(X)$ that predicts $y$ accurately\
+- Learning is achieved by minimising a *cost* or *loss* function (i.e. an error metric that tells us how bad the predictions are compared to the observed $y$)\
+- Examples: **Regression** (continuous outcomes), **Classification** (categorical outcomes)
+:::
+
+ 
+
+::: fragment
+**Unsupervised Learning**\
+- We only have input features $X$, with no labeled outcome\
+- The algorithm finds structure in the data (e.g., clusters, latent factors)\
+- Much less well-defined problem since we don't know usually know in advance what to look for.\
+- Examples: **Clustering** (e.g., gaussian mixture models), **Dimensionality Reduction** (PCA)
+:::
+
+## Unsupervised learning: some examples
+
+- **Clustering**\
+Divides the training set into groups of similar examples. Each example should be more similar to examples in its group than to other groups.
+
+- **Dimensionality reduction**\
+Transform high-dimensional data (e.g. many features/predictors) into a lower-dimensional representation that still retain some meaningful properties of original data.\
+Example in psychology: exploratory factor analysis.
+
+- **Density estimation**\
+Learn a probability distribution (probability _density_ function or _pdf_) from data.
+
+- **Representation learning**\
+Learn structured representations from raw data, often mapping high-dimensional categorical data into a continuous space.\
+Example: large language models (LLM) like ChatGPT represent words as "dense vector embeddings" --- sets of numbers that indicate where a word lies along different semantic dimensions.
+
+## A simple clustering algorithm: $k$-means
+
+- Partition the data into $k$ categories (clusters).
+- The "$k$" denotes the requested number of clusters (a parameter that is set from the user).
+
+::: fragment
+
+::::::: columns
+:::: {.column width="50%"}
+
+::: {style="font-size: 70%;"}
+
+- Start by creating $k$ cluster at random, each defined by the coordinates of its mean value (_centroid_).
+- Alternate between two steps:
+
+  1. **Assignment step**: assign each datapoint to the cluster with the nearest centroid.
+  2. **Update step**: recalculate the mean (centroid) of each cluster from the datapoints assigned to it.
+
+- Stop when the _cost_ function — sum of within-cluster squared errors (distances from centroid) cannot be improved anymore.
+
+:::
+
+:::: 
+
+:::: {.column width="50%"}
+
+![](K-means_convergence.gif){fig-align="center"}
+
+::::
+
+:::::::
+
+:::
+
+::: {.notes}
+The k-means process is interrupted at each iteration after updating the means. The Voronoi cells (black lines) are drawn with the new means, but the points labels are still from the previous iteration (i.e. assigned to the closest mean of the previous iteration). This is why the black lines are already one iteration ahead (the Voronoi cells are only computed in visualization, k-means does not compute them). This can be a bit irritating, but it is a fact that the result, until converged, is never completely consistent: either points are not assigned to the nearest center, or the center is not the mean of the assigned points. Once we have both properties, it has converged.
+:::
+
+## Limitations of $k$-means clustering
+
+<!-- - Not guaranteed to find a "global" optimum -->
+
+- "Hard" clustering method: each point is assigned to one and only one cluster; there is no uncertainty measure that tells us how confident we can be in the cluster assignment of each point.
+
+- Clusters shape lacks flexibility: $k$-means tend to find only clusters of similar shape and spatial extent
+
+
+## Gaussian Mixture Models (GMM)
+
