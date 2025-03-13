@@ -272,7 +272,7 @@ where:
 ::: fragment
 
 ```{r}
-#| fig-height: 2.5
+#| fig-height: 2.75
 #| fig-width: 9
 #| fig-align: center
 
@@ -304,11 +304,11 @@ dat$correlation <- factor(c(rep("rho==-0.7", n_obs),
 # Create theoretical ellipses
 theoretical_ellipses <- do.call(rbind, lapply(names(cov_matrices), function(rho){
   ell <- ellipse(cov_matrices[[rho]], level=0.95, npoints=100)
-  data.frame(X1=ell[,1]*24.741, X2=ell[,2]*5.922, correlation=rho)
+  data.frame(X1=ell[,1], X2=ell[,2], correlation=rho)
 }))
 
 # Plot with theoretical ellipses and custom theme
-ggplot(dat, aes(x = X1 * 24.741, y = X2 * 5.922)) +
+ggplot(dat, aes(x = X1, y = X2)) +
   geom_point(alpha = 0.3, color="white") +
   geom_path(data=theoretical_ellipses, aes(x=X1, y=X2), color="white", size=1.2) +
   facet_grid(. ~ correlation, labeller = label_parsed) +
