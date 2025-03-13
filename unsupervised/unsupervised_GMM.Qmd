@@ -11,9 +11,13 @@ keep-md: true
 filters: [bg_style.lua]
 ---
 
-# *Unsupervised* learning
-
-------------------------------------------------------------------------
+```{r setup, include=FALSE}
+library(mvtnorm)
+library(ellipse)
+library(plot3D)
+library(tidyverse)
+library(MASS)
+```
 
 ## Supervised vs. unsupervised learning
 
@@ -63,6 +67,25 @@ filters: [bg_style.lua]
     Learn structured representations from raw data, often mapping high-dimensional categorical data into a continuous space.\
     Example: large language models (LLM) like ChatGPT represent words as "dense vector embeddings" --- sets of numbers that indicate where a word lies along different semantic dimensions.
 
+##
+
+::: nonincremental
+
+**Clustering examples:**
+
+- **Personality types:**
+  - Identify distinct personality profiles based on questionnaire responses.
+  - Example: clustering Big Five traits into personality "types."
+
+- **Mental health diagnostics:**
+  - Discover patient subgroups based on symptom patterns for tailored interventions.
+
+- **Behavioral data segmentation:**
+  - Group participants based on response patterns or other measures.
+
+:::
+
+
 ## A simple clustering algorithm: $k$-means
 
 -   Partition the data into $k$ categories (clusters).
@@ -95,10 +118,569 @@ The k-means process is interrupted at each iteration after updating the means. T
 
 ## Limitations of $k$-means clustering
 
-<!-- - Not guaranteed to find a "global" optimum -->
+ 
 
--   "Hard" clustering method: each point is assigned to one and only one cluster; there is no uncertainty measure that tells us how confident we can be in the cluster assignment of each point.
+-   **"Hard" clustering method**: each point is assigned to one and only one cluster; there is _no uncertainty measure_ that tells us how confident we can be in the cluster assignment of each point.
 
--   Clusters shape lacks flexibility: $k$-means tend to find only clusters of similar shape and spatial extent
+-   **No flexibility in cluster's shape**: $k$-means tend to find only clusters of similar shape and spatial extent
+
+
+
+::: fragment
+::: {style="font-size: 70%;"}
+Other (less important) limitations of $k$-means clustering are its sensitivity to initialization and to outliers.
+
+:::
+:::
+
 
 ## Gaussian Mixture Models (GMM)
+
+- Some of these limitations can be overcome with a more sophisticated, _probabilistic_ characterization of clusters.
+
+- In this approach, known as _mixture modelling_ we assume that the data comes from a set of distinct sub-populations, each with its own characteristics. When these sub-populations are assumed to be Gaussian, we have a _Gaussian Mixture Model_ or _GMM_.
+
+::: fragment
+
+![](Gaussian_Mixture.gif){fig-align="center"}
+
+
+:::
+
+## Gaussian Mixture Models (GMM)
+
+- For this to work, we need more than just a centroid to represent each cluster/sub-population:
+
+    - the mean;
+    - the variance-covariance matrix
+
+
+## Gaussian distribution (recap) {background-color="#202A30"}
+
+ 
+
+**Simple _univariate_ Gaussian distribution**
+
+ 
+
+::: fragment
+Unbounded, bell-shaped distribution, characterised by two parameters: the mean ($\mu$) and the standard deviation ($\sigma$)
+:::
+
+ 
+
+:::: columns
+::: {.column width="50%"}
+
+ 
+ 
+ 
+
+::: fragment
+
+$x \sim \mathcal{N}(\mu=1, \sigma=2)$
+
+:::
+
+ 
+ 
+ 
+
+::: fragment
+
+$p(x) =  \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}$
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: fragment
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+par(bg = "#202A30", col.axis = "white", col.lab="white", mar=c(5,4,1.5,1)+0.1)
+
+x <- seq(-5,7, length.out=300)
+
+
+plot(x, dnorm(x, mean=1, sd=2), xlab="x",ylab="p(x)", type="l", col="white", lwd=3, bty="n",axes = FALSE)
+axis(1, col = "white")
+axis(2, col = "white", las = 1)
+```
+
+:::
+
+:::
+::::
+
+
+## Gaussian distribution (recap) {background-color="#202A30"}
+
+ 
+
+**_Multivariate_ Gaussian distribution**
+
+A generalization of the Gaussian distribution to data with more than one dimension/component:
+
+- Each datapoint is represented as a vector, i.e., an ordered set of numbers (one for each dimension).
+- Each dimension/component has its own mean.
+- Instead of a single standard deviation, we use a variance-covariance matrix, which specifies:
+
+    - the variance (spread) for each dimension,
+    - the covariance (correlation) between dimensions.
+
+
+## {.scrollable background-color="#202A30" transition="slide"}
+
+**Variance-covariance matrix example:**
+
+ 
+
+For a bivariate Gaussian (2 components, $x_1$ and $x_2$), $\left[x_1, x_2 \right] \sim \mathcal{N}(\left[\mu_1, \mu_2\right], \Omega)$, we have a 2-by-2 variance-covariance matrix:
+
+ 
+
+::: fragment
+
+$$\Omega = \left[ \begin{array}{cc} \text{Var}(x_1) & \text{Cov}(x_1, x_2) \\ \text{Cov}(x_1, x_2) & \text{Var}(x_2) \end{array} \right]$$
+
+:::
+
+ 
+
+::: fragment
+
+::: {style="font-size: 70%;"}
+
+where:
+
+- $\text{Var}(x) = \sigma_{x}^2$
+
+- $\text{Cov}(x_1, x_2) = \rho \,\sigma_{x_1}\sigma_{x_2}$, that is the covariance can be represented as the product of the 2 standard deviations, multiplied by a correlation coefficient $\rho$.
+
+:::
+
+:::
+
+ 
+
+::: fragment
+
+```{r}
+#| fig-height: 2.5
+#| fig-width: 9
+#| fig-align: center
+
+n_obs <- 250
+
+# Known covariance matrices
+cov_matrices <- list(
+  "rho==-0.7" = matrix(c(1, -0.7, -0.7, 1), 2),
+  "rho==0" = matrix(c(1, 0, 0, 1), 2),
+  "rho==0.5" = matrix(c(1, 0.5, 0.5, 1), 2),
+  "rho==0.85" = matrix(c(1, 0.85, 0.85, 1), 2)
+)
+
+# Generate data
+rn5 <- MASS::mvrnorm(n_obs, c(0, 0), Sigma = cov_matrices[["rho==-0.7"]])
+r00 <- MASS::mvrnorm(n_obs, c(0, 0), Sigma = cov_matrices[["rho==0"]])
+r03 <- MASS::mvrnorm(n_obs, c(0, 0), Sigma = cov_matrices[["rho==0.5"]])
+r07 <- MASS::mvrnorm(n_obs, c(0, 0), Sigma = cov_matrices[["rho==0.85"]])
+
+# Combine datasets
+dat <- data.frame(rbind(rn5, r00, r03, r07))
+colnames(dat) <- c("X1", "X2")
+dat$correlation <- factor(c(rep("rho==-0.7", n_obs),
+                            rep("rho==0", n_obs),
+                            rep("rho==0.5", n_obs),
+                            rep("rho==0.85", n_obs)),
+                          levels = c("rho==-0.7", "rho==0", "rho==0.5", "rho==0.85"))
+
+# Create theoretical ellipses
+theoretical_ellipses <- do.call(rbind, lapply(names(cov_matrices), function(rho){
+  ell <- ellipse(cov_matrices[[rho]], level=0.95, npoints=100)
+  data.frame(X1=ell[,1]*24.741, X2=ell[,2]*5.922, correlation=rho)
+}))
+
+# Plot with theoretical ellipses and custom theme
+ggplot(dat, aes(x = X1 * 24.741, y = X2 * 5.922)) +
+  geom_point(alpha = 0.3, color="white") +
+  geom_path(data=theoretical_ellipses, aes(x=X1, y=X2), color="white", size=1.2) +
+  facet_grid(. ~ correlation, labeller = label_parsed) +
+  labs(x = expression(x[1]), y = expression(x[2])) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill="#202A30", color="#202A30"),
+    plot.background = element_rect(fill="#202A30", color="#202A30"),
+    strip.background = element_rect(fill="#202A30", color="#202A30"),
+    strip.text = element_text(color="white"),
+    axis.text = element_text(color="white"),
+    axis.title = element_text(color="white"),
+    panel.grid = element_blank()
+  )
+
+```
+
+:::
+
+------------------------------------------------------------------------
+
+
+## Gaussian Mixture Models (GMM)
+
+- Each "cluster" is modelled as a Gaussian sub-population with its own **mean** vector and **variance-covariance matrix**.
+
+- Each component (sub-population) has a **mixture weight**, which indicates the probability that a randomly selected datapoint belongs to that particular sub-population.
+
+- Some advantages over $k$-means are:
+
+    - Flexibility in shape: Clusters can vary in size, shape, and orientation.
+    - Soft cluster assignments: No hard boundaries between clusters. Sub-populations can overlap substantially, and each datapoint can have partial membership in multiple clusters (probabilistic assignment).
+
+- A GMM provides, for each datapoint, a vector of probabilities representing how likely it is that the it belongs to each cluster (to obtain a "hard assignment" we can pick the highest probability)
+
+
+## Number of clusters & model selection in GMM
+
+- A key challenge in Gaussian mixture modeling (GMM) is deciding how many clusters to use.
+
+- In addition, we must choose a suitable covariance structure for the clusters.
+    - For instance, clusters may be assumed spherical (uncorrelated), or to share the same variance (more details later).
+
+- GMM addresses these choices automatically through model selection criteria.
+
+- The Bayesian Information Criterion (**BIC**) is most commonly used:
+  - Models with different numbers of clusters are compared.
+  - The model with the best BIC score is typically selected as the optimal solution.
+
+
+## Gaussian Mixture Model in R: `mclust` package
+
+```{r, echo=TRUE, include=TRUE}
+library(mclust)
+```
+
+ 
+
+
+::: fragment
+::: columns
+::: {.column width="40%"}
+
+Example "mouse" dataset (available on Moodle)
+
+ 
+
+
+```{r, echo=TRUE, include=TRUE}
+dat <- read.csv("mouse.csv")
+head(dat)
+```
+
+
+:::
+
+::: {.column width="60%"}
+
+::: fragment
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+set.seed(42)
+n_obs <- 300
+
+# Define three Gaussian clusters (mouse shape)
+ear1 <- MASS::mvrnorm(n = n_obs/2, mu = c(3, 8), Sigma = matrix(c(0.3, 0, 0, 0.3), 2))
+ear2 <- MASS::mvrnorm(n_obs/2, c(8, 8), Sigma = matrix(c(0.3, 0, 0, 0.3), 2))
+head <- MASS::mvrnorm(n_obs*2, c(5.5, 5), Sigma = matrix(c(2.5, 0, 0, 2.5), 2))
+
+# Combine into one dataset
+datC <- data.frame(rbind(ear1, ear2, head))
+colnames(datC) <- c("X1", "X2")
+
+# write_csv(dat,"mouse.csv")
+
+datC$cluster <- factor(c(rep("Ear1", n_obs/2), rep("Ear2", n_obs/2), rep("Head", n_obs*2)))
+
+# Plot dataset (similar to Wikipedia "mouse" example)
+ggplot(datC, aes(x = X1, y = X2, color=cluster)) +
+  geom_point(alpha=0.8) +
+  theme_minimal() +
+  labs(x="X1", y="X2")
+
+```
+
+:::
+:::
+:::
+:::
+
+## GMM with `mclust`
+
+ 
+
+::: fragment
+
+```{r, echo=TRUE, include=TRUE}
+fit <- Mclust(dat)    # fit GMM
+summary(fit)          # print summary
+```
+
+:::
+
+## {.scrollable}
+
+As it is often the case, `summary()` only print key information, there is a lot more in the fitted model object. Using the `str()` is one way to get a list of what is included:
+
+```{r, echo=TRUE, include=TRUE}
+str(fit)
+```
+
+## {.scrollable}
+
+The field `fit$classification` contains the "hard" assignment of data-points to clusters.
+
+ 
+
+::: fragment
+
+The field `fit$z` contains the probabilities that each datapoint belong to each cluster
+
+```{r, echo=TRUE, include=TRUE}
+head(fit$z)
+```
+
+:::
+
+ 
+
+::: fragment
+
+```{r, echo=TRUE, include=TRUE}
+round(head(fit$z), digits=4)
+```
+
+:::
+
+## Visualising results
+
+ 
+
+::: columns
+::: {.column width="40%"}
+
+```{r, echo=TRUE, eval=FALSE}
+# Add predicted cluster to the dataset
+dat$cluster_gmm <- factor(fit$classification)
+
+# Plot GMM results
+ggplot(dat, aes(x = X1, y = X2, 
+                color = cluster_gmm)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "GMM xlustering",
+       x = "X1", y = "X2",
+       color = "cluster")
+```
+
+
+:::
+
+::: {.column width="60%"}
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Add predicted cluster to the dataset
+dat$cluster_gmm <- factor(fit$classification)
+
+# Plot GMM results
+ggplot(dat, 
+       aes(x = X1, y = X2, 
+           color = cluster_gmm)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "GMM clustering",
+       x = "X1", y = "X2",
+       color = "cluster")
+
+
+```
+
+:::
+:::
+
+## Comparison with $k$-means
+
+ 
+
+::: columns
+::: {.column width="40%"}
+
+```{r, echo=TRUE, eval=FALSE}
+# Perform k-means clustering (3 clusters)
+kmeans_fit <- kmeans(dat, 
+                     centers = 3)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, 
+       aes(x = X1, y = X2, 
+           color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means Clustering",
+       x = "X1", y = "X2",
+       color = "cluster")
+
+
+```
+
+
+:::
+
+::: {.column width="60%"}
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering (3 clusters)
+kmeans_fit <- kmeans(dat, centers = 3)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, 
+                color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means Clustering",
+       x = "X1", y = "X2",
+       color = "cluster")
+
+```
+
+:::
+:::
+
+
+## Model selection in `mclust`
+
+By default, `mclust` tries all parametrizations of variance-covariance matrix, and up to 9 components
+
+```{r, echo=TRUE, eval=TRUE}
+
+fit$BIC
+
+```
+
+
+## Visualising model selection in `mclust`
+
+
+```{r, echo=TRUE, eval=TRUE}
+#| fig-height: 8
+#| fig-width: 10
+#| fig-align: center
+
+plot(fit$BIC)
+
+```
+
+
+## Understanding variance-covariance parametrization
+
+ 
+
+::: nonincremental
+
+The type of model is identified by 3 letters, and their orders refer to the 3 main properties:
+
+- **1st letter** → **Volume** (overall size of the clusters)
+- **2nd letter** → **Shape** (ratios between cluster axes, or the "elongation")
+- **3rd letter** → **Orientation** (direction of the ellipsoid in space)
+
+Each characteristic can be either:
+
+- **E (_Equal_)**: identical across clusters
+- **V (_Variable_)**: different for each cluster
+- **I (_Identity_)**: restricted (spherical, no elongation or rotation), meaning spherical clusters.
+
+::: 
+
+ 
+
+::: fragment
+
+::: {style="font-size: 70%;"}
+
+For example, the model labelled **EEI** would be the most similar to $k$-means, as it correspond to _spherical clusters with equal variance across dimensions._
+
+:::
+
+:::
+
+## GMM with more than 2 dimensions {.scrollable}
+
+```{r, echo=TRUE, eval=TRUE}
+library(palmerpenguins)
+str(penguins)
+
+dat <- na.omit(penguins[, c("species", "bill_length_mm", "flipper_length_mm", "body_mass_g")])
+fit <- Mclust(dat[,-1])
+summary(fit)
+```
+
+
+## GMM with more than 2 dimensions 
+
+Using bill length, flipper length and body mass suggest 3 classes; we can plot the results as follow:
+
+```{r, echo=TRUE, eval=TRUE}
+#| fig-height: 5.5
+#| fig-width: 5.5
+#| fig-align: center
+plot(fit, what = "classification")
+```
+
+
+## GMM with more than 2 dimensions 
+
+The `mclust` package contains also some handy functions to visualise the 'true' class (if available)
+
+```{r, echo=TRUE, eval=TRUE}
+#| fig-height: 6.5
+#| fig-width: 6.5
+#| fig-align: center
+
+clPairs(dat[,-1], classification=dat$species, 
+        main="True penguin species")
+
+```
+
+
+
+## Exercise
+
+::: nonincremental
+
+-   Use one of the dataset for clustering in the 'coursework' folder on Moodle and fit and evaluate a GMM model.
+
+:::

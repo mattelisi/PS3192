@@ -29,6 +29,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="unsupervised_GMM_files/libs/revealjs/dist/theme/quarto.css">
   <link href="unsupervised_GMM_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -337,11 +402,6 @@ Matteo Lisi
 </div>
 
 </section>
-<section>
-<section id="unsupervised-learning" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
-<h1><em>Unsupervised</em> learning</h1>
-
-</section>
 <section id="supervised-vs.-unsupervised-learning" class="slide level2">
 <h2>Supervised vs.&nbsp;unsupervised learning</h2>
 <p>&nbsp;</p>
@@ -385,6 +445,27 @@ Learn a probability distribution (probability <em>density</em> function or <em>p
 Learn structured representations from raw data, often mapping high-dimensional categorical data into a continuous space.<br>
 Example: large language models (LLM) like ChatGPT represent words as “dense vector embeddings” — sets of numbers that indicate where a word lies along different semantic dimensions.</p></li>
 </ul>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<div>
+<p><strong>Clustering examples:</strong></p>
+<ul>
+<li><strong>Personality types:</strong>
+<ul>
+<li>Identify distinct personality profiles based on questionnaire responses.</li>
+<li>Example: clustering Big Five traits into personality “types.”</li>
+</ul></li>
+<li><strong>Mental health diagnostics:</strong>
+<ul>
+<li>Discover patient subgroups based on symptom patterns for tailored interventions.</li>
+</ul></li>
+<li><strong>Behavioral data segmentation:</strong>
+<ul>
+<li>Group participants based on response patterns or other measures.</li>
+</ul></li>
+</ul>
+</div>
 </section>
 <section id="a-simple-clustering-algorithm-k-means" class="slide level2">
 <h2>A simple clustering algorithm: <span class="math inline">\(k\)</span>-means</h2>
@@ -430,20 +511,523 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 </section>
 <section id="limitations-of-k-means-clustering" class="slide level2">
 <h2>Limitations of <span class="math inline">\(k\)</span>-means clustering</h2>
-<!-- - Not guaranteed to find a "global" optimum -->
+<p>&nbsp;</p>
 <ul>
-<li class="fragment"><p>“Hard” clustering method: each point is assigned to one and only one cluster; there is no uncertainty measure that tells us how confident we can be in the cluster assignment of each point.</p></li>
-<li class="fragment"><p>Clusters shape lacks flexibility: <span class="math inline">\(k\)</span>-means tend to find only clusters of similar shape and spatial extent</p></li>
+<li class="fragment"><p><strong>“Hard” clustering method</strong>: each point is assigned to one and only one cluster; there is <em>no uncertainty measure</em> that tells us how confident we can be in the cluster assignment of each point.</p></li>
+<li class="fragment"><p><strong>No flexibility in cluster’s shape</strong>: <span class="math inline">\(k\)</span>-means tend to find only clusters of similar shape and spatial extent</p></li>
 </ul>
+<div class="fragment">
+<div style="font-size: 70%;">
+<p>Other (less important) limitations of <span class="math inline">\(k\)</span>-means clustering are its sensitivity to initialization and to outliers.</p>
+</div>
+</div>
 </section>
 <section id="gaussian-mixture-models-gmm" class="slide level2">
 <h2>Gaussian Mixture Models (GMM)</h2>
+<ul>
+<li class="fragment"><p>Some of these limitations can be overcome with a more sophisticated, <em>probabilistic</em> characterization of clusters.</p></li>
+<li class="fragment"><p>In this approach, known as <em>mixture modelling</em> we assume that the data comes from a set of distinct sub-populations, each with its own characteristics. When these sub-populations are assumed to be Gaussian, we have a <em>Gaussian Mixture Model</em> or <em>GMM</em>.</p></li>
+</ul>
+<div class="fragment">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Gaussian_Mixture.gif" class="quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="gaussian-mixture-models-gmm-1" class="slide level2">
+<h2>Gaussian Mixture Models (GMM)</h2>
+<ul>
+<li class="fragment"><p>For this to work, we need more than just a centroid to represent each cluster/sub-population:</p>
+<ul>
+<li class="fragment">the mean;</li>
+<li class="fragment">the variance-covariance matrix</li>
+</ul></li>
+</ul>
+</section>
+<section id="gaussian-distribution-recap" class="slide level2" data-background-color="#202A30">
+<h2>Gaussian distribution (recap)</h2>
+<p>&nbsp;</p>
+<p><strong>Simple <em>univariate</em> Gaussian distribution</strong></p>
+<p>&nbsp;</p>
+<div class="fragment">
+<p>Unbounded, bell-shaped distribution, characterised by two parameters: the mean (<span class="math inline">\(\mu\)</span>) and the standard deviation (<span class="math inline">\(\sigma\)</span>)</p>
+</div>
+<p>&nbsp;</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>&nbsp; &nbsp; &nbsp;</p>
+<div class="fragment">
+<p><span class="math inline">\(x \sim \mathcal{N}(\mu=1, \sigma=2)\)</span></p>
+</div>
+<p>&nbsp; &nbsp; &nbsp;</p>
+<div class="fragment">
+<p><span class="math inline">\(p(x) =  \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}\)</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-1-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="gaussian-distribution-recap-1" class="slide level2" data-background-color="#202A30">
+<h2>Gaussian distribution (recap)</h2>
+<p>&nbsp;</p>
+<p><strong><em>Multivariate</em> Gaussian distribution</strong></p>
+<p>A generalization of the Gaussian distribution to data with more than one dimension/component:</p>
+<ul>
+<li class="fragment"><p>Each datapoint is represented as a vector, i.e., an ordered set of numbers (one for each dimension).</p></li>
+<li class="fragment"><p>Each dimension/component has its own mean.</p></li>
+<li class="fragment"><p>Instead of a single standard deviation, we use a variance-covariance matrix, which specifies:</p>
+<ul>
+<li class="fragment">the variance (spread) for each dimension,</li>
+<li class="fragment">the covariance (correlation) between dimensions.</li>
+</ul></li>
+</ul>
+</section>
+<section id="section-1" class="slide level2 scrollable" data-background-color="#202A30" data-transition="slide">
+<h2></h2>
+<p><strong>Variance-covariance matrix example:</strong></p>
+<p>&nbsp;</p>
+<p>For a bivariate Gaussian (2 components, <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>), <span class="math inline">\(\left[x_1, x_2 \right] \sim \mathcal{N}(\left[\mu_1, \mu_2\right], \Omega)\)</span>, we have a 2-by-2 variance-covariance matrix:</p>
+<p>&nbsp;</p>
+<div class="fragment">
+<p><span class="math display">\[\Omega = \left[ \begin{array}{cc} \text{Var}(x_1) &amp; \text{Cov}(x_1, x_2) \\ \text{Cov}(x_1, x_2) &amp; \text{Var}(x_2) \end{array} \right]\]</span></p>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<div style="font-size: 70%;">
+<p>where:</p>
+<ul>
+<li class="fragment"><p><span class="math inline">\(\text{Var}(x) = \sigma_{x}^2\)</span></p></li>
+<li class="fragment"><p><span class="math inline">\(\text{Cov}(x_1, x_2) = \rho \,\sigma_{x_1}\sigma_{x_2}\)</span>, that is the covariance can be represented as the product of the 2 standard deviations, multiplied by a correlation coefficient <span class="math inline">\(\rho\)</span>.</p></li>
+</ul>
+</div>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="gaussian-mixture-models-gmm-2" class="slide level2">
+<h2>Gaussian Mixture Models (GMM)</h2>
+<ul>
+<li class="fragment"><p>Each “cluster” is modelled as a Gaussian sub-population with its own <strong>mean</strong> vector and <strong>variance-covariance matrix</strong>.</p></li>
+<li class="fragment"><p>Each component (sub-population) has a <strong>mixture weight</strong>, which indicates the probability that a randomly selected datapoint belongs to that particular sub-population.</p></li>
+<li class="fragment"><p>Some advantages over <span class="math inline">\(k\)</span>-means are:</p>
+<ul>
+<li class="fragment">Flexibility in shape: Clusters can vary in size, shape, and orientation.</li>
+<li class="fragment">Soft cluster assignments: No hard boundaries between clusters. Sub-populations can overlap substantially, and each datapoint can have partial membership in multiple clusters (probabilistic assignment).</li>
+</ul></li>
+<li class="fragment"><p>A GMM provides, for each datapoint, a vector of probabilities representing how likely it is that the it belongs to each cluster (to obtain a “hard assignment” we can pick the highest probability)</p></li>
+</ul>
+</section>
+<section id="number-of-clusters-model-selection-in-gmm" class="slide level2">
+<h2>Number of clusters &amp; model selection in GMM</h2>
+<ul>
+<li class="fragment"><p>A key challenge in Gaussian mixture modeling (GMM) is deciding how many clusters to use.</p></li>
+<li class="fragment"><p>In addition, we must choose a suitable covariance structure for the clusters.</p>
+<ul>
+<li class="fragment">For instance, clusters may be assumed spherical (uncorrelated), or to share the same variance (more details later).</li>
+</ul></li>
+<li class="fragment"><p>GMM addresses these choices automatically through model selection criteria.</p></li>
+<li class="fragment"><p>The Bayesian Information Criterion (<strong>BIC</strong>) is most commonly used:</p>
+<ul>
+<li class="fragment">Models with different numbers of clusters are compared.</li>
+<li class="fragment">The model with the best BIC score is typically selected as the optimal solution.</li>
+</ul></li>
+</ul>
+</section>
+<section id="gaussian-mixture-model-in-r-mclust-package" class="slide level2">
+<h2>Gaussian Mixture Model in R: <code>mclust</code> package</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(mclust)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>Example “mouse” dataset (available on Moodle)</p>
+<p>&nbsp;</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"mouse.csv"</span>)</span>
+<span id="cb2-2"><a href=""></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        X1       X2
+1 3.566276 8.057792
+2 7.988349 4.153911
+3 4.368442 5.601580
+4 2.763622 7.454118
+5 6.174496 4.262424
+6 8.048162 7.815795</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</div>
+</section>
+<section id="gmm-with-mclust" class="slide level2">
+<h2>GMM with <code>mclust</code></h2>
+<p>&nbsp;</p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>fit <span class="ot">&lt;-</span> <span class="fu">Mclust</span>(dat)    <span class="co"># fit GMM</span></span>
+<span id="cb4-2"><a href=""></a><span class="fu">summary</span>(fit)          <span class="co"># print summary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>---------------------------------------------------- 
+Gaussian finite mixture model fitted by EM algorithm 
+---------------------------------------------------- 
+
+Mclust VII (spherical, varying volume) model with 3 components: 
+
+ log-likelihood   n df       BIC       ICL
+      -3430.111 900 11 -6935.048 -7007.034
+
+Clustering table:
+  1   2   3 
+148 592 160 </code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="section-2" class="slide level2 scrollable">
+<h2></h2>
+<p>As it is often the case, <code>summary()</code> only print key information, there is a lot more in the fitted model object. Using the <code>str()</code> is one way to get a list of what is included:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">str</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 16
+ $ call          : language Mclust(data = dat)
+ $ data          : num [1:900, 1:2] 3.57 7.99 4.37 2.76 6.17 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ : NULL
+  .. ..$ : chr [1:2] "X1" "X2"
+ $ modelName     : chr "VII"
+ $ n             : int 900
+ $ d             : int 2
+ $ G             : int 3
+ $ BIC           : 'mclustBIC' num [1:9, 1:14] -7552 -7565 -7321 -7287 -7201 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ : chr [1:9] "1" "2" "3" "4" ...
+  .. ..$ : chr [1:14] "EII" "VII" "EEI" "VEI" ...
+  ..- attr(*, "G")= num [1:9] 1 2 3 4 5 6 7 8 9
+  ..- attr(*, "modelNames")= chr [1:14] "EII" "VII" "EEI" "VEI" ...
+  ..- attr(*, "control")=List of 4
+  .. ..$ eps     : num 2.22e-16
+  .. ..$ tol     : num [1:2] 1.00e-05 1.49e-08
+  .. ..$ itmax   : int [1:2] 2147483647 2147483647
+  .. ..$ equalPro: logi FALSE
+  ..- attr(*, "initialization")=List of 3
+  .. ..$ hcPairs: 'hc' num [1:2, 1:899] 324 636 324 677 324 890 324 577 324 613 ...
+  .. .. ..- attr(*, "initialPartition")= num [1:900] 1 2 3 4 5 6 7 8 9 10 ...
+  .. .. .. ..- attr(*, "unique")= int 900
+  .. .. ..- attr(*, "dimensions")= int [1:2] 900 2
+  .. .. ..- attr(*, "modelName")= chr "VVV"
+  .. .. ..- attr(*, "call")= language hc(data = data, modelName = mclust.options("hcModelName"), use = mclust.options("hcUse"))
+  .. .. ..- attr(*, "use")= chr "SVD"
+  .. .. ..- attr(*, "data")= num [1:900, 1:2] 0.0103 0.0456 -0.0975 -0.0818 -0.0664 ...
+  .. ..$ subset : NULL
+  .. ..$ noise  : NULL
+  ..- attr(*, "warn")= logi FALSE
+  ..- attr(*, "n")= int 900
+  ..- attr(*, "d")= int 2
+  ..- attr(*, "oneD")= logi FALSE
+  ..- attr(*, "criterion")= chr "BIC"
+  ..- attr(*, "returnCodes")= num [1:9, 1:14] 0 0 0 0 0 0 0 0 0 0 ...
+  .. ..- attr(*, "dimnames")=List of 2
+  .. .. ..$ : chr [1:9] "1" "2" "3" "4" ...
+  .. .. ..$ : chr [1:14] "EII" "VII" "EEI" "VEI" ...
+ $ loglik        : num -3430
+ $ df            : num 11
+ $ bic           : num -6935
+ $ icl           : num -7007
+ $ hypvol        : num NA
+ $ parameters    :List of 3
+  ..$ pro     : num [1:3] 0.158 0.674 0.168
+  ..$ mean    : num [1:2, 1:3] 2.98 8.02 5.45 4.98 8.03 ...
+  .. ..- attr(*, "dimnames")=List of 2
+  .. .. ..$ : chr [1:2] "X1" "X2"
+  .. .. ..$ : NULL
+  ..$ variance:List of 6
+  .. ..$ modelName: chr "VII"
+  .. ..$ d        : int 2
+  .. ..$ G        : int 3
+  .. ..$ sigma    : num [1:2, 1:2, 1:3] 0.27 0 0 0.27 2.53 ...
+  .. .. ..- attr(*, "dimnames")=List of 3
+  .. .. .. ..$ : chr [1:2] "X1" "X2"
+  .. .. .. ..$ : chr [1:2] "X1" "X2"
+  .. .. .. ..$ : NULL
+  .. ..$ sigmasq  : num [1:3] 0.27 2.534 0.295
+  .. ..$ scale    : num [1:3] 0.27 2.534 0.295
+ $ z             : num [1:900, 1:3] 9.39e-01 8.46e-32 1.86e-06 9.40e-01 9.57e-20 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ : NULL
+  .. ..$ : NULL
+ $ classification: num [1:900] 1 2 2 1 2 3 1 2 3 3 ...
+ $ uncertainty   : num [1:900] 6.05e-02 1.48e-10 1.86e-06 5.97e-02 5.31e-13 ...
+ - attr(*, "class")= chr "Mclust"</code></pre>
+</div>
+</div>
+</section>
+<section id="section-3" class="slide level2 scrollable">
+<h2></h2>
+<p>The field <code>fit$classification</code> contains the “hard” assignment of data-points to clusters.</p>
+<p>&nbsp;</p>
+<div class="fragment">
+<p>The field <code>fit$z</code> contains the probabilities that each datapoint belong to each cluster</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">head</span>(fit<span class="sc">$</span>z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             [,1]       [,2]         [,3]
+[1,] 9.394938e-01 0.06050619 4.020001e-15
+[2,] 8.456048e-32 1.00000000 1.484083e-10
+[3,] 1.859867e-06 0.99999814 2.867654e-14
+[4,] 9.402792e-01 0.05972083 4.911272e-21
+[5,] 9.571797e-20 1.00000000 5.311986e-13
+[6,] 2.760140e-21 0.02562377 9.743762e-01</code></pre>
+</div>
+</div>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">round</span>(<span class="fu">head</span>(fit<span class="sc">$</span>z), <span class="at">digits=</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       [,1]   [,2]   [,3]
+[1,] 0.9395 0.0605 0.0000
+[2,] 0.0000 1.0000 0.0000
+[3,] 0.0000 1.0000 0.0000
+[4,] 0.9403 0.0597 0.0000
+[5,] 0.0000 1.0000 0.0000
+[6,] 0.0000 0.0256 0.9744</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="visualising-results" class="slide level2">
+<h2>Visualising results</h2>
+<p>&nbsp;</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="co"># Add predicted cluster to the dataset</span></span>
+<span id="cb12-2"><a href=""></a>dat<span class="sc">$</span>cluster_gmm <span class="ot">&lt;-</span> <span class="fu">factor</span>(fit<span class="sc">$</span>classification)</span>
+<span id="cb12-3"><a href=""></a></span>
+<span id="cb12-4"><a href=""></a><span class="co"># Plot GMM results</span></span>
+<span id="cb12-5"><a href=""></a><span class="fu">ggplot</span>(dat, <span class="fu">aes</span>(<span class="at">x =</span> X1, <span class="at">y =</span> X2, </span>
+<span id="cb12-6"><a href=""></a>                <span class="at">color =</span> cluster_gmm)) <span class="sc">+</span></span>
+<span id="cb12-7"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb12-8"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb12-9"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"GMM xlustering"</span>,</span>
+<span id="cb12-10"><a href=""></a>       <span class="at">x =</span> <span class="st">"X1"</span>, <span class="at">y =</span> <span class="st">"X2"</span>,</span>
+<span id="cb12-11"><a href=""></a>       <span class="at">color =</span> <span class="st">"cluster"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="comparison-with-k-means" class="slide level2">
+<h2>Comparison with <span class="math inline">\(k\)</span>-means</h2>
+<p>&nbsp;</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="co"># Perform k-means clustering (3 clusters)</span></span>
+<span id="cb13-2"><a href=""></a>kmeans_fit <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(dat, </span>
+<span id="cb13-3"><a href=""></a>                     <span class="at">centers =</span> <span class="dv">3</span>)</span>
+<span id="cb13-4"><a href=""></a></span>
+<span id="cb13-5"><a href=""></a><span class="co"># Add predicted cluster to the dataset</span></span>
+<span id="cb13-6"><a href=""></a>dat<span class="sc">$</span>cluster_kmeans <span class="ot">&lt;-</span> <span class="fu">factor</span>(kmeans_fit<span class="sc">$</span>cluster)</span>
+<span id="cb13-7"><a href=""></a></span>
+<span id="cb13-8"><a href=""></a><span class="co"># Plot k-means results</span></span>
+<span id="cb13-9"><a href=""></a><span class="fu">ggplot</span>(dat, </span>
+<span id="cb13-10"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> X1, <span class="at">y =</span> X2, </span>
+<span id="cb13-11"><a href=""></a>           <span class="at">color =</span> cluster_kmeans)) <span class="sc">+</span></span>
+<span id="cb13-12"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb13-13"><a href=""></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb13-14"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"K-means Clustering"</span>,</span>
+<span id="cb13-15"><a href=""></a>       <span class="at">x =</span> <span class="st">"X1"</span>, <span class="at">y =</span> <span class="st">"X2"</span>,</span>
+<span id="cb13-16"><a href=""></a>       <span class="at">color =</span> <span class="st">"cluster"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="model-selection-in-mclust" class="slide level2">
+<h2>Model selection in <code>mclust</code></h2>
+<p>By default, <code>mclust</code> tries all parametrizations of variance-covariance matrix, and up to 9 components</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>fit<span class="sc">$</span>BIC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bayesian Information Criterion (BIC): 
+        EII       VII       EEI       VEI       EVI       VVI       EEE
+1 -7551.993 -7551.993 -7558.775 -7558.775 -7558.775 -7558.775 -7565.180
+2 -7565.119 -7278.653 -7490.524 -7281.517 -7497.973 -7286.082 -7463.134
+3 -7320.692 -6935.048 -7327.459 -6941.833 -7294.907 -6953.556 -7334.256
+4 -7286.880 -6960.094 -7266.353 -6966.290 -7259.291 -6986.346 -7244.108
+5 -7200.874 -6985.576 -7206.346 -6991.876 -7218.239 -7018.360 -7213.405
+6 -7144.827 -7003.755 -7151.442 -7010.151 -7174.953 -7040.426 -7158.099
+7 -7165.264 -7028.188 -7171.887 -7033.499 -7201.834 -7071.017 -7178.494
+8 -7160.411 -7053.046 -7166.847 -7059.154 -7218.390 -7104.762 -7169.938
+9 -7133.254 -7071.940 -7132.348 -7077.232 -7154.250 -7118.450 -7135.946
+        VEE       EVE       VVE       EEV       VEV       EVV       VVV
+1 -7565.180 -7565.180 -7565.180 -7565.180 -7565.180 -7565.180 -7565.180
+2 -7208.383 -7436.430 -7203.606 -7345.224 -7212.119 -7351.503 -7209.669
+3 -6948.534 -7295.650 -6959.817 -7271.455 -6960.199 -7261.075 -6973.171
+4 -6972.955 -7229.232 -6993.628 -7225.750 -6992.850 -7240.081 -7012.560
+5 -6998.249 -7216.935 -7023.065 -7214.273 -7024.058 -7184.379 -7049.712
+6 -7016.348 -7170.415 -7041.071 -7181.320 -7047.370 -7205.852 -7073.190
+7 -7039.644 -7206.070 -7072.414 -7207.707 -7077.117 -7231.924 -7116.035
+8 -7065.124 -7177.877 -7100.918 -7172.031 -7109.289 -7212.995 -7146.980
+9 -7083.531 -7183.268 -7132.322 -7187.962 -7135.627 -7179.092 -7171.743
+
+Top 3 models based on the BIC criterion: 
+    VII,3     VEI,3     VEE,3 
+-6935.048 -6941.833 -6948.534 </code></pre>
+</div>
+</div>
+</section>
+<section id="visualising-model-selection-in-mclust" class="slide level2">
+<h2>Visualising model selection in <code>mclust</code></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">plot</span>(fit<span class="sc">$</span>BIC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="understanding-variance-covariance-parametrization" class="slide level2">
+<h2>Understanding variance-covariance parametrization</h2>
+<p>&nbsp;</p>
+<div>
+<p>The type of model is identified by 3 letters, and their orders refer to the 3 main properties:</p>
+<ul>
+<li><strong>1st letter</strong> → <strong>Volume</strong> (overall size of the clusters)</li>
+<li><strong>2nd letter</strong> → <strong>Shape</strong> (ratios between cluster axes, or the “elongation”)</li>
+<li><strong>3rd letter</strong> → <strong>Orientation</strong> (direction of the ellipsoid in space)</li>
+</ul>
+<p>Each characteristic can be either:</p>
+<ul>
+<li><strong>E (<em>Equal</em>)</strong>: identical across clusters</li>
+<li><strong>V (<em>Variable</em>)</strong>: different for each cluster</li>
+<li><strong>I (<em>Identity</em>)</strong>: restricted (spherical, no elongation or rotation), meaning spherical clusters.</li>
+</ul>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<div style="font-size: 70%;">
+<p>For example, the model labelled <strong>EEI</strong> would be the most similar to <span class="math inline">\(k\)</span>-means, as it correspond to <em>spherical clusters with equal variance across dimensions.</em></p>
+</div>
+</div>
+</section>
+<section id="gmm-with-more-than-2-dimensions" class="slide level2 scrollable">
+<h2>GMM with more than 2 dimensions</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb17-2"><a href=""></a><span class="fu">str</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [344 × 8] (S3: tbl_df/tbl/data.frame)
+ $ species          : Factor w/ 3 levels "Adelie","Chinstrap",..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ island           : Factor w/ 3 levels "Biscoe","Dream",..: 3 3 3 3 3 3 3 3 3 3 ...
+ $ bill_length_mm   : num [1:344] 39.1 39.5 40.3 NA 36.7 39.3 38.9 39.2 34.1 42 ...
+ $ bill_depth_mm    : num [1:344] 18.7 17.4 18 NA 19.3 20.6 17.8 19.6 18.1 20.2 ...
+ $ flipper_length_mm: int [1:344] 181 186 195 NA 193 190 181 195 193 190 ...
+ $ body_mass_g      : int [1:344] 3750 3800 3250 NA 3450 3650 3625 4675 3475 4250 ...
+ $ sex              : Factor w/ 2 levels "female","male": 2 1 1 NA 1 2 1 2 NA NA ...
+ $ year             : int [1:344] 2007 2007 2007 2007 2007 2007 2007 2007 2007 2007 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(penguins[, <span class="fu">c</span>(<span class="st">"species"</span>, <span class="st">"bill_length_mm"</span>, <span class="st">"flipper_length_mm"</span>, <span class="st">"body_mass_g"</span>)])</span>
+<span id="cb19-2"><a href=""></a>fit <span class="ot">&lt;-</span> <span class="fu">Mclust</span>(dat[,<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb19-3"><a href=""></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>---------------------------------------------------- 
+Gaussian finite mixture model fitted by EM algorithm 
+---------------------------------------------------- 
+
+Mclust EEE (ellipsoidal, equal volume, shape and orientation) model with 3
+components: 
+
+ log-likelihood   n df       BIC       ICL
+      -4751.497 342 17 -9602.185 -9620.434
+
+Clustering table:
+  1   2   3 
+155  60 127 </code></pre>
+</div>
+</div>
+</section>
+<section id="gmm-with-more-than-2-dimensions-1" class="slide level2">
+<h2>GMM with more than 2 dimensions</h2>
+<p>Using bill length, flipper length and body mass suggest 3 classes; we can plot the results as follow:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">plot</span>(fit, <span class="at">what =</span> <span class="st">"classification"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="528"></section>
+<section id="gmm-with-more-than-2-dimensions-2" class="slide level2">
+<h2>GMM with more than 2 dimensions</h2>
+<p>The <code>mclust</code> package contains also some handy functions to visualise the ‘true’ class (if available)</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a><span class="fu">clPairs</span>(dat[,<span class="sc">-</span><span class="dv">1</span>], <span class="at">classification=</span>dat<span class="sc">$</span>species, </span>
+<span id="cb22-2"><a href=""></a>        <span class="at">main=</span><span class="st">"True penguin species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" width="624"></section>
+<section id="exercise" class="slide level2">
+<h2>Exercise</h2>
+<div>
+<ul>
+<li>Use one of the dataset for clustering in the ‘coursework’ folder on Moodle and fit and evaluate a GMM model.</li>
+</ul>
+</div>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
@@ -654,6 +1238,44 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
