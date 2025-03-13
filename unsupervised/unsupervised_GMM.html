@@ -582,7 +582,7 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 <section id="gaussian-distribution-recap-1" class="slide level2" data-background-color="#202A30">
 <h2>Gaussian distribution (recap)</h2>
 <p>&nbsp;</p>
-<p><strong><em>Multivariate</em> Gaussian distribution</strong></p>
+<p><strong><em>Multivariate</em></strong> <strong>Gaussian distribution</strong></p>
 <p>A generalization of the Gaussian distribution to data with more than one dimension/component:</p>
 <ul>
 <li class="fragment"><p>Each datapoint is represented as a vector, i.e., an ordered set of numbers (one for each dimension).</p></li>
@@ -639,6 +639,21 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 <li class="fragment"><p>A GMM provides, for each datapoint, a vector of probabilities representing how likely it is that the it belongs to each cluster (to obtain a “hard assignment” we can pick the highest probability)</p></li>
 </ul>
 </section>
+<section id="fitting-gmm-maximum-likelihood-em-algorithm" class="slide level2">
+<h2>Fitting GMM: Maximum Likelihood &amp; EM Algorithm</h2>
+<ul>
+<li class="fragment"><p>GMM are fitted by maximizing the probability of observing the data given the model parameters (<em>likelihood</em>).</p></li>
+<li class="fragment"><p>This approach is called <strong>Maximum Likelihood Estimation (MLE)</strong> and underlies many statistical methods (e.g., linear and logistic regression).</p></li>
+<li class="fragment"><p>In practice, GMM likelihood is maximized using the <strong>Expectation-Maximization (EM)</strong> algorithm, an iterative two-step process:</p>
+<ol type="1">
+<li class="fragment"><p><strong>E-step (Expectation)</strong>:<br>
+Compute the probability (soft assignment) of each data point belonging to each cluster (similar to assigning points to the nearest centroid in <span class="math inline">\(k\)</span>-means).</p></li>
+<li class="fragment"><p><strong>M-step (Maximization)</strong>:<br>
+Update the cluster parameters (mean, covariance, mixture weight) to maximize the likelihood, given the probabilities computed in the E-step (similar to recalculating cluster centroids in <span class="math inline">\(k\)</span>-means).</p></li>
+</ol></li>
+<li class="fragment"><p>The EM algorithm iterates these two steps until convergence.</p></li>
+</ul>
+</section>
 <section id="number-of-clusters-model-selection-in-gmm" class="slide level2">
 <h2>Number of clusters &amp; model selection in GMM</h2>
 <ul>
@@ -653,21 +668,6 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 <li class="fragment">Models with different numbers of clusters are compared.</li>
 <li class="fragment">The model with the best BIC score is typically selected as the optimal solution.</li>
 </ul></li>
-</ul>
-</section>
-<section id="fitting-gmm-maximum-likelihood-em-algorithm" class="slide level2">
-<h2>Fitting GMM: Maximum Likelihood &amp; EM Algorithm</h2>
-<ul>
-<li class="fragment"><p>GMM are fitted by maximizing the probability of observing the data given the model parameters (<em>likelihood</em>).</p></li>
-<li class="fragment"><p>This approach is called <strong>Maximum Likelihood Estimation (MLE)</strong> and underlies many statistical methods (e.g., linear and logistic regression).</p></li>
-<li class="fragment"><p>In practice, GMM likelihood is maximized using the <strong>Expectation-Maximization (EM)</strong> algorithm, an iterative two-step process:</p>
-<ol type="1">
-<li class="fragment"><p><strong>E-step (Expectation)</strong>:<br>
-Compute the probability (soft assignment) of each data point belonging to each cluster (similar to assigning points to the nearest centroid in <span class="math inline">\(k\)</span>-means).</p></li>
-<li class="fragment"><p><strong>M-step (Maximization)</strong>:<br>
-Update the cluster parameters (mean, covariance, mixture weight) to maximize the likelihood, given the probabilities computed in the E-step (similar to recalculating cluster centroids in <span class="math inline">\(k\)</span>-means).</p></li>
-</ol></li>
-<li class="fragment"><p>The EM algorithm iterates these two steps until convergence.</p></li>
 </ul>
 </section>
 <section id="gaussian-mixture-model-in-r-mclust-package" class="slide level2">
@@ -973,9 +973,9 @@ Top 3 models based on the BIC criterion:
 <p>&nbsp;</p>
 <div class="fragment">
 <div style="font-size: 70%;">
-<p>For example, the model labelled <strong>EEI</strong> would be the most similar to <span class="math inline">\(k\)</span>-means, as it correspond to <em>spherical clusters with equal variance across dimensions.</em>.&nbsp;</p>
+<p>For example, the model labelled <strong>EII</strong> would be the most similar to <span class="math inline">\(k\)</span>-means, as it correspond to <em>spherical clusters with equal variance across dimensions.</em>.&nbsp;</p>
 <p>You can force a specific model by using the <code>modelNames</code> argument,<br>
-e.g.&nbsp;by using <code>mclust(dat, modelNames = "EEI")</code></p>
+e.g.&nbsp;by using <code>mclust(dat, modelNames = "EII")</code></p>
 </div>
 </div>
 </section>

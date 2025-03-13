@@ -64,24 +64,19 @@ filters: [bg_style.lua]
     Learn structured representations from raw data, often mapping high-dimensional categorical data into a continuous space.\
     Example: large language models (LLM) like ChatGPT represent words as "dense vector embeddings" --- sets of numbers that indicate where a word lies along different semantic dimensions.
 
-##
+## 
 
 ::: nonincremental
-
 **Clustering examples:**
 
-- **Personality types:**
-  - Identify distinct personality profiles based on questionnaire responses.
-  - Example: clustering Big Five traits into personality "types."
-
-- **Mental health diagnostics:**
-  - Discover patient subgroups based on symptom patterns for tailored interventions.
-
-- **Behavioral data segmentation:**
-  - Group participants based on response patterns or other measures.
-
+-   **Personality types:**
+    -   Identify distinct personality profiles based on questionnaire responses.
+    -   Example: clustering Big Five traits into personality "types."
+-   **Mental health diagnostics:**
+    -   Discover patient subgroups based on symptom patterns for tailored interventions.
+-   **Behavioral data segmentation:**
+    -   Group participants based on response patterns or other measures.
 :::
-
 
 ## A simple clustering algorithm: $k$-means
 
@@ -117,46 +112,38 @@ The k-means process is interrupted at each iteration after updating the means. T
 
  
 
--   **"Hard" clustering method**: each point is assigned to one and only one cluster; there is _no uncertainty measure_ that tells us how confident we can be in the cluster assignment of each point.
+-   **"Hard" clustering method**: each point is assigned to one and only one cluster; there is *no uncertainty measure* that tells us how confident we can be in the cluster assignment of each point.
 
 -   **No flexibility in cluster's shape**: $k$-means tend to find only clusters of similar shape and spatial extent
-
-
 
 ::: fragment
 ::: {style="font-size: 70%;"}
 Other (less important) limitations of $k$-means clustering are its sensitivity to initialization and to outliers.
-
 :::
 :::
-
 
 ## Gaussian Mixture Models (GMM)
 
-- Some of these limitations can be overcome with a more sophisticated, _probabilistic_ characterization of clusters.
+-   Some of these limitations can be overcome with a more sophisticated, *probabilistic* characterization of clusters.
 
-- In this approach, known as _mixture modelling_ we assume that the data comes from a set of distinct sub-populations, each with its own characteristics. When these sub-populations are assumed to be Gaussian, we have a _Gaussian Mixture Model_ or _GMM_.
+-   In this approach, known as *mixture modelling* we assume that the data comes from a set of distinct sub-populations, each with its own characteristics. When these sub-populations are assumed to be Gaussian, we have a *Gaussian Mixture Model* or *GMM*.
 
 ::: fragment
-
 ![](Gaussian_Mixture.gif){fig-align="center"}
-
-
 :::
 
 ## Gaussian Mixture Models (GMM)
 
-- For this to work, we need more than just a centroid to represent each cluster/sub-population:
+-   For this to work, we need more than just a centroid to represent each cluster/sub-population:
 
-    - the [mean]{.underline};
-    - the [variance-covariance matrix]{.underline}
-
+    -   the [mean]{.underline};
+    -   the [variance-covariance matrix]{.underline}
 
 ## Gaussian distribution (recap) {background-color="#202A30"}
 
  
 
-**Simple _univariate_ Gaussian distribution**
+**Simple *univariate* Gaussian distribution**
 
  
 
@@ -166,35 +153,23 @@ Unbounded, bell-shaped distribution, characterised by two parameters: the mean (
 
  
 
-:::: columns
+::: columns
 ::: {.column width="50%"}
-
- 
- 
- 
+     
 
 ::: fragment
-
 $x \sim \mathcal{N}(\mu=1, \sigma=2)$
-
 :::
 
- 
- 
- 
+     
 
 ::: fragment
-
 $p(x) =  \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}$
-
 :::
-
 :::
 
 ::: {.column width="50%"}
-
 ::: fragment
-
 
 
 ::: {.cell layout-align="center"}
@@ -204,30 +179,28 @@ $p(x) =  \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}
 :::
 
 
-
 :::
-
 :::
-::::
-
+:::
 
 ## Gaussian distribution (recap) {background-color="#202A30"}
 
  
 
-**_Multivariate_ Gaussian distribution**
+***Multivariate*** **Gaussian distribution**
 
 A generalization of the Gaussian distribution to data with more than one dimension/component:
 
-- Each datapoint is represented as a vector, i.e., an ordered set of numbers (one for each dimension).
-- Each dimension/component has its own mean.
-- Instead of a single standard deviation, we use a variance-covariance matrix, which specifies:
+-   Each datapoint is represented as a vector, i.e., an ordered set of numbers (one for each dimension).
 
-    - the variance (spread) for each dimension,
-    - the covariance (correlation) between dimensions.
+-   Each dimension/component has its own mean.
 
+-   Instead of a single standard deviation, we use a variance-covariance matrix, which specifies:
 
-## {.scrollable background-color="#202A30" transition="slide"}
+    -   the variance (spread) for each dimension,
+    -   the covariance (correlation) between dimensions.
+
+##  {.scrollable background-color="#202A30" transition="slide"}
 
 **Variance-covariance matrix example:**
 
@@ -238,31 +211,24 @@ For a bivariate Gaussian (2 components, $x_1$ and $x_2$), $\left[x_1, x_2 \right
  
 
 ::: fragment
-
 $$\Omega = \left[ \begin{array}{cc} \text{Var}(x_1) & \text{Cov}(x_1, x_2) \\ \text{Cov}(x_1, x_2) & \text{Var}(x_2) \end{array} \right]$$
-
 :::
 
  
 
 ::: fragment
-
 ::: {style="font-size: 70%;"}
-
 where:
 
-- $\text{Var}(x) = \sigma_{x}^2$
+-   $\text{Var}(x) = \sigma_{x}^2$
 
-- $\text{Cov}(x_1, x_2) = \rho \,\sigma_{x_1}\sigma_{x_2}$, that is the covariance can be represented as the product of the 2 standard deviations, multiplied by a correlation coefficient $\rho$.
-
+-   $\text{Cov}(x_1, x_2) = \rho \,\sigma_{x_1}\sigma_{x_2}$, that is the covariance can be represented as the product of the 2 standard deviations, multiplied by a correlation coefficient $\rho$.
 :::
-
 :::
 
  
 
 ::: fragment
-
 
 
 ::: {.cell layout-align="center"}
@@ -272,55 +238,56 @@ where:
 :::
 
 
-
 :::
 
 ------------------------------------------------------------------------
 
-
 ## Gaussian Mixture Models (GMM)
 
-- Each "cluster" is modelled as a Gaussian sub-population with its own **mean** vector and **variance-covariance matrix**.
+-   Each "cluster" is modelled as a Gaussian sub-population with its own **mean** vector and **variance-covariance matrix**.
 
-- Each component (sub-population) has a **mixture weight**, which indicates the probability that a randomly selected datapoint belongs to that particular sub-population.
+-   Each component (sub-population) has a **mixture weight**, which indicates the probability that a randomly selected datapoint belongs to that particular sub-population.
 
-- Some advantages over $k$-means are:
+-   Some advantages over $k$-means are:
 
-    - [Flexibility in shape]{.underline}: Clusters can vary in size, shape, and orientation.
-    - [Soft cluster assignments]{.underline}: No hard boundaries between clusters. Sub-populations can overlap substantially, and each datapoint can have partial membership in multiple clusters (probabilistic assignment).
+    -   [Flexibility in shape]{.underline}: Clusters can vary in size, shape, and orientation.
+    -   [Soft cluster assignments]{.underline}: No hard boundaries between clusters. Sub-populations can overlap substantially, and each datapoint can have partial membership in multiple clusters (probabilistic assignment).
 
-- A GMM provides, for each datapoint, a vector of probabilities representing how likely it is that the it belongs to each cluster (to obtain a "hard assignment" we can pick the highest probability)
+-   A GMM provides, for each datapoint, a vector of probabilities representing how likely it is that the it belongs to each cluster (to obtain a "hard assignment" we can pick the highest probability)
+
+
+## Fitting GMM: Maximum Likelihood & EM Algorithm
+
+-   GMM are fitted by maximizing the probability of observing the data given the model parameters (*likelihood*).
+
+-   This approach is called **Maximum Likelihood Estimation (MLE)** and underlies many statistical methods (e.g., linear and logistic regression).
+
+-   In practice, GMM likelihood is maximized using the **Expectation-Maximization (EM)** algorithm, an iterative two-step process:
+
+    1.  **E-step (Expectation)**:\
+        Compute the probability (soft assignment) of each data point belonging to each cluster (similar to assigning points to the nearest centroid in $k$-means).
+
+    2.  **M-step (Maximization)**:\
+        Update the cluster parameters (mean, covariance, mixture weight) to maximize the likelihood, given the probabilities computed in the E-step (similar to recalculating cluster centroids in $k$-means).
+
+-   The EM algorithm iterates these two steps until convergence.
+
 
 
 ## Number of clusters & model selection in GMM
 
-- A key challenge in Gaussian mixture modeling (GMM) is deciding how many clusters to use.
+-   A key challenge in Gaussian mixture modeling (GMM) is deciding how many clusters to use.
 
-- In addition, we must choose a suitable covariance structure for the clusters.
-    - For instance, clusters may be assumed spherical (uncorrelated), or to share the same variance (more details later).
+-   In addition, we must choose a suitable covariance structure for the clusters.
 
-- GMM addresses these choices automatically through model selection criteria.
+    -   For instance, clusters may be assumed spherical (uncorrelated), or to share the same variance (more details later).
 
-- The Bayesian Information Criterion (**BIC**) is most commonly used:
-  - Models with different numbers of clusters are compared.
-  - The model with the best BIC score is typically selected as the optimal solution.
+-   GMM addresses these choices automatically through model selection criteria.
 
+-   The Bayesian Information Criterion (**BIC**) is most commonly used:
 
-## Fitting GMM: Maximum Likelihood & EM Algorithm 
-
-- GMM are fitted by maximizing the probability of observing the data given the model parameters  (_likelihood_).
-
-- This approach is called **Maximum Likelihood Estimation (MLE)** and underlies many statistical methods (e.g., linear and logistic regression).
-
-- In practice, GMM likelihood is maximized using the **Expectation-Maximization (EM)** algorithm, an iterative two-step process:
-
-    1. **E-step (Expectation)**:\
-    Compute the probability (soft assignment) of each data point belonging to each cluster (similar to assigning points to the nearest centroid in $k$-means).
-
-    2. **M-step (Maximization)**:\
-    Update the cluster parameters (mean, covariance, mixture weight) to maximize the likelihood, given the probabilities computed in the E-step (similar to recalculating cluster centroids in $k$-means).
-
-- The EM algorithm iterates these two steps until convergence.
+    -   Models with different numbers of clusters are compared.
+    -   The model with the best BIC score is typically selected as the optimal solution.
 
 
 
@@ -339,15 +306,12 @@ library(mclust)
 
  
 
-
 ::: fragment
 ::: columns
 ::: {.column width="40%"}
-
 Example "mouse" dataset (available on Moodle)
 
  
-
 
 
 
@@ -375,14 +339,10 @@ head(dat)
 :::
 
 
-
-
 :::
 
 ::: {.column width="60%"}
-
 ::: fragment
-
 
 
 ::: {.cell layout-align="center"}
@@ -390,7 +350,6 @@ head(dat)
 ![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-5-1.png){fig-align='center' width=480}
 :::
 :::
-
 
 
 :::
@@ -403,7 +362,6 @@ head(dat)
  
 
 ::: fragment
-
 
 
 ::: {.cell}
@@ -435,10 +393,9 @@ Clustering table:
 :::
 
 
-
 :::
 
-## {.scrollable}
+##  {.scrollable}
 
 As it is often the case, `summary()` only print key information, there is a lot more in the fitted model object. Using the `str()` is one way to get a list of what is included:
 
@@ -531,14 +488,13 @@ List of 16
 
 
 
-## {.scrollable}
+##  {.scrollable}
 
 The field `fit$classification` contains the "hard" assignment of data-points to clusters.
 
  
 
 ::: fragment
-
 The field `fit$z` contains the probabilities that each datapoint belong to each cluster
 
 
@@ -566,13 +522,11 @@ head(fit$z)
 :::
 
 
-
 :::
 
  
 
 ::: fragment
-
 
 
 ::: {.cell}
@@ -598,7 +552,6 @@ round(head(fit$z), digits=4)
 :::
 
 
-
 :::
 
 ## Visualising results
@@ -607,7 +560,6 @@ round(head(fit$z), digits=4)
 
 ::: columns
 ::: {.column width="40%"}
-
 
 
 ::: {.cell}
@@ -628,13 +580,9 @@ ggplot(dat, aes(x = X1, y = X2,
 :::
 
 
-
-
 :::
 
 ::: {.column width="60%"}
-
-
 
 
 ::: {.cell layout-align="center"}
@@ -642,7 +590,6 @@ ggplot(dat, aes(x = X1, y = X2,
 ![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-11-1.png){fig-align='center' width=480}
 :::
 :::
-
 
 
 :::
@@ -654,7 +601,6 @@ ggplot(dat, aes(x = X1, y = X2,
 
 ::: columns
 ::: {.column width="40%"}
-
 
 
 ::: {.cell}
@@ -680,13 +626,9 @@ ggplot(dat,
 :::
 
 
-
-
 :::
 
 ::: {.column width="60%"}
-
-
 
 
 ::: {.cell layout-align="center"}
@@ -696,10 +638,8 @@ ggplot(dat,
 :::
 
 
-
 :::
 :::
-
 
 ## Model selection in `mclust`
 
@@ -749,9 +689,7 @@ Top 3 models based on the BIC criterion:
 
 
 
-
 ## Visualising model selection in `mclust`
-
 
 
 
@@ -768,40 +706,33 @@ plot(fit$BIC)
 
 
 
-
 ## Understanding variance-covariance parametrization
 
  
 
 ::: nonincremental
-
 The type of model is identified by 3 letters, and their orders refer to the 3 main properties:
 
-- **1st letter** → **Volume** (overall size of the clusters)
-- **2nd letter** → **Shape** (ratios between cluster axes, or the "elongation")
-- **3rd letter** → **Orientation** (direction of the ellipsoid in space)
+-   **1st letter** → **Volume** (overall size of the clusters)
+-   **2nd letter** → **Shape** (ratios between cluster axes, or the "elongation")
+-   **3rd letter** → **Orientation** (direction of the ellipsoid in space)
 
 Each characteristic can be either:
 
-- **E (_Equal_)**: identical across clusters
-- **V (_Variable_)**: different for each cluster
-- **I (_Identity_)**: restricted (spherical, no elongation or rotation), meaning spherical clusters.
-
-::: 
+-   **E (*Equal*)**: identical across clusters
+-   **V (*Variable*)**: different for each cluster
+-   **I (*Identity*)**: restricted (spherical, no elongation or rotation), meaning spherical clusters.
+:::
 
  
 
 ::: fragment
-
 ::: {style="font-size: 70%;"}
-
-For example, the model labelled **EEI** would be the most similar to $k$-means, as it correspond to _spherical clusters with equal variance across dimensions._.\ 
+For example, the model labelled **EII** would be the most similar to $k$-means, as it correspond to *spherical clusters with equal variance across dimensions.*. 
 
 You can force a specific model by using the `modelNames` argument,\
-e.g. by using `mclust(dat, modelNames = "EEI")`
-
+e.g. by using `mclust(dat, modelNames = "EII")`
 :::
-
 :::
 
 ## GMM with more than 2 dimensions {.scrollable}
@@ -862,8 +793,7 @@ Clustering table:
 
 
 
-
-## GMM with more than 2 dimensions 
+## GMM with more than 2 dimensions
 
 Using bill length, flipper length and body mass suggest 3 classes; we can plot the results as follow:
 
@@ -882,8 +812,7 @@ plot(fit, what = "classification")
 
 
 
-
-## GMM with more than 2 dimensions 
+## GMM with more than 2 dimensions
 
 The `mclust` package contains also some handy functions to visualise the 'true' class (if available)
 
@@ -903,12 +832,8 @@ clPairs(dat[,-1], classification=dat$species,
 
 
 
-
-
 ## Exercise
 
 ::: nonincremental
-
 -   Use one of the dataset for clustering in the 'coursework' folder on Moodle and fit and evaluate a GMM model.
-
 :::
