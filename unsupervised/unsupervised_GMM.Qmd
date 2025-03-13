@@ -631,7 +631,10 @@ Each characteristic can be either:
 
 ::: {style="font-size: 70%;"}
 
-For example, the model labelled **EEI** would be the most similar to $k$-means, as it correspond to _spherical clusters with equal variance across dimensions._
+For example, the model labelled **EEI** would be the most similar to $k$-means, as it correspond to _spherical clusters with equal variance across dimensions._.\ 
+
+You can force a specific model by using the `modelNames` argument,\
+e.g. by using `mclust(dat, modelNames = "EEI")`
 
 :::
 
