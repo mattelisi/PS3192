@@ -6,6 +6,8 @@ library(fivethirtyeight)
 data(college_recent_grads)
 write.csv(college_recent_grads, "college_recent_grads.csv",row.names=F)
 
+
+
 # Wells
 d <- read.table("wells.dat",header=T)
 write.csv(d, "wells.csv",row.names=F)
