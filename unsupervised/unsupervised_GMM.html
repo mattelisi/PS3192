@@ -541,8 +541,8 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 <ul>
 <li class="fragment"><p>For this to work, we need more than just a centroid to represent each cluster/sub-population:</p>
 <ul>
-<li class="fragment">the mean;</li>
-<li class="fragment">the variance-covariance matrix</li>
+<li class="fragment">the <u>mean</u>;</li>
+<li class="fragment">the <u>variance-covariance matrix</u></li>
 </ul></li>
 </ul>
 </section>
@@ -633,8 +633,8 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 <li class="fragment"><p>Each component (sub-population) has a <strong>mixture weight</strong>, which indicates the probability that a randomly selected datapoint belongs to that particular sub-population.</p></li>
 <li class="fragment"><p>Some advantages over <span class="math inline">\(k\)</span>-means are:</p>
 <ul>
-<li class="fragment">Flexibility in shape: Clusters can vary in size, shape, and orientation.</li>
-<li class="fragment">Soft cluster assignments: No hard boundaries between clusters. Sub-populations can overlap substantially, and each datapoint can have partial membership in multiple clusters (probabilistic assignment).</li>
+<li class="fragment"><u>Flexibility in shape</u>: Clusters can vary in size, shape, and orientation.</li>
+<li class="fragment"><u>Soft cluster assignments</u>: No hard boundaries between clusters. Sub-populations can overlap substantially, and each datapoint can have partial membership in multiple clusters (probabilistic assignment).</li>
 </ul></li>
 <li class="fragment"><p>A GMM provides, for each datapoint, a vector of probabilities representing how likely it is that the it belongs to each cluster (to obtain a “hard assignment” we can pick the highest probability)</p></li>
 </ul>

@@ -151,8 +151,8 @@ Other (less important) limitations of $k$-means clustering are its sensitivity t
 
 - For this to work, we need more than just a centroid to represent each cluster/sub-population:
 
-    - the mean;
-    - the variance-covariance matrix
+    - the [mean]{.underline};
+    - the [variance-covariance matrix]{.underline}
 
 
 ## Gaussian distribution (recap) {background-color="#202A30"}
@@ -339,8 +339,8 @@ ggplot(dat, aes(x = X1, y = X2)) +
 
 - Some advantages over $k$-means are:
 
-    - Flexibility in shape: Clusters can vary in size, shape, and orientation.
-    - Soft cluster assignments: No hard boundaries between clusters. Sub-populations can overlap substantially, and each datapoint can have partial membership in multiple clusters (probabilistic assignment).
+    - [Flexibility in shape]{.underline}: Clusters can vary in size, shape, and orientation.
+    - [Soft cluster assignments]{.underline}: No hard boundaries between clusters. Sub-populations can overlap substantially, and each datapoint can have partial membership in multiple clusters (probabilistic assignment).
 
 - A GMM provides, for each datapoint, a vector of probabilities representing how likely it is that the it belongs to each cluster (to obtain a "hard assignment" we can pick the highest probability)
 
