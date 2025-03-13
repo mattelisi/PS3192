@@ -22,3 +22,8 @@ academic year: 2024-25
 # Classification
 
 [Slides](supervised/classification.html)
+
+
+# Clustering
+
+[Slides](unsupervised/unsupervised_GMM.html)
