@@ -655,6 +655,21 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 </ul></li>
 </ul>
 </section>
+<section id="fitting-gmm-maximum-likelihood-em-algorithm" class="slide level2">
+<h2>Fitting GMM: Maximum Likelihood &amp; EM Algorithm</h2>
+<ul>
+<li class="fragment"><p>GMM are fitted by maximizing the probability of observing the data given the model parameters (<em>likelihood</em>).</p></li>
+<li class="fragment"><p>This approach is called <strong>Maximum Likelihood Estimation (MLE)</strong> and underlies many statistical methods (e.g., linear and logistic regression).</p></li>
+<li class="fragment"><p>In practice, GMM likelihood is maximized using the <strong>Expectation-Maximization (EM)</strong> algorithm, an iterative two-step process:</p>
+<ol type="1">
+<li class="fragment"><p><strong>E-step (Expectation)</strong>:<br>
+Compute the probability (soft assignment) of each data point belonging to each cluster (similar to assigning points to the nearest centroid in <span class="math inline">\(k\)</span>-means).</p></li>
+<li class="fragment"><p><strong>M-step (Maximization)</strong>:<br>
+Update the cluster parameters (mean, covariance, mixture weight) to maximize the likelihood, given the probabilities computed in the E-step (similar to recalculating cluster centroids in <span class="math inline">\(k\)</span>-means).</p></li>
+</ol></li>
+<li class="fragment"><p>The EM algorithm iterates these two steps until convergence.</p></li>
+</ul>
+</section>
 <section id="gaussian-mixture-model-in-r-mclust-package" class="slide level2">
 <h2>Gaussian Mixture Model in R: <code>mclust</code> package</h2>
 <div class="cell">

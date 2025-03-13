@@ -306,6 +306,24 @@ where:
   - The model with the best BIC score is typically selected as the optimal solution.
 
 
+## Fitting GMM: Maximum Likelihood & EM Algorithm 
+
+- GMM are fitted by maximizing the probability of observing the data given the model parameters  (_likelihood_).
+
+- This approach is called **Maximum Likelihood Estimation (MLE)** and underlies many statistical methods (e.g., linear and logistic regression).
+
+- In practice, GMM likelihood is maximized using the **Expectation-Maximization (EM)** algorithm, an iterative two-step process:
+
+    1. **E-step (Expectation)**:\
+    Compute the probability (soft assignment) of each data point belonging to each cluster (similar to assigning points to the nearest centroid in $k$-means).
+
+    2. **M-step (Maximization)**:\
+    Update the cluster parameters (mean, covariance, mixture weight) to maximize the likelihood, given the probabilities computed in the E-step (similar to recalculating cluster centroids in $k$-means).
+
+- The EM algorithm iterates these two steps until convergence.
+
+
+
 ## Gaussian Mixture Model in R: `mclust` package
 
 
