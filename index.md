@@ -27,3 +27,8 @@ academic year: 2024-25
 # Clustering
 
 [Slides](unsupervised/unsupervised_GMM.html)
+
+
+# Closing thoughts
+
+[Slides](wherefromhere/wherefromhere.html)

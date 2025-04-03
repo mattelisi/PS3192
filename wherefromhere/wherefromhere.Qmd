@@ -1,0 +1,101 @@
+---
+title: "PS3192: Unsupervised learning"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    incremental: true
+    auto-stretch: true
+    theme: [default, matteo_rhul.css]
+editor: visual
+---
+
+
+## Today's plan
+
+- All 4 respondents indicated they want to work on their portfolios with support available for questions.
+- So that’s exactly what we’ll do today—an open work session with Q&A support.
+- **Module evaluation survey:** 
+  - You should have received another reminder email this morning.
+  - **Please 🙏 fill out the survey during the break!**\
+  it only takes a few minutes (the survey closes *today* at 17:00)
+
+---
+
+## What have you learned?
+
+- **R Programming Fundamentals**  
+  Data types, data structures, control flow, and custom functions  
+- **Data Importing & Cleaning**  
+  Using `tidyverse` packages (`readr`, `dplyr`, `tidyr`)  
+- **Data Visualization**  
+  Base R plotting and ggplot2 basics  
+- **Machine Learning Foundations**  
+  Supervised (regression, classification) and unsupervised (clustering, GMMs)  
+- **Reproducible Reporting**  
+  R Markdown for transparent, documented analysis  
+
+---
+
+## Where to go next?
+
+## Where to go next?
+
+::: {.fragment fragment-index=1}
+**Further study:**  
+
+::: {.nonincremental}
+- [**_R for Data Science_**](https://r4ds.had.co.nz/)  by Hadley Wickham (practical, applied DS)  
+- [**_Statistical Rethinking_**](https://xcelab.net/rm/) by Richard McElreath (Bayesian/statistical modeling, great for academic paths)
+:::
+:::
+
+::: {.fragment fragment-index=2}
+::: {.nonincremental}
+- **_Statistics for Psychology using R: a linear models perspective_**  
+  by Alasdair Clarke & myself (to be published in July 2025).
+:::
+:::
+
+:::::: columns
+::: {.column width="70%"}
+
+::: {.fragment fragment-index=3}
+::: {.nonincremental}
+- **Practice, Practice, Practice**  
+  - Explore Kaggle datasets or other open data portals  
+  - Join hackathons or coding challenges  
+:::
+:::
+
+::: {.fragment fragment-index=4}
+::: {.nonincremental}
+- **Self-directed Projects**  
+  - Pick a dataset in your area of interest (e.g. OSF)  
+  - Try cleaning, analyzing, and visualizing it from scratch  
+:::
+:::
+
+:::
+::: {.column width="30%"}
+
+::: {.fragment fragment-index=2}
+![](book_cover.png){fig-align="center" width=75%}
+:::
+
+:::
+::::::
+
+---
+
+## Get out there & connect!
+
+- **Data Volunteer Opportunities**  
+  - [DataKind UK](https://www.datakind.org.uk/resources/data-volunteering-development)  
+    - Projects supporting nonprofits, social causes  
+    - Great place to learn while contributing  
+- **Networking & Communities**  
+  - [R-Ladies](https://www.meetup.com/pro/rladies/): Inclusive community for R users  
+  - [Black in Data](https://www.blackindata.co.uk/): UK-based collective for representation in data fields  
+  - [Women in Data](https://womenindata.co.uk/): Community events, mentorship, and resources  
+
+
