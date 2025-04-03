@@ -1,5 +1,5 @@
 ---
-title: "PS3192: Unsupervised learning"
+title: "PS3192: Final workshop"
 author: "Matteo Lisi"
 format:
   revealjs:
