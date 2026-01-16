@@ -1,7 +1,20 @@
 library(rpart)
 library(rpart.plot)
 
+rm(list=ls())
 hablar::set_wd_to_script_path()
+
+heartdisease <- read.csv("../coursework/datasets/heartdisease.csv")
+str(heartdisease)
+
+heartdisease$HeartDisease <- ifelse(heartdisease$HeartDisease==1,"yes","no")
+
+h_d <- rpart(HeartDisease  ~ ., data = heartdisease)
+predictions <- predict(h_d, heartdisease, type = "class")
+
+plotcp(h_d)
+summary(h_d)
+rpart.plot(h_d)
 
 # Sample data: classification on the iris dataset
 data(iris)

@@ -11,11 +11,19 @@ toc: true
 
 ## How should I structure my answers?
 
-There is no rigid template to follow. Use a structure that helps communicate your analysis clearly. Subheadings are optional but can help organise your work, especially for longer answers (e.g., Question 2 and Question 3).
+There is no rigid template to follow. Use a structure that helps communicate your analysis clearly. Subheadings are optional but can help organise your work, especially for longer answers (e.g., Question 2).
 
 ## Is there a word limit per question?
 
 The total portfolio should be no more than **5,000 words across three questions**. This is an upper limit rather than a target. For example, Question 2 can typically be answered in **600–800 words**. Some questions may require more words depending on the depth of analysis or inclusion of examples, while others may be shorter if your analysis is clearly conveyed through plots and captions.
+
+## Is there a lower word limit?
+
+There is no strict lower word limit. Some answers may naturally be shorter than others, especially if you use clear visualizations, concise explanations, or code outputs to communicate your analysis.
+
+As a rough guide, around 500 words per question is usually enough to cover the key points clearly for questions 3-4. Some answers might be longer, especially if you discuss multiple models or methods. 
+
+Focus on clarity, completeness, and quality rather than aiming for a specific word count.
 
 ## Do figures need captions? What about explanatory text in the main body?
 
@@ -97,6 +105,31 @@ This will render to:
 % It is not executed but displayed neatly
 2 + 2
 ```
+
+
+# Code, Output, and Comments
+
+## Can I show output (e.g., plots, summaries) in the main text without including the code?
+
+Yes --- this is a recommended approach. Your main text should focus on results and interpretation, and you can include figures or summary tables without showing the code that produced them. Just make sure to **describe what the output shows**, especially if it's not self-explanatory.
+
+
+## Do I need to include all code output?
+
+No. You only need to include **key outputs** that are relevant to your analysis (e.g., model summaries, key plots). For data exploration or setup code (e.g., checking variable types), you can summarise what you did and found in words without showing the output.
+
+## Can I keep `#` comments in my R code?
+
+Yes --- please do! Comments in code are encouraged and part of the **code readability** marking criteria. They help the reader understand what your code does and why. Use comments to explain the purpose of key sections or clarify any non-obvious steps.
+
+## Do I have to use a specific structure to separate code and output?
+
+There’s no rigid format, but a good approach is:
+
+- **Main text:** Focus on narrative, explanation, and key outputs. Use `echo=FALSE` to hide the code but show the results.
+- **Appendix:** Include all code, ideally with `eval=FALSE` so it is shown but not re-executed.
+
+This keeps the main body clean while ensuring reproducibility.
 
 
 # Final notes
