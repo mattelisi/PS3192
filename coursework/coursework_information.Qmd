@@ -111,7 +111,7 @@ Select one of the following classification datasets (each has a binary or multic
 
 ### Task
 
-Predict a discrete outcome (e.g. survived vs. not survived) using a technique such as logistic regression, or decision tree (e.g., via `rpart`). Fit at least one classification model (although you may fit more than one classification model if you wish to compare their performance.). Evaluate performance using a confusion matrix and at least one additional metric (e.g., accuracy, etc.). Provide at least one plot. Describe and what steps you have taken to minimise the risk of overfitting and assess or improve the model's out of sample predictive performance.
+Predict a discrete outcome (e.g. survived vs. not survived) using a technique such as logistic regression, or decision tree (e.g., via `rpart`). Fit at least one classification model (although you may fit more than one classification model if you wish to compare their performance.). Evaluate performance using a confusion matrix and at least one additional metric (e.g., accuracy, etc.). Provide at least one plot. Describe what steps you have taken to minimise the risk of overfitting and assess or improve the model's out of sample predictive performance.
 
 ### What to include
 
@@ -144,19 +144,19 @@ Perform a Gaussian Mixture Model analysis (e.g., using `mclust` in R). Determine
 -   **Main Text:**
     -   Briefly describe the dataset and the concept of a GMM.
     -   Summarize how many clusters were chosen and why.
-    -   Provide interpretive text: what do the clusters may represent about the data?
+    -   Provide interpretive text: what may the clusters may represent about the data?
 -   **Appendix:**
     -   Include R code for your GMM fitting and any plotting routines.
 
 \pagebreak
 
-## Question 5: MVPA & Matlab
+## Question 5: Multivoxel Pattern Analysis (MVPA) & Matlab
 
 1.  Explain what is meant by MVPA and how it can be used to analyse fMRI data
 2.  MVPA and classification are known as “supervised learning” algorithms. Explain what is meant by supervised in this context.
 3.  Linear discriminant analysis and support vector machines are two common algorithms for MVPA. Explain one of the main differences between these two algorithms and under what circumstances one or the other would be preferable?
 
-Use data set 2 (in the `matlab_dataset` folder in Moodle) to answer the questions below. Details about the data set are provided in a separate document. Load the data into the MVPA viewer first the same way as you did in class.
+Use data set 2 (file `data_set_2.mat ` located in the `matlab_dataset` folder in Moodle) to answer the questions below. Details about the data set are provided in a separate document in the same folder (`data_dictionary_JL.pdf `). Open Matlab and load the data into the MVPA viewer first the same way as you did in class.
 
 4.  Run the classification with default parameters (using linear discriminant analysis as classification algorithm). Report the results, explaining the approach of the algorithm and how you arrived at your conclusions.
 5.  Re-run the classification but use SVM as the classification algorithm instead. Briefly summarise how the results differ from the default algorithm (linear discriminant analysis).

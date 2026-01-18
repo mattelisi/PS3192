@@ -1,0 +1,147 @@
+---
+title: "Advanced R programming --- worksheet"
+subtitle: "PS3192 25-26"
+author: "Matteo Lisi"
+format:
+  html:
+    toc: true
+    code-tools: true     # run/copy buttons
+    code-fold: show
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+
+## Activity 1 — Explanation vs. prediction
+
+This dataset contains the annual earnings (in $), the heights (in inches) and the sex (male/female) of a random sample (N=1192) of adult Americans, surveyed in the 1990.
+
+Download the file `earnings.csv` from the Moodle page, copy it in your working directory, and run the following code:
+
+```{r, eval=FALSE}
+earnings <- read.csv("earnings.csv")
+```
+
+Alternatively, you can directly import the data from a URL
+
+```{r}
+earnings <- read.csv("https://mlisi.xyz/PS3192/datasets/earnings.csv")
+
+```
+
+
+The command `str()` comes handy to examine the nature of objects in the working space
+
+```{r}
+str(earnings)
+```
+
+### A scientist/statistician perspective
+
+Suppose we want to sue this data to address a question of whether people's height _causally_ influence their salary.
+
+A first approach could be to fit the linear regression model:
+
+```{r}
+m <- lm(earn ~ height, data = earnings)
+summary(m)
+```
+
+Which reveals a significant effect of `r round(coef(m)[2])` extra dollars per year for each additional in of height.
+
+At this point the statistician gets suspicious — is this a _real_ effect?
+
+One possible explanation is that this is _confounded_ by sex. Simply put, it is known that there are gender disparities in salary (and these were likely even larger in 1990), and that men tend to be taller (on average) than women. So this may be just a _spurious_ correlation. One way to check this is to adjust our estimate of he effect of `height` by including sex in our model
+
+```{r}
+m2 <- lm(earn ~ height + female, data = earnings)
+summary(m2)
+```
+
+(Note that here `female` is a so-called "dummy" variable, that is a variable use to encode a categorical label by means of 0 and 1 values. Specifically, we have that `female`=1 when the datapoint correspond to a female respondent, and `female`=0 otherwise.)
+
+Our new model still reveal some effect of height, but this is substantially smaller, and a very large effect of sex, where women earn about 9 thousands dollar less than men per year on average. 
+
+::: callout-tip
+
+#### Linear regression recap
+
+In linear regression we model a variable (_outcome_) as a function of one or more _predictor_ variable
+
+$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$
+where $y$ is the outcome (sometime referred to as "dependent" variable), $x$ is the predictor, and $\beta_0$ and $\beta_1$ the intercept and slope coefficients, respectively. $\beta_0$ tells us the expected value of $y$ when $x=0$ and $\beta_1$ the expected increase in $y$ for a unitary increase (+1) in $x$.
+$\epsilon$ indicates the residual or error terms, corresponding to the variability in the data that is not explained by our model. The key assumptions in linear regression (and all linear models, including ANOVA, t-test, etc.) are that these errors are _normally_ distributed and they they are i.i.d. (independent and identically distributed).
+
+We can add more than one predictors , e.g.
+$$y_i = \beta_0 + \beta_1 x_i + \beta_3 z_i + \epsilon_i$$
+For example, our model `m2` above could be written formally as
+
+$$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_3  \, \text{female}_i + \epsilon_i$$
+As an **exercise**, try to use the values from the fitted model to compute the predicted/expected salary of:
+- a male, with `height`=70 inches
+- a female, with `height`=80 inches
+
+:::
+
+### A data scientist perspective
+
+A data scientist might work for a company that wants to use this data to offer personal styling packages priced relative to clients’ income. That is, we are not interested in _why_salary differs, we just want a model that makes good predictions.
+
+The data scientist consider that perhaps we can make the model even more accurate by adding an interaction term:
+
+```{r}
+m3 <- lm(earn ~ height * female, data = earnings)
+```
+
+But how do we know which model will performs better in new data?
+
+One standard approach in machine learning is to split the dataset in _train_ and _test_ data. Let's say we want to keep aside 30% of the data as our training set.
+
+```{r}
+# number of observations in the dataset
+n <- nrow(earnings)
+
+# row-indices of 30% randomly selected datapoints
+test_idx <- sample(n, size = round(0.3 * n))
+
+# split in test and training data
+test_data  <- earnings[test_idx, ]
+train_data <- earnings[-test_idx, ]
+```
+
+Now let's fit again our models `m2` adn `m3` but using only the training data
+
+```{r}
+m2_train <- lm(earn ~ height + female, data = train_data)
+m3_train <- lm(earn ~ height * female, data = train_data)
+```
+
+Now let's evaluate their predictive performance on the training data. We will use the mean squared error (MSE) as an error metric:
+
+$$\text{MSE} = \frac{\sum_{i=1}^n (y_i - \hat y_i)^2}{n}$$
+
+```{r}
+# for model m2
+pred_m2 <- predict(m2_train, newdata = test_data)
+MSE_m2 <- mean((test_data$earn - pred_m2)^2)
+
+# for model m3
+pred_m3 <- predict(m3_train, newdata = test_data)
+MSE_m3 <- mean((test_data$earn - pred_m3)^2)
+```
+
+Results:
+
+```{r}
+cat(sprintf(" MSE model m2: %.2f\n MSE model m3: %.2f", MSE_m2, MSE_m3))
+```
+
+
+
+
+
+
+
+
