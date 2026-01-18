@@ -110,16 +110,20 @@ All workshops in Bourne PC Lab.
 |                | **Statistics (in science)** | **Data science / ML**     |
 | -------------- | --------------------------- | ------------------------- |
 | Primary goal   | Explanation                 | Prediction                |
-| Main question  | *Why does this happen?*     | *What will happen next?*  |
+| Main question  | *Why does this happen?*     | *How accurately can we predict it?*  |
 | Focus          | Parameters, effects         | Accuracy, generalisation  |
 | Typical output | Coefficients, $p$-values    | Predictions, error        |
-| Evaluation     | Is the effect real?         | Does it work on new data? |
+| Evaluation     | Is the effect "real"?       | Does it work on new data? |
 
 :::
 
-## Example `earnings` dataset
+- In practice the demarcation isn't very clear, and there is a lot of overlap.
 
-Check Activity 1 in the worksheet.
+
+## Activity: analysis of `earnings` dataset
+
+This dataset contains the annual earnings (in $), the heights (in inches) and the sex (male/female) of a random sample (N=1192) of adult Americans, surveyed in the 1990.
+
 
 
 
@@ -136,3 +140,56 @@ Check Activity 1 in the worksheet.
 
 :::
 :::
+
+
+
+Open the worksheet at [mlisi.xyz/PS3192/advanced_R/worksheet.html](https://mlisi.xyz/PS3192/advanced_R/worksheet.html). Link also available on Moodle page.
+
+
+## Optional reading
+
+Chapters 1-3 
+
+![](img/book_cover.png){fig-align="center" width="30%"}
+
+
+## Optional exercise
+
+Load the `california_housing_train.csv` data from Moodle and find the best predictive model to predict house value (`medv`).
+
+ 
+
+::: nonincremental
+
+1.  Aim to build a model that generalizes well to new data.
+
+2.  Use any approach you find suitable—incorporate interactions, higher-order (polynomial) terms, and evaluate performance using hold-out samples.
+
+3.  Once you've selected a model, assess its predictive performance on out-of-sample data.
+
+4.  In our next workshop I will release a test set on Moodle, allowing you to check your model’s true predictive performance on unseen data.
+
+:::
+
+
+## Data Dictionary for California Housing Dataset
+
+::: {style="font-size: 60%;"}
+| Variable | Description |
+|-----------------------------------|-------------------------------------|
+| medv | Median value of owner-occupied homes (in \$1000s) |
+| crim | Per capita crime rate by town |
+| zn | Proportion of residential land zoned for large lots |
+| indus | Proportion of non-retail business acres per town |
+| chas | Charles River dummy variable (1 if tract bounds river, 0 otherwise) |
+| nox | Nitrogen oxide concentration (parts per 10 million) |
+| rm | Average number of rooms per dwelling |
+| age | Proportion of owner-occupied units built before 1940 |
+| dis | Weighted distance to employment centers |
+| rad | Index of accessibility to highways |
+| tax | Property tax rate per \$10,000 |
+| ptratio | Pupil-teacher ratio by town |
+| lstat | \% lower status of the population |
+| lon | longitude |
+| lat | latitude |
+

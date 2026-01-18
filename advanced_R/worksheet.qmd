@@ -53,7 +53,87 @@ Which reveals a significant effect of `r round(coef(m)[2])` extra dollars per ye
 
 At this point the statistician gets suspicious — is this a _real_ effect?
 
-One possible explanation is that this is _confounded_ by sex. Simply put, it is known that there are gender disparities in salary (and these were likely even larger in 1990), and that men tend to be taller (on average) than women. So this may be just a _spurious_ correlation. One way to check this is to adjust our estimate of he effect of `height` by including sex in our model
+One possible explanation is that this is _confounded_ by sex. Simply put, it is known that there are gender disparities in salary (and these were likely even larger in 1990), and that men tend to be taller (on average) than women. So this may be just a _spurious_ correlation. This is a common 'confounding by lurkign third variable' situation, which is summarised by the following causal graph[^dag]
+
+
+[^dag]: The correct technical name for this type of representations is a DAG, acronym of "directed acyclic graph". Nodes represent variables, and arrows causal relationships.
+
+
+```{r}
+#| echo: FALSE
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+
+
+library(ggplot2)
+library(ggdag)
+library(dagitty)
+
+coord_dag <- list(x = c(X = -1, Y = 1, Z = 0)*1.5,
+                  y = c(X = -1, Y = -1, Z = 1))
+
+dag <- dagify(X ~ Z,
+               Y ~ Z,
+               Y~X,
+               labels = c(
+                 X = "Height",
+                 Y = "Salary",
+                 Z = "Sex"),
+               coords = coord_dag)
+
+dag %>% 
+  tidy_dagitty(layout = "nicely") %>% 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend))+
+  geom_dag_point(colour = 'white', size = 40) +
+  geom_dag_text(aes(label=label), colour = 'black',family="URWGothic", size=7) +
+  geom_dag_edges(start_cap = ggraph::circle(14, 'mm'),
+                 end_cap = ggraph::circle(14, 'mm')) +
+  theme_dag() +
+  coord_equal(xlim=c(-2,2),
+              ylim=c(-1,1))
+```
+
+Indeed if we visualise the data we can see that the sex seems to be a major confounding factor:
+
+```{r}
+#| fig-height: 4
+#| fig-width: 10
+#| fig-align: center
+
+# prepare plotting window
+par(mfrow=c(1,3))
+
+# scatterplot. first we plot males as blue dots
+plot(earnings$height[earnings$female==0], 
+     earnings$earn[earnings$female==0], 
+     col="blue",cex=0.5, 
+     ylab="annual earnings [$]",
+     xlab="height [inches]",
+     xlim=range(earnings$height))
+
+# add females as red dots
+points(earnings$height[earnings$female==1], 
+       earnings$earn[earnings$female==1], 
+       col="red",cex=0.5)
+
+# add regression line
+abline(lm(earn~height, earnings),lwd=2)
+
+
+# for X label in boxplot
+earnings$sex <- ifelse(earnings$female==1,"female","male")
+
+# boxplots
+boxplot(height ~ sex, earnings, notch=T, xlab="", ylab="height [inches]",col=c(rgb(1,0,0,0.5),rgb(0,0,1,0.5)))
+
+boxplot(earn ~ sex, earnings, notch=T, xlab="", ylab="annual earnings [$]",col=c(rgb(1,0,0,0.5),rgb(0,0,1,0.5)))
+
+
+```
+
+
+One way to check this is to adjust our estimate of he effect of `height` by including sex in our model
 
 ```{r}
 m2 <- lm(earn ~ height + female, data = earnings)
@@ -63,6 +143,7 @@ summary(m2)
 (Note that here `female` is a so-called "dummy" variable, that is a variable use to encode a categorical label by means of 0 and 1 values. Specifically, we have that `female`=1 when the datapoint correspond to a female respondent, and `female`=0 otherwise.)
 
 Our new model still reveal some effect of height, but this is substantially smaller, and a very large effect of sex, where women earn about 9 thousands dollar less than men per year on average. 
+
 
 ::: callout-tip
 
