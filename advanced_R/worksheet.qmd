@@ -14,7 +14,7 @@ execute:
 ---
 
 
-## Activity 1 — Explanation vs. prediction
+## Explanation vs. prediction: two perspective on liner regression
 
 This dataset contains the annual earnings (in $), the heights (in inches) and the sex (male/female) of a random sample (N=1192) of adult Americans, surveyed in the 1990.
 
@@ -74,14 +74,27 @@ $$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$
 where $y$ is the outcome (sometime referred to as "dependent" variable), $x$ is the predictor, and $\beta_0$ and $\beta_1$ the intercept and slope coefficients, respectively. $\beta_0$ tells us the expected value of $y$ when $x=0$ and $\beta_1$ the expected increase in $y$ for a unitary increase (+1) in $x$.
 $\epsilon$ indicates the residual or error terms, corresponding to the variability in the data that is not explained by our model. The key assumptions in linear regression (and all linear models, including ANOVA, t-test, etc.) are that these errors are _normally_ distributed and they they are i.i.d. (independent and identically distributed).
 
+You can sometime see the model also notates as
+
+$$\hat y_i = \beta_0 + \beta_1 x_i$$
+Note that here we have removed the error term, and the dependent variable has a little "hat" symbol $\hat \,$. This is standard notation to indicate that to the left of the equal sign we are now indicating the expected or predicted values of the regressions. The differences between the predicted/expected values and the actual data are the residuals, that is we can write $\epsilon_i = y_i - \hat y_i$.
+
+
 We can add more than one predictors , e.g.
 $$y_i = \beta_0 + \beta_1 x_i + \beta_3 z_i + \epsilon_i$$
 For example, our model `m2` above could be written formally as
 
 $$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_3  \, \text{female}_i + \epsilon_i$$
-As an **exercise**, try to use the values from the fitted model to compute the predicted/expected salary of:
+As an **exercise**, try to apply the regression formula above using the values of coefficients from the fitted model to compute  the predicted/expected salary of:
 - a male, with `height`=70 inches
 - a female, with `height`=80 inches
+
+You can extract the precise values using the function `coef()`
+
+```{r}
+coef(m2)
+```
+
 
 :::
 
@@ -139,9 +152,187 @@ cat(sprintf(" MSE model m2: %.2f\n MSE model m3: %.2f", MSE_m2, MSE_m3))
 ```
 
 
+One concern, however, is that the results observed might be specific to this particular split of observations in train and test data. In other words, would we find the same results if a different subset of observations went in training and test sets?
+
+A standard approach to deal with this is repeating the analysis with different splits of training and test sets, and then average the results. In order to do this, is helpful to get familiar with **control flow statements**, a fundamental but powerful type of programming structure. This allows to automatise complex tasks involving multiple steps and branching logic. When coding complex projects, it is also often helpful to build our own **custom functions**, especially when the same set of operations may be needed in multiple places within a project. The two boxes below illustrate these conceps, and you can find a more systematic introduction in the Chapter 1 of the textbook[^bookref]
+
+[^bookref]: Clarke, A., & Lisi, M. (2025). Statistics for psychology using R: A linear models perspective. McGraw-Hill Education (UK). [ISBN 9780335252626](https://www.mheducation.co.uk/statistics-for-psychology-using-r-a-linear-models-perspective-9780335252626-emea-group). The book is available in the RHUL Library.
+
+
+::: callout-tip
+
+#### Control flow `for` & `if` statements
+
+Some of the most powerful tools in computer coding are **for loops** and **if statements**. These allow us to repeat the same operations over different values, or ask a question about some variables and run code only if certain conditions are met. 
+
+We will start with `for` loops. The basic structure is illustrated by the example below:
+
+```{r}
+
+for (i in c(5, 2, 7)) {
+  
+  print( 3*i -2 )
+  
+}
+```
+
+What is going on here? The `for (i in c(5, 2, 7))` part of the loop creates a new variable called `i` and initially sets it to 5. It runs the code in between the parenthesis `{}` using this value of `i`. It then sets `i` to the next value (2) and repeats. Finally, it runs the code one more with `i=7`. This can be very powerful! In our simple example here, the for loop doesn't save much time over writing out the `print()` statement three times (one for 5, 2 and 7), but imagine if we wanted to run `for(i in 1:1000)`! Similarly, the code in between the `{}` is quite short in this example, but in practise we often use more complex series of operations. 
+
+On the other hand, `if` statement allows us to run a block of code *if* some condition is true. 
+
+```{r}
+n <- 7
+
+if (n > 5) 
+{
+  print("x is greater than 5!")
+} 
+```
+
+We can combine these with an `else` statement that tells R what to do if the conditions of the if statement are not true. For example:
+
+```{r}
+#| echo: false
+
+
+if (n > 5) 
+{
+  print("x is greater than 5!")
+  
+} else {
+  
+ print("x is NOT greater than 5!")
+  
+}
+```
+
+
+:::
 
 
 
+::: callout-tip
+
+#### Custom functions
+
+We can extend R by writing our own functions. Here is an example of a function that 'center' a variable; that is it subtract its mean, so that as a result the centered variable values will have a mean of zero. (This is often useful when interpreting a multiple regression model with interactions.)
+
+Here is one way to write such a function:
+
+```{r}
+center <- function(x) {
+  # subtract the mean from each value
+  x_centered <- x - mean(x)
+  
+  return(x_centered)
+}
+```
 
 
+Notice the general form for defining a function in R. The name for our new function comes first, followed by `<- function(  )`. Between the `( )` we list the values we want to pass to the function. Finally, we have a pair of `{ }` parenthesis which contain all of the code we wish to run when the function is called. The only new concept here is the `return()` function that passes the answer of our function back out to our R environment. 
+
+Once we have executed the code above, the function is now available in R workspace (if you run the command `ls()` you should see a list of all objects in the workspace, and that should include something called `"center"`).
+
+We can now use our function:
+
+```{r}
+# create a variable
+v <- c(4,2,3,5,6,7,8,9,2,3,4,5)
+
+# check it's mean
+mean(v)
+
+# use our function to center
+v_centered <- center(v)
+
+# the mean should now be zero (or approximately zero)
+mean(v_centered)
+
+
+```
+
+(Note that the mean of the centered varial is not exacly zero, but something like `2.960403e-16`. This is scientific notation for $2.9\times 10^{-16}$ which is a very small number. It is not exactly zero because computers use something something called "floating-point arithmetic" to represent and perform calculations on real numbers, which introduces small rounding errors because most decimal fractions can't be perfectly represented).
+
+:::
+
+
+#### Putting it all together: cross-validation
+
+
+Having covered this background, we can performa what machine learning folks call a 10-fold crossvalidation procedure:
+
+First, it can be useful to write a custom function that compute the MSE given model and a formula syntax (note that you can pass the model formula to `lm()` as a character string).
+
+```{r}
+# function to compute test-set MSE -----------------------------
+
+compute_MSE <- function(formula, train_data, test_data) {
+  
+  # fit the model on the training data
+  model <- lm(formula, data = train_data)
+  
+  # predict outcomes for the test data
+  pred <- predict(model, newdata = test_data)
+  
+  # compute mean squared error
+  MSE <- mean((test_data$earn - pred)^2)
+  
+  return(MSE)
+}
+
+```
+
+We can check that using this in the split we have used above return the same values:
+
+```{r}
+compute_MSE(earn ~ height + female, train_data, test_data)
+compute_MSE(earn ~ height * female, train_data, test_data)
+
+```
+
+
+Finally, we can use this function in a `for` loop, and compute the predictive performance of our two models:
+
+```{r}
+# 10-fold cross-validation ------------------------------------
+
+set.seed(123)  # for reproducibility
+
+n <- nrow(earnings)
+K <- 10
+
+# assign each observation to one of K folds
+fold_id <- rep(1:K, length.out = n)
+fold_id <- sample(fold_id)
+
+# storage for test MSEs
+MSE_m2 <- numeric(K)
+MSE_m3 <- numeric(K)
+
+for (k in 1:K) {
+  
+  # split data into training and test sets
+  test_idx  <- which(fold_id == k)
+  train_idx <- which(fold_id != k)
+  
+  train_data <- earnings[train_idx, ]
+  test_data  <- earnings[test_idx, ]
+  
+  # compute test MSE using our custom function
+  MSE_m2[k] <- compute_MSE(earn ~ height + female,
+                           train_data, test_data)
+  
+  MSE_m3[k] <- compute_MSE(earn ~ height * female,
+                           train_data, test_data)
+}
+
+# average performance across folds
+mean_MSE_m2 <- mean(MSE_m2)
+mean_MSE_m3 <- mean(MSE_m3)
+
+cat(sprintf("Average test MSE over %d folds:\n", K))
+cat(sprintf("  model m2 (height + female): %.2f\n", mean_MSE_m2))
+cat(sprintf("  model m3 (height * female): %.2f\n", mean_MSE_m3))
+
+```
 

@@ -3,6 +3,11 @@ Course coordinator: Matteo Lisi
 
 # Current academic year
 
+## Advanced R programming (23 Jan 2026)
+
+[Slides](advanced_R/slides.html)
+
+[Worksheet](advanced_R/worksheet.html)
 
  ---
 
