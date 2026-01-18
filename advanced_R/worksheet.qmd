@@ -167,6 +167,7 @@ For example, our model `m2` above could be written formally as
 
 $$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_3  \, \text{female}_i + \epsilon_i$$
 As an **exercise**, try to apply the regression formula above using the values of coefficients from the fitted model to compute  the predicted/expected salary of:
+
 - a male, with `height`=70 inches
 - a female, with `height`=80 inches
 
