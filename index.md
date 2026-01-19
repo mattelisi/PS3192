@@ -1,4 +1,5 @@
-Module: PS3192 Real World Data Science: AI & Machine Learning in Psychology & Beyond
+Module: PS3192 Real World Data Science
+
 Course coordinator: Matteo Lisi
 
 # Current academic year
@@ -8,6 +9,9 @@ Course coordinator: Matteo Lisi
 [Slides](advanced_R/slides.html)
 
 [Worksheet](advanced_R/worksheet.html)
+
+
+<br><br><br><br><br><br>
 
  ---
 
