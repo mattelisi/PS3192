@@ -160,12 +160,15 @@ You can sometime see the model also notates as
 $$\hat y_i = \beta_0 + \beta_1 x_i$$
 Note that here we have removed the error term, and the dependent variable has a little "hat" symbol $\hat \,$. This is standard notation to indicate that to the left of the equal sign we are now indicating the expected or predicted values of the regressions. The differences between the predicted/expected values and the actual data are the residuals, that is we can write $\epsilon_i = y_i - \hat y_i$.
 
+Formally, the central assumption of linear regression can be formally expressed as $\epsilon \sim \mathcal{N}(0, \sigma_{\epsilon})$, which reads as "the residuals of regression have a normal distribution with mean 0 and standard deviation of $\sigma_{\epsilon}$".
 
 We can add more than one predictors , e.g.
 $$y_i = \beta_0 + \beta_1 x_i + \beta_3 z_i + \epsilon_i$$
-For example, our model `m2` above could be written formally as
+For example, our model `m2` above. which has 2 predictors, could be written formally as
 
 $$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_3  \, \text{female}_i + \epsilon_i$$
+Essentially, the dependent variable is modeled as a weighted sum of the two predictors, plus a constant term (the intercept $\beta_0$).
+
 As an **exercise**, try to apply the regression formula above using the values of coefficients from the fitted model to compute  the predicted/expected salary of:
 
 - a male, with `height`=70 inches
@@ -179,6 +182,7 @@ coef(m2)
 
 
 :::
+
 
 ### A data scientist perspective
 
