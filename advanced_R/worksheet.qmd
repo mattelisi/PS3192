@@ -14,7 +14,7 @@ execute:
 ---
 
 
-## Explanation vs. prediction: two perspective on liner regression
+## Activity 1 — Explanation vs. prediction: two perspective on liner regression
 
 This dataset contains the annual earnings (in $), the heights (in inches) and the sex (male/female) of a random sample (N=1192) of adult Americans, surveyed in the 1990.
 
@@ -421,4 +421,85 @@ cat(sprintf("  model m2 (height + female): %.2f\n", mean_MSE_m2))
 cat(sprintf("  model m3 (height * female): %.2f\n", mean_MSE_m3))
 
 ```
+
+## Activity 2 — Predicting California house prices
+
+In this activity you will work with a real-world housing dataset and focus explicitly on prediction rather than explanation.
+
+Your goal is to build a model that predicts the median house value (`medv`) as accurately as possible for new, unseen data.
+
+**Instructions**
+
+1. Load the training data california_housing_train.csv from Moodle.
+2. Fit a linear regression model to predict medv using a subset of the available predictors.
+3. You are encouraged to experiment with:
+    - Different combinations of predictors
+    - Interaction terms
+    - Non-linear terms (e.g. squared predictors)
+4. To decide which model generalizes best, you may want to use hold-out validation or cross-validation on the training data.
+_No code is provided for this step — designing and implementing it is part of the exercise._
+5. Once you have selected a final model, use it to generate predictions for the test set.
+6. Save your predictions (see below for an example).
+
+In the next workshop, a test set with the true values will be released, and we will compare predictive performance across models.
+
+#### Example
+
+The code below illustrates a very simple baseline model using only a few predictors.
+This is not expected to be optimal.
+
+```{r}
+# Load the training data
+train <- read.csv("california_housing_train.csv")
+
+# Inspect the variables
+str(train)
+
+```
+
+
+```{r}
+# Fit a simple linear regression model
+# (you are encouraged to improve on this)
+model_lm <- lm(medv ~ rm + lstat + ptratio + nox, data = train)
+
+# Inspect model output
+summary(model_lm)
+```
+
+**Predicting on the test set**
+
+The file `california_housing_test_nomedv.csv` (available on Moodle) contains the same predictors as the training data,
+but does not include `medv`.
+
+```{r}
+# Load the test data (no medv column)
+test <- read.csv("california_housing_test_nomedv.csv")
+
+# Generate predictions for the test set
+pred_medv <- predict(model_lm, newdata = test)
+
+# Check the first few predictions
+head(pred_medv)
+```
+
+
+**Saving your predictions for submission**
+
+Save your predictions as a CSV file with one column only, named `pred_medv`.
+
+```{r}
+# Create a data frame for submission
+submission <- data.frame(pred_medv = pred_medv)
+
+# Export to CSV
+write.csv(submission,
+          file = "california_housing_predictions.csv",
+          row.names = FALSE)
+
+```
+
+This is optional, but if you send me this file via email (matteo.lisi [at] rhul.ac.uk) I will evaluate the predictions and make a ranking list for next time (please use **"california data exercise PS3192"** in the subject line). In the next session we will in any case discuss this example further.
+
+
 

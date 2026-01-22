@@ -109,11 +109,12 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#explanation-vs.-prediction-two-perspective-on-liner-regression" id="toc-explanation-vs.-prediction-two-perspective-on-liner-regression" class="nav-link active" data-scroll-target="#explanation-vs.-prediction-two-perspective-on-liner-regression">Explanation vs.&nbsp;prediction: two perspective on liner regression</a>
+  <li><a href="#activity-1-explanation-vs.-prediction-two-perspective-on-liner-regression" id="toc-activity-1-explanation-vs.-prediction-two-perspective-on-liner-regression" class="nav-link active" data-scroll-target="#activity-1-explanation-vs.-prediction-two-perspective-on-liner-regression">Activity 1 — Explanation vs.&nbsp;prediction: two perspective on liner regression</a>
   <ul class="collapse">
   <li><a href="#a-scientiststatistician-perspective" id="toc-a-scientiststatistician-perspective" class="nav-link" data-scroll-target="#a-scientiststatistician-perspective">A scientist/statistician perspective</a></li>
   <li><a href="#a-data-scientist-perspective" id="toc-a-data-scientist-perspective" class="nav-link" data-scroll-target="#a-data-scientist-perspective">A data scientist perspective</a></li>
   </ul></li>
+  <li><a href="#activity-2-predicting-california-house-prices" id="toc-activity-2-predicting-california-house-prices" class="nav-link" data-scroll-target="#activity-2-predicting-california-house-prices">Activity 2 — Predicting California house prices</a></li>
   </ul>
 </nav>
 </div>
@@ -145,8 +146,8 @@ window.Quarto = {
 </header>
 
 
-<section id="explanation-vs.-prediction-two-perspective-on-liner-regression" class="level2">
-<h2 class="anchored" data-anchor-id="explanation-vs.-prediction-two-perspective-on-liner-regression">Explanation vs.&nbsp;prediction: two perspective on liner regression</h2>
+<section id="activity-1-explanation-vs.-prediction-two-perspective-on-liner-regression" class="level2">
+<h2 class="anchored" data-anchor-id="activity-1-explanation-vs.-prediction-two-perspective-on-liner-regression">Activity 1 — Explanation vs.&nbsp;prediction: two perspective on liner regression</h2>
 <p>This dataset contains the annual earnings (in $), the heights (in inches) and the sex (male/female) of a random sample (N=1192) of adult Americans, surveyed in the 1990.</p>
 <p>Download the file <code>earnings.csv</code> from the Moodle page, copy it in your working directory, and run the following code:</p>
 <div class="cell">
@@ -380,8 +381,8 @@ Linear regression recap
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">" MSE model m2: %.2f</span><span class="sc">\n</span><span class="st"> MSE model m3: %.2f"</span>, MSE_m2, MSE_m3))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> MSE model m2: 298932911.88
- MSE model m3: 298756930.80</code></pre>
+<pre><code> MSE model m2: 387450540.03
+ MSE model m3: 386259951.03</code></pre>
 </div>
 </div>
 <p>One concern, however, is that the results observed might be specific to this particular split of observations in train and test data. In other words, would we find the same results if a different subset of observations went in training and test sets?</p>
@@ -521,14 +522,14 @@ Custom functions
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female, train_data, test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 298932912</code></pre>
+<pre><code>[1] 387450540</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female, train_data, test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 298756931</code></pre>
+<pre><code>[1] 386259951</code></pre>
 </div>
 </div>
 <p>Finally, we can use this function in a <code>for</code> loop, and compute the predictive performance of our two models:</p>
@@ -591,9 +592,129 @@ Custom functions
 <pre><code>  model m3 (height * female): 346816457.78</code></pre>
 </div>
 </div>
+</section>
+</section>
+</section>
+<section id="activity-2-predicting-california-house-prices" class="level2">
+<h2 class="anchored" data-anchor-id="activity-2-predicting-california-house-prices">Activity 2 — Predicting California house prices</h2>
+<p>In this activity you will work with a real-world housing dataset and focus explicitly on prediction rather than explanation.</p>
+<p>Your goal is to build a model that predicts the median house value (<code>medv</code>) as accurately as possible for new, unseen data.</p>
+<p><strong>Instructions</strong></p>
+<ol type="1">
+<li>Load the training data california_housing_train.csv from Moodle.</li>
+<li>Fit a linear regression model to predict medv using a subset of the available predictors.</li>
+<li>You are encouraged to experiment with:
+<ul>
+<li>Different combinations of predictors</li>
+<li>Interaction terms</li>
+<li>Non-linear terms (e.g.&nbsp;squared predictors)</li>
+</ul></li>
+<li>To decide which model generalizes best, you may want to use hold-out validation or cross-validation on the training data. <em>No code is provided for this step — designing and implementing it is part of the exercise.</em></li>
+<li>Once you have selected a final model, use it to generate predictions for the test set.</li>
+<li>Save your predictions (see below for an example).</li>
+</ol>
+<p>In the next workshop, a test set with the true values will be released, and we will compare predictive performance across models.</p>
+<section id="example" class="level4">
+<h4 class="anchored" data-anchor-id="example">Example</h4>
+<p>The code below illustrates a very simple baseline model using only a few predictors. This is not expected to be optimal.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the training data</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"california_housing_train.csv"</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the variables</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   100 obs. of  15 variables:
+ $ lon    : num  -71.1 -71.1 -71 -71.1 -71.1 ...
+ $ lat    : num  42.2 42.2 42.2 42.2 42.2 ...
+ $ medv   : num  22.5 46.7 11.3 25 33.2 36 17.5 22.5 21.8 36.1 ...
+ $ crim   : num  0.252 0.298 9.187 0.198 0.105 ...
+ $ zn     : num  0 0 0 0 40 20 0 0 0 33 ...
+ $ indus  : num  10.59 6.2 18.1 10.59 6.41 ...
+ $ chas   : int  0 0 0 0 1 0 0 0 0 0 ...
+ $ nox    : num  0.489 0.504 0.7 0.489 0.447 0.647 0.442 0.449 0.532 0.472 ...
+ $ rm     : num  5.78 7.69 5.54 6.18 7.27 ...
+ $ age    : num  72.7 17 100 42.4 49 100 48.5 45.1 40.3 41.1 ...
+ $ dis    : num  4.35 3.38 1.58 3.95 4.79 ...
+ $ rad    : int  4 8 24 4 4 5 3 3 24 7 ...
+ $ tax    : int  277 307 666 277 254 264 352 247 666 222 ...
+ $ ptratio: num  18.6 17.4 20.2 18.6 17.6 13 18.8 18.5 20.2 18.4 ...
+ $ lstat  : num  18.06 3.92 23.6 9.47 6.05 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a simple linear regression model</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (you are encouraged to improve on this)</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>model_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(medv <span class="sc">~</span> rm <span class="sc">+</span> lstat <span class="sc">+</span> ptratio <span class="sc">+</span> nox, <span class="at">data =</span> train)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect model output</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = medv ~ rm + lstat + ptratio + nox, data = train)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.9971 -2.8421 -0.0943  2.1143 14.4645 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -5.9472     8.5216  -0.698 0.486946    
+rm            8.0643     0.9229   8.738 8.19e-14 ***
+lstat        -0.3717     0.1089  -3.413 0.000945 ***
+ptratio      -0.6995     0.2241  -3.121 0.002386 ** 
+nox          -9.1342     4.9642  -1.840 0.068890 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.003 on 95 degrees of freedom
+Multiple R-squared:  0.8264,    Adjusted R-squared:  0.8191 
+F-statistic:   113 on 4 and 95 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p><strong>Predicting on the test set</strong></p>
+<p>The file <code>california_housing_test_nomedv.csv</code> (available on Moodle) contains the same predictors as the training data, but does not include <code>medv</code>.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the test data (no medv column)</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"california_housing_test_nomedv.csv"</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate predictions for the test set</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>pred_medv <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_lm, <span class="at">newdata =</span> test)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the first few predictions</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred_medv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1        2        3        4        5        6 
+29.60779 25.70105 32.44283 22.49625 21.28874 12.91904 </code></pre>
+</div>
+</div>
+<p><strong>Saving your predictions for submission</strong></p>
+<p>Save your predictions as a CSV file with one column only, named <code>pred_medv</code>.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for submission</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>submission <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">pred_medv =</span> pred_medv)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Export to CSV</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(submission,</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">file =</span> <span class="st">"california_housing_predictions.csv"</span>,</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>This is optional, but if you send me this file via email (matteo.lisi [at] rhul.ac.uk) I will evaluate the predictions and make a ranking list for next time (please use <strong>“california data exercise PS3192”</strong> in the subject line). In the next session we will in any case discuss this example further.</p>
 <!-- -->
 
-</section>
 </section>
 </section>
 
@@ -1077,428 +1198,509 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb39" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Advanced R programming --- worksheet"</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "PS3192 25-26"</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Matteo Lisi"</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true     # run/copy buttons</span></span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Explanation vs. prediction: two perspective on liner regression</span></span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>This dataset contains the annual earnings (in $), the heights (in inches) and the sex (male/female) of a random sample (N=1192) of adult Americans, surveyed in the 1990.</span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>Download the file <span class="in">`earnings.csv`</span> from the Moodle page, copy it in your working directory, and run the following code:</span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a><span class="in">earnings &lt;- read.csv("earnings.csv")</span></span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>Alternatively, you can directly import the data from a URL</span>
-<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>earnings <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://mlisi.xyz/PS3192/datasets/earnings.csv"</span>)</span>
-<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a>The command <span class="in">`str()`</span> comes handy to examine the nature of objects in the working space</span>
-<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(earnings)</span>
-<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### A scientist/statistician perspective</span></span>
-<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a>Suppose we want to sue this data to address a question of whether people's height _causally_ influence their salary.</span>
-<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a>A first approach could be to fit the linear regression model:</span>
-<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-53"><a href="#cb39-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-54"><a href="#cb39-54" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height, <span class="at">data =</span> earnings)</span>
-<span id="cb39-55"><a href="#cb39-55" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span>
-<span id="cb39-56"><a href="#cb39-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-57"><a href="#cb39-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-58"><a href="#cb39-58" aria-hidden="true" tabindex="-1"></a>Which reveals a significant effect of <span class="in">`r round(coef(m)[2])`</span> extra dollars per year for each additional in of height.</span>
-<span id="cb39-59"><a href="#cb39-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-60"><a href="#cb39-60" aria-hidden="true" tabindex="-1"></a>At this point the statistician gets suspicious — is this a _real_ effect?</span>
-<span id="cb39-61"><a href="#cb39-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-62"><a href="#cb39-62" aria-hidden="true" tabindex="-1"></a>One possible explanation is that this is _confounded_ by sex. Simply put, it is known that there are gender disparities in salary (and these were likely even larger in 1990), and that men tend to be taller (on average) than women. So this may be just a _spurious_ correlation. This is a common 'confounding by lurkign third variable' situation, which is summarised by the following causal graph<span class="ot">[^dag]</span></span>
-<span id="cb39-63"><a href="#cb39-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-64"><a href="#cb39-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-65"><a href="#cb39-65" aria-hidden="true" tabindex="-1"></a><span class="ot">[^dag]: </span>The correct technical name for this type of representations is a DAG, acronym of "directed acyclic graph". Nodes represent variables, and arrows causal relationships.</span>
-<span id="cb39-66"><a href="#cb39-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-67"><a href="#cb39-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-70"><a href="#cb39-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-71"><a href="#cb39-71" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: FALSE</span></span>
-<span id="cb39-72"><a href="#cb39-72" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
-<span id="cb39-73"><a href="#cb39-73" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
-<span id="cb39-74"><a href="#cb39-74" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb39-75"><a href="#cb39-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-76"><a href="#cb39-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-77"><a href="#cb39-77" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb39-78"><a href="#cb39-78" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span>
-<span id="cb39-79"><a href="#cb39-79" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
-<span id="cb39-80"><a href="#cb39-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-81"><a href="#cb39-81" aria-hidden="true" tabindex="-1"></a>coord_dag <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="at">X =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">Y =</span> <span class="dv">1</span>, <span class="at">Z =</span> <span class="dv">0</span>)<span class="sc">*</span><span class="fl">1.5</span>,</span>
-<span id="cb39-82"><a href="#cb39-82" aria-hidden="true" tabindex="-1"></a>                  <span class="at">y =</span> <span class="fu">c</span>(<span class="at">X =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">Y =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">Z =</span> <span class="dv">1</span>))</span>
-<span id="cb39-83"><a href="#cb39-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-84"><a href="#cb39-84" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagify</span>(X <span class="sc">~</span> Z,</span>
-<span id="cb39-85"><a href="#cb39-85" aria-hidden="true" tabindex="-1"></a>               Y <span class="sc">~</span> Z,</span>
-<span id="cb39-86"><a href="#cb39-86" aria-hidden="true" tabindex="-1"></a>               Y<span class="sc">~</span>X,</span>
-<span id="cb39-87"><a href="#cb39-87" aria-hidden="true" tabindex="-1"></a>               <span class="at">labels =</span> <span class="fu">c</span>(</span>
-<span id="cb39-88"><a href="#cb39-88" aria-hidden="true" tabindex="-1"></a>                 <span class="at">X =</span> <span class="st">"Height"</span>,</span>
-<span id="cb39-89"><a href="#cb39-89" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Y =</span> <span class="st">"Salary"</span>,</span>
-<span id="cb39-90"><a href="#cb39-90" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Z =</span> <span class="st">"Sex"</span>),</span>
-<span id="cb39-91"><a href="#cb39-91" aria-hidden="true" tabindex="-1"></a>               <span class="at">coords =</span> coord_dag)</span>
-<span id="cb39-92"><a href="#cb39-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-93"><a href="#cb39-93" aria-hidden="true" tabindex="-1"></a>dag <span class="sc">%&gt;%</span> </span>
-<span id="cb39-94"><a href="#cb39-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy_dagitty</span>(<span class="at">layout =</span> <span class="st">"nicely"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb39-95"><a href="#cb39-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend))<span class="sc">+</span></span>
-<span id="cb39-96"><a href="#cb39-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_dag_point</span>(<span class="at">colour =</span> <span class="st">'white'</span>, <span class="at">size =</span> <span class="dv">40</span>) <span class="sc">+</span></span>
-<span id="cb39-97"><a href="#cb39-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_dag_text</span>(<span class="fu">aes</span>(<span class="at">label=</span>label), <span class="at">colour =</span> <span class="st">'black'</span>,<span class="at">family=</span><span class="st">"URWGothic"</span>, <span class="at">size=</span><span class="dv">7</span>) <span class="sc">+</span></span>
-<span id="cb39-98"><a href="#cb39-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_dag_edges</span>(<span class="at">start_cap =</span> ggraph<span class="sc">::</span><span class="fu">circle</span>(<span class="dv">14</span>, <span class="st">'mm'</span>),</span>
-<span id="cb39-99"><a href="#cb39-99" aria-hidden="true" tabindex="-1"></a>                 <span class="at">end_cap =</span> ggraph<span class="sc">::</span><span class="fu">circle</span>(<span class="dv">14</span>, <span class="st">'mm'</span>)) <span class="sc">+</span></span>
-<span id="cb39-100"><a href="#cb39-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_dag</span>() <span class="sc">+</span></span>
-<span id="cb39-101"><a href="#cb39-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>),</span>
-<span id="cb39-102"><a href="#cb39-102" aria-hidden="true" tabindex="-1"></a>              <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb39-103"><a href="#cb39-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-104"><a href="#cb39-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-105"><a href="#cb39-105" aria-hidden="true" tabindex="-1"></a>Indeed if we visualise the data we can see that the sex seems to be a major confounding factor:</span>
-<span id="cb39-106"><a href="#cb39-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-109"><a href="#cb39-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-110"><a href="#cb39-110" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
-<span id="cb39-111"><a href="#cb39-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb39-112"><a href="#cb39-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb39-113"><a href="#cb39-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-114"><a href="#cb39-114" aria-hidden="true" tabindex="-1"></a><span class="co"># prepare plotting window</span></span>
-<span id="cb39-115"><a href="#cb39-115" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
-<span id="cb39-116"><a href="#cb39-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-117"><a href="#cb39-117" aria-hidden="true" tabindex="-1"></a><span class="co"># scatterplot. first we plot males as blue dots</span></span>
-<span id="cb39-118"><a href="#cb39-118" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(earnings<span class="sc">$</span>height[earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">0</span>], </span>
-<span id="cb39-119"><a href="#cb39-119" aria-hidden="true" tabindex="-1"></a>     earnings<span class="sc">$</span>earn[earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">0</span>], </span>
-<span id="cb39-120"><a href="#cb39-120" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>,<span class="at">cex=</span><span class="fl">0.5</span>, </span>
-<span id="cb39-121"><a href="#cb39-121" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"annual earnings [$]"</span>,</span>
-<span id="cb39-122"><a href="#cb39-122" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"height [inches]"</span>,</span>
-<span id="cb39-123"><a href="#cb39-123" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim=</span><span class="fu">range</span>(earnings<span class="sc">$</span>height))</span>
-<span id="cb39-124"><a href="#cb39-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-125"><a href="#cb39-125" aria-hidden="true" tabindex="-1"></a><span class="co"># add females as red dots</span></span>
-<span id="cb39-126"><a href="#cb39-126" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(earnings<span class="sc">$</span>height[earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">1</span>], </span>
-<span id="cb39-127"><a href="#cb39-127" aria-hidden="true" tabindex="-1"></a>       earnings<span class="sc">$</span>earn[earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">1</span>], </span>
-<span id="cb39-128"><a href="#cb39-128" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="st">"red"</span>,<span class="at">cex=</span><span class="fl">0.5</span>)</span>
-<span id="cb39-129"><a href="#cb39-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-130"><a href="#cb39-130" aria-hidden="true" tabindex="-1"></a><span class="co"># add regression line</span></span>
-<span id="cb39-131"><a href="#cb39-131" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(earn<span class="sc">~</span>height, earnings),<span class="at">lwd=</span><span class="dv">2</span>)</span>
-<span id="cb39-132"><a href="#cb39-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-133"><a href="#cb39-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-134"><a href="#cb39-134" aria-hidden="true" tabindex="-1"></a><span class="co"># for X label in boxplot</span></span>
-<span id="cb39-135"><a href="#cb39-135" aria-hidden="true" tabindex="-1"></a>earnings<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">1</span>,<span class="st">"female"</span>,<span class="st">"male"</span>)</span>
-<span id="cb39-136"><a href="#cb39-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-137"><a href="#cb39-137" aria-hidden="true" tabindex="-1"></a><span class="co"># boxplots</span></span>
-<span id="cb39-138"><a href="#cb39-138" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(height <span class="sc">~</span> sex, earnings, <span class="at">notch=</span>T, <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">"height [inches]"</span>,<span class="at">col=</span><span class="fu">c</span>(<span class="fu">rgb</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="fl">0.5</span>),<span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)))</span>
-<span id="cb39-139"><a href="#cb39-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-140"><a href="#cb39-140" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(earn <span class="sc">~</span> sex, earnings, <span class="at">notch=</span>T, <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">"annual earnings [$]"</span>,<span class="at">col=</span><span class="fu">c</span>(<span class="fu">rgb</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="fl">0.5</span>),<span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)))</span>
-<span id="cb39-141"><a href="#cb39-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-142"><a href="#cb39-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-143"><a href="#cb39-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-144"><a href="#cb39-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-145"><a href="#cb39-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-146"><a href="#cb39-146" aria-hidden="true" tabindex="-1"></a>One way to check this is to adjust our estimate of he effect of <span class="in">`height`</span> by including sex in our model</span>
-<span id="cb39-147"><a href="#cb39-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-150"><a href="#cb39-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-151"><a href="#cb39-151" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female, <span class="at">data =</span> earnings)</span>
-<span id="cb39-152"><a href="#cb39-152" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span>
-<span id="cb39-153"><a href="#cb39-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-154"><a href="#cb39-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-155"><a href="#cb39-155" aria-hidden="true" tabindex="-1"></a>(Note that here <span class="in">`female`</span> is a so-called "dummy" variable, that is a variable use to encode a categorical label by means of 0 and 1 values. Specifically, we have that <span class="in">`female`</span>=1 when the datapoint correspond to a female respondent, and <span class="in">`female`</span>=0 otherwise.)</span>
-<span id="cb39-156"><a href="#cb39-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-157"><a href="#cb39-157" aria-hidden="true" tabindex="-1"></a>Our new model still reveal some effect of height, but this is substantially smaller, and a very large effect of sex, where women earn about 9 thousands dollar less than men per year on average. </span>
-<span id="cb39-158"><a href="#cb39-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-159"><a href="#cb39-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-160"><a href="#cb39-160" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb39-161"><a href="#cb39-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-162"><a href="#cb39-162" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Linear regression recap</span></span>
-<span id="cb39-163"><a href="#cb39-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-164"><a href="#cb39-164" aria-hidden="true" tabindex="-1"></a>In linear regression we model a variable (_outcome_) as a function of one or more _predictor_ variable</span>
-<span id="cb39-165"><a href="#cb39-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-166"><a href="#cb39-166" aria-hidden="true" tabindex="-1"></a>$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$</span>
-<span id="cb39-167"><a href="#cb39-167" aria-hidden="true" tabindex="-1"></a>where $y$ is the outcome (sometime referred to as "dependent" variable), $x$ is the predictor, and $\beta_0$ and $\beta_1$ the intercept and slope coefficients, respectively. $\beta_0$ tells us the expected value of $y$ when $x=0$ and $\beta_1$ the expected increase in $y$ for a unitary increase (+1) in $x$.</span>
-<span id="cb39-168"><a href="#cb39-168" aria-hidden="true" tabindex="-1"></a>$\epsilon$ indicates the residual or error terms, corresponding to the variability in the data that is not explained by our model. The key assumptions in linear regression (and all linear models, including ANOVA, t-test, etc.) are that these errors are _normally_ distributed and they they are i.i.d. (independent and identically distributed).</span>
-<span id="cb39-169"><a href="#cb39-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-170"><a href="#cb39-170" aria-hidden="true" tabindex="-1"></a>You can sometime see the model also notates as</span>
-<span id="cb39-171"><a href="#cb39-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-172"><a href="#cb39-172" aria-hidden="true" tabindex="-1"></a>$$\hat y_i = \beta_0 + \beta_1 x_i$$</span>
-<span id="cb39-173"><a href="#cb39-173" aria-hidden="true" tabindex="-1"></a>Note that here we have removed the error term, and the dependent variable has a little "hat" symbol $\hat \,$. This is standard notation to indicate that to the left of the equal sign we are now indicating the expected or predicted values of the regressions. The differences between the predicted/expected values and the actual data are the residuals, that is we can write $\epsilon_i = y_i - \hat y_i$.</span>
-<span id="cb39-174"><a href="#cb39-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-175"><a href="#cb39-175" aria-hidden="true" tabindex="-1"></a>Formally, the central assumption of linear regression can be formally expressed as $\epsilon \sim \mathcal{N}(0, \sigma_{\epsilon})$, which reads as "the residuals of regression have a normal distribution with mean 0 and standard deviation of $\sigma_{\epsilon}$".</span>
-<span id="cb39-176"><a href="#cb39-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-177"><a href="#cb39-177" aria-hidden="true" tabindex="-1"></a>We can add more than one predictors , e.g.</span>
-<span id="cb39-178"><a href="#cb39-178" aria-hidden="true" tabindex="-1"></a>$$y_i = \beta_0 + \beta_1 x_i + \beta_3 z_i + \epsilon_i$$</span>
-<span id="cb39-179"><a href="#cb39-179" aria-hidden="true" tabindex="-1"></a>For example, our model <span class="in">`m2`</span> above. which has 2 predictors, could be written formally as</span>
-<span id="cb39-180"><a href="#cb39-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-181"><a href="#cb39-181" aria-hidden="true" tabindex="-1"></a>$$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_3  \, \text{female}_i + \epsilon_i$$</span>
-<span id="cb39-182"><a href="#cb39-182" aria-hidden="true" tabindex="-1"></a>Essentially, the dependent variable is modeled as a weighted sum of the two predictors, plus a constant term (the intercept $\beta_0$).</span>
-<span id="cb39-183"><a href="#cb39-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-184"><a href="#cb39-184" aria-hidden="true" tabindex="-1"></a>As an **exercise**, try to apply the regression formula above using the values of coefficients from the fitted model to compute  the predicted/expected salary of:</span>
-<span id="cb39-185"><a href="#cb39-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-186"><a href="#cb39-186" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>a male, with <span class="in">`height`</span>=70 inches</span>
-<span id="cb39-187"><a href="#cb39-187" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>a female, with <span class="in">`height`</span>=80 inches</span>
-<span id="cb39-188"><a href="#cb39-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-189"><a href="#cb39-189" aria-hidden="true" tabindex="-1"></a>You can extract the precise values using the function <span class="in">`coef()`</span></span>
-<span id="cb39-190"><a href="#cb39-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-193"><a href="#cb39-193" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-194"><a href="#cb39-194" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(m2)</span>
-<span id="cb39-195"><a href="#cb39-195" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-196"><a href="#cb39-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-197"><a href="#cb39-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-198"><a href="#cb39-198" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb39-199"><a href="#cb39-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-200"><a href="#cb39-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-201"><a href="#cb39-201" aria-hidden="true" tabindex="-1"></a><span class="fu">### A data scientist perspective</span></span>
-<span id="cb39-202"><a href="#cb39-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-203"><a href="#cb39-203" aria-hidden="true" tabindex="-1"></a>A data scientist might work for a company that wants to use this data to offer personal styling packages priced relative to clients’ income. That is, we are not interested in _why_salary differs, we just want a model that makes good predictions.</span>
-<span id="cb39-204"><a href="#cb39-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-205"><a href="#cb39-205" aria-hidden="true" tabindex="-1"></a>The data scientist consider that perhaps we can make the model even more accurate by adding an interaction term:</span>
-<span id="cb39-206"><a href="#cb39-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-209"><a href="#cb39-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-210"><a href="#cb39-210" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female, <span class="at">data =</span> earnings)</span>
-<span id="cb39-211"><a href="#cb39-211" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-212"><a href="#cb39-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-213"><a href="#cb39-213" aria-hidden="true" tabindex="-1"></a>But how do we know which model will performs better in new data?</span>
-<span id="cb39-214"><a href="#cb39-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-215"><a href="#cb39-215" aria-hidden="true" tabindex="-1"></a>One standard approach in machine learning is to split the dataset in _train_ and _test_ data. Let's say we want to keep aside 30% of the data as our training set.</span>
-<span id="cb39-216"><a href="#cb39-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-219"><a href="#cb39-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-220"><a href="#cb39-220" aria-hidden="true" tabindex="-1"></a><span class="co"># number of observations in the dataset</span></span>
-<span id="cb39-221"><a href="#cb39-221" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(earnings)</span>
-<span id="cb39-222"><a href="#cb39-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-223"><a href="#cb39-223" aria-hidden="true" tabindex="-1"></a><span class="co"># row-indices of 30% randomly selected datapoints</span></span>
-<span id="cb39-224"><a href="#cb39-224" aria-hidden="true" tabindex="-1"></a>test_idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(n, <span class="at">size =</span> <span class="fu">round</span>(<span class="fl">0.3</span> <span class="sc">*</span> n))</span>
-<span id="cb39-225"><a href="#cb39-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-226"><a href="#cb39-226" aria-hidden="true" tabindex="-1"></a><span class="co"># split in test and training data</span></span>
-<span id="cb39-227"><a href="#cb39-227" aria-hidden="true" tabindex="-1"></a>test_data  <span class="ot">&lt;-</span> earnings[test_idx, ]</span>
-<span id="cb39-228"><a href="#cb39-228" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> earnings[<span class="sc">-</span>test_idx, ]</span>
-<span id="cb39-229"><a href="#cb39-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-230"><a href="#cb39-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-231"><a href="#cb39-231" aria-hidden="true" tabindex="-1"></a>Now let's fit again our models <span class="in">`m2`</span> adn <span class="in">`m3`</span> but using only the training data</span>
-<span id="cb39-232"><a href="#cb39-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-235"><a href="#cb39-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-236"><a href="#cb39-236" aria-hidden="true" tabindex="-1"></a>m2_train <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female, <span class="at">data =</span> train_data)</span>
-<span id="cb39-237"><a href="#cb39-237" aria-hidden="true" tabindex="-1"></a>m3_train <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female, <span class="at">data =</span> train_data)</span>
-<span id="cb39-238"><a href="#cb39-238" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-239"><a href="#cb39-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-240"><a href="#cb39-240" aria-hidden="true" tabindex="-1"></a>Now let's evaluate their predictive performance on the training data. We will use the mean squared error (MSE) as an error metric:</span>
-<span id="cb39-241"><a href="#cb39-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-242"><a href="#cb39-242" aria-hidden="true" tabindex="-1"></a>$$\text{MSE} = \frac{\sum_{i=1}^n (y_i - \hat y_i)^2}{n}$$</span>
-<span id="cb39-243"><a href="#cb39-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-246"><a href="#cb39-246" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-247"><a href="#cb39-247" aria-hidden="true" tabindex="-1"></a><span class="co"># for model m2</span></span>
-<span id="cb39-248"><a href="#cb39-248" aria-hidden="true" tabindex="-1"></a>pred_m2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(m2_train, <span class="at">newdata =</span> test_data)</span>
-<span id="cb39-249"><a href="#cb39-249" aria-hidden="true" tabindex="-1"></a>MSE_m2 <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>earn <span class="sc">-</span> pred_m2)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb39-250"><a href="#cb39-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-251"><a href="#cb39-251" aria-hidden="true" tabindex="-1"></a><span class="co"># for model m3</span></span>
-<span id="cb39-252"><a href="#cb39-252" aria-hidden="true" tabindex="-1"></a>pred_m3 <span class="ot">&lt;-</span> <span class="fu">predict</span>(m3_train, <span class="at">newdata =</span> test_data)</span>
-<span id="cb39-253"><a href="#cb39-253" aria-hidden="true" tabindex="-1"></a>MSE_m3 <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>earn <span class="sc">-</span> pred_m3)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb39-254"><a href="#cb39-254" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-255"><a href="#cb39-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-256"><a href="#cb39-256" aria-hidden="true" tabindex="-1"></a>Results:</span>
-<span id="cb39-257"><a href="#cb39-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-260"><a href="#cb39-260" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-261"><a href="#cb39-261" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">" MSE model m2: %.2f</span><span class="sc">\n</span><span class="st"> MSE model m3: %.2f"</span>, MSE_m2, MSE_m3))</span>
-<span id="cb39-262"><a href="#cb39-262" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-263"><a href="#cb39-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-264"><a href="#cb39-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-265"><a href="#cb39-265" aria-hidden="true" tabindex="-1"></a>One concern, however, is that the results observed might be specific to this particular split of observations in train and test data. In other words, would we find the same results if a different subset of observations went in training and test sets?</span>
-<span id="cb39-266"><a href="#cb39-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-267"><a href="#cb39-267" aria-hidden="true" tabindex="-1"></a>A standard approach to deal with this is repeating the analysis with different splits of training and test sets, and then average the results. In order to do this, is helpful to get familiar with **control flow statements**, a fundamental but powerful type of programming structure. This allows to automatise complex tasks involving multiple steps and branching logic. When coding complex projects, it is also often helpful to build our own **custom functions**, especially when the same set of operations may be needed in multiple places within a project. The two boxes below illustrate these conceps, and you can find a more systematic introduction in the Chapter 1 of the textbook<span class="ot">[^bookref]</span></span>
-<span id="cb39-268"><a href="#cb39-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-269"><a href="#cb39-269" aria-hidden="true" tabindex="-1"></a><span class="ot">[^bookref]: </span>Clarke, A., &amp; Lisi, M. (2025). Statistics for psychology using R: A linear models perspective. McGraw-Hill Education (UK). <span class="co">[</span><span class="ot">ISBN 9780335252626</span><span class="co">](https://www.mheducation.co.uk/statistics-for-psychology-using-r-a-linear-models-perspective-9780335252626-emea-group)</span>. The book is available in the RHUL Library.</span>
-<span id="cb39-270"><a href="#cb39-270" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-271"><a href="#cb39-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-272"><a href="#cb39-272" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb39-273"><a href="#cb39-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-274"><a href="#cb39-274" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Control flow `for` &amp; `if` statements</span></span>
-<span id="cb39-275"><a href="#cb39-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-276"><a href="#cb39-276" aria-hidden="true" tabindex="-1"></a>Some of the most powerful tools in computer coding are **for loops** and **if statements**. These allow us to repeat the same operations over different values, or ask a question about some variables and run code only if certain conditions are met. </span>
-<span id="cb39-277"><a href="#cb39-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-278"><a href="#cb39-278" aria-hidden="true" tabindex="-1"></a>We will start with <span class="in">`for`</span> loops. The basic structure is illustrated by the example below:</span>
-<span id="cb39-279"><a href="#cb39-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-282"><a href="#cb39-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-283"><a href="#cb39-283" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">7</span>)) {</span>
-<span id="cb39-284"><a href="#cb39-284" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-285"><a href="#cb39-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>( <span class="dv">3</span><span class="sc">*</span>i <span class="sc">-</span><span class="dv">2</span> )</span>
-<span id="cb39-286"><a href="#cb39-286" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-287"><a href="#cb39-287" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb39-288"><a href="#cb39-288" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-289"><a href="#cb39-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-290"><a href="#cb39-290" aria-hidden="true" tabindex="-1"></a>What is going on here? The <span class="in">`for (i in c(5, 2, 7))`</span> part of the loop creates a new variable called <span class="in">`i`</span> and initially sets it to 5. It runs the code in between the parenthesis <span class="in">`{}`</span> using this value of <span class="in">`i`</span>. It then sets <span class="in">`i`</span> to the next value (2) and repeats. Finally, it runs the code one more with <span class="in">`i=7`</span>. This can be very powerful! In our simple example here, the for loop doesn't save much time over writing out the <span class="in">`print()`</span> statement three times (one for 5, 2 and 7), but imagine if we wanted to run <span class="in">`for(i in 1:1000)`</span>! Similarly, the code in between the <span class="in">`{}`</span> is quite short in this example, but in practise we often use more complex series of operations. </span>
-<span id="cb39-291"><a href="#cb39-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-292"><a href="#cb39-292" aria-hidden="true" tabindex="-1"></a>On the other hand, <span class="in">`if`</span> statement allows us to run a block of code *if* some condition is true. </span>
-<span id="cb39-293"><a href="#cb39-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-296"><a href="#cb39-296" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-297"><a href="#cb39-297" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">7</span></span>
-<span id="cb39-298"><a href="#cb39-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-299"><a href="#cb39-299" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (n <span class="sc">&gt;</span> <span class="dv">5</span>) </span>
-<span id="cb39-300"><a href="#cb39-300" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb39-301"><a href="#cb39-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"x is greater than 5!"</span>)</span>
-<span id="cb39-302"><a href="#cb39-302" aria-hidden="true" tabindex="-1"></a>} </span>
-<span id="cb39-303"><a href="#cb39-303" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-304"><a href="#cb39-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-305"><a href="#cb39-305" aria-hidden="true" tabindex="-1"></a>We can combine these with an <span class="in">`else`</span> statement that tells R what to do if the conditions of the if statement are not true. For example:</span>
-<span id="cb39-306"><a href="#cb39-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-309"><a href="#cb39-309" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-310"><a href="#cb39-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb39-311"><a href="#cb39-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-312"><a href="#cb39-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-313"><a href="#cb39-313" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (n <span class="sc">&gt;</span> <span class="dv">5</span>) </span>
-<span id="cb39-314"><a href="#cb39-314" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb39-315"><a href="#cb39-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"x is greater than 5!"</span>)</span>
-<span id="cb39-316"><a href="#cb39-316" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-317"><a href="#cb39-317" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb39-318"><a href="#cb39-318" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-319"><a href="#cb39-319" aria-hidden="true" tabindex="-1"></a> <span class="fu">print</span>(<span class="st">"x is NOT greater than 5!"</span>)</span>
-<span id="cb39-320"><a href="#cb39-320" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-321"><a href="#cb39-321" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb39-322"><a href="#cb39-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-323"><a href="#cb39-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-324"><a href="#cb39-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-325"><a href="#cb39-325" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb39-326"><a href="#cb39-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-327"><a href="#cb39-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-328"><a href="#cb39-328" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-329"><a href="#cb39-329" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
-<span id="cb39-330"><a href="#cb39-330" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-331"><a href="#cb39-331" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Custom functions</span></span>
-<span id="cb39-332"><a href="#cb39-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-333"><a href="#cb39-333" aria-hidden="true" tabindex="-1"></a>We can extend R by writing our own functions. Here is an example of a function that 'center' a variable; that is it subtract its mean, so that as a result the centered variable values will have a mean of zero. (This is often useful when interpreting a multiple regression model with interactions.)</span>
-<span id="cb39-334"><a href="#cb39-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-335"><a href="#cb39-335" aria-hidden="true" tabindex="-1"></a>Here is one way to write such a function:</span>
-<span id="cb39-336"><a href="#cb39-336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-339"><a href="#cb39-339" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-340"><a href="#cb39-340" aria-hidden="true" tabindex="-1"></a>center <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb39-341"><a href="#cb39-341" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subtract the mean from each value</span></span>
-<span id="cb39-342"><a href="#cb39-342" aria-hidden="true" tabindex="-1"></a>  x_centered <span class="ot">&lt;-</span> x <span class="sc">-</span> <span class="fu">mean</span>(x)</span>
-<span id="cb39-343"><a href="#cb39-343" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-344"><a href="#cb39-344" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x_centered)</span>
-<span id="cb39-345"><a href="#cb39-345" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb39-346"><a href="#cb39-346" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-347"><a href="#cb39-347" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-348"><a href="#cb39-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-349"><a href="#cb39-349" aria-hidden="true" tabindex="-1"></a>Notice the general form for defining a function in R. The name for our new function comes first, followed by <span class="in">`&lt;- function(  )`</span>. Between the <span class="in">`( )`</span> we list the values we want to pass to the function. Finally, we have a pair of <span class="in">`{ }`</span> parenthesis which contain all of the code we wish to run when the function is called. The only new concept here is the <span class="in">`return()`</span> function that passes the answer of our function back out to our R environment. </span>
-<span id="cb39-350"><a href="#cb39-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-351"><a href="#cb39-351" aria-hidden="true" tabindex="-1"></a>Once we have executed the code above, the function is now available in R workspace (if you run the command <span class="in">`ls()`</span> you should see a list of all objects in the workspace, and that should include something called <span class="in">`"center"`</span>).</span>
-<span id="cb39-352"><a href="#cb39-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-353"><a href="#cb39-353" aria-hidden="true" tabindex="-1"></a>We can now use our function:</span>
-<span id="cb39-354"><a href="#cb39-354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-357"><a href="#cb39-357" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-358"><a href="#cb39-358" aria-hidden="true" tabindex="-1"></a><span class="co"># create a variable</span></span>
-<span id="cb39-359"><a href="#cb39-359" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>)</span>
-<span id="cb39-360"><a href="#cb39-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-361"><a href="#cb39-361" aria-hidden="true" tabindex="-1"></a><span class="co"># check it's mean</span></span>
-<span id="cb39-362"><a href="#cb39-362" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(v)</span>
-<span id="cb39-363"><a href="#cb39-363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-364"><a href="#cb39-364" aria-hidden="true" tabindex="-1"></a><span class="co"># use our function to center</span></span>
-<span id="cb39-365"><a href="#cb39-365" aria-hidden="true" tabindex="-1"></a>v_centered <span class="ot">&lt;-</span> <span class="fu">center</span>(v)</span>
-<span id="cb39-366"><a href="#cb39-366" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-367"><a href="#cb39-367" aria-hidden="true" tabindex="-1"></a><span class="co"># the mean should now be zero (or approximately zero)</span></span>
-<span id="cb39-368"><a href="#cb39-368" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(v_centered)</span>
-<span id="cb39-369"><a href="#cb39-369" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-370"><a href="#cb39-370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-371"><a href="#cb39-371" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-372"><a href="#cb39-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-373"><a href="#cb39-373" aria-hidden="true" tabindex="-1"></a>(Note that the mean of the centered varial is not exacly zero, but something like <span class="in">`2.960403e-16`</span>. This is scientific notation for $2.9\times 10^{-16}$ which is a very small number. It is not exactly zero because computers use something something called "floating-point arithmetic" to represent and perform calculations on real numbers, which introduces small rounding errors because most decimal fractions can't be perfectly represented).</span>
-<span id="cb39-374"><a href="#cb39-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-375"><a href="#cb39-375" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb39-376"><a href="#cb39-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-377"><a href="#cb39-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-378"><a href="#cb39-378" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Putting it all together: cross-validation</span></span>
-<span id="cb39-379"><a href="#cb39-379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-380"><a href="#cb39-380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-381"><a href="#cb39-381" aria-hidden="true" tabindex="-1"></a>Having covered this background, we can performa what machine learning folks call a 10-fold crossvalidation procedure:</span>
-<span id="cb39-382"><a href="#cb39-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-383"><a href="#cb39-383" aria-hidden="true" tabindex="-1"></a>First, it can be useful to write a custom function that compute the MSE given model and a formula syntax (note that you can pass the model formula to <span class="in">`lm()`</span> as a character string).</span>
-<span id="cb39-384"><a href="#cb39-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-387"><a href="#cb39-387" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-388"><a href="#cb39-388" aria-hidden="true" tabindex="-1"></a><span class="co"># function to compute test-set MSE -----------------------------</span></span>
-<span id="cb39-389"><a href="#cb39-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-390"><a href="#cb39-390" aria-hidden="true" tabindex="-1"></a>compute_MSE <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, train_data, test_data) {</span>
-<span id="cb39-391"><a href="#cb39-391" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-392"><a href="#cb39-392" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit the model on the training data</span></span>
-<span id="cb39-393"><a href="#cb39-393" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data =</span> train_data)</span>
-<span id="cb39-394"><a href="#cb39-394" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-395"><a href="#cb39-395" aria-hidden="true" tabindex="-1"></a>  <span class="co"># predict outcomes for the test data</span></span>
-<span id="cb39-396"><a href="#cb39-396" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> test_data)</span>
-<span id="cb39-397"><a href="#cb39-397" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-398"><a href="#cb39-398" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute mean squared error</span></span>
-<span id="cb39-399"><a href="#cb39-399" aria-hidden="true" tabindex="-1"></a>  MSE <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>earn <span class="sc">-</span> pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb39-400"><a href="#cb39-400" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-401"><a href="#cb39-401" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(MSE)</span>
-<span id="cb39-402"><a href="#cb39-402" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb39-403"><a href="#cb39-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-404"><a href="#cb39-404" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-405"><a href="#cb39-405" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-406"><a href="#cb39-406" aria-hidden="true" tabindex="-1"></a>We can check that using this in the split we have used above return the same values:</span>
-<span id="cb39-407"><a href="#cb39-407" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-410"><a href="#cb39-410" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-411"><a href="#cb39-411" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female, train_data, test_data)</span>
-<span id="cb39-412"><a href="#cb39-412" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female, train_data, test_data)</span>
-<span id="cb39-413"><a href="#cb39-413" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-414"><a href="#cb39-414" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-415"><a href="#cb39-415" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-416"><a href="#cb39-416" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-417"><a href="#cb39-417" aria-hidden="true" tabindex="-1"></a>Finally, we can use this function in a <span class="in">`for`</span> loop, and compute the predictive performance of our two models:</span>
-<span id="cb39-418"><a href="#cb39-418" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-421"><a href="#cb39-421" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-422"><a href="#cb39-422" aria-hidden="true" tabindex="-1"></a><span class="co"># 10-fold cross-validation ------------------------------------</span></span>
-<span id="cb39-423"><a href="#cb39-423" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-424"><a href="#cb39-424" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># for reproducibility</span></span>
-<span id="cb39-425"><a href="#cb39-425" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-426"><a href="#cb39-426" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(earnings)</span>
-<span id="cb39-427"><a href="#cb39-427" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb39-428"><a href="#cb39-428" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-429"><a href="#cb39-429" aria-hidden="true" tabindex="-1"></a><span class="co"># assign each observation to one of K folds</span></span>
-<span id="cb39-430"><a href="#cb39-430" aria-hidden="true" tabindex="-1"></a>fold_id <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>K, <span class="at">length.out =</span> n)</span>
-<span id="cb39-431"><a href="#cb39-431" aria-hidden="true" tabindex="-1"></a>fold_id <span class="ot">&lt;-</span> <span class="fu">sample</span>(fold_id)</span>
-<span id="cb39-432"><a href="#cb39-432" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-433"><a href="#cb39-433" aria-hidden="true" tabindex="-1"></a><span class="co"># storage for test MSEs</span></span>
-<span id="cb39-434"><a href="#cb39-434" aria-hidden="true" tabindex="-1"></a>MSE_m2 <span class="ot">&lt;-</span> <span class="fu">numeric</span>(K)</span>
-<span id="cb39-435"><a href="#cb39-435" aria-hidden="true" tabindex="-1"></a>MSE_m3 <span class="ot">&lt;-</span> <span class="fu">numeric</span>(K)</span>
-<span id="cb39-436"><a href="#cb39-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-437"><a href="#cb39-437" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>K) {</span>
-<span id="cb39-438"><a href="#cb39-438" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-439"><a href="#cb39-439" aria-hidden="true" tabindex="-1"></a>  <span class="co"># split data into training and test sets</span></span>
-<span id="cb39-440"><a href="#cb39-440" aria-hidden="true" tabindex="-1"></a>  test_idx  <span class="ot">&lt;-</span> <span class="fu">which</span>(fold_id <span class="sc">==</span> k)</span>
-<span id="cb39-441"><a href="#cb39-441" aria-hidden="true" tabindex="-1"></a>  train_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(fold_id <span class="sc">!=</span> k)</span>
-<span id="cb39-442"><a href="#cb39-442" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-443"><a href="#cb39-443" aria-hidden="true" tabindex="-1"></a>  train_data <span class="ot">&lt;-</span> earnings[train_idx, ]</span>
-<span id="cb39-444"><a href="#cb39-444" aria-hidden="true" tabindex="-1"></a>  test_data  <span class="ot">&lt;-</span> earnings[test_idx, ]</span>
-<span id="cb39-445"><a href="#cb39-445" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-446"><a href="#cb39-446" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute test MSE using our custom function</span></span>
-<span id="cb39-447"><a href="#cb39-447" aria-hidden="true" tabindex="-1"></a>  MSE_m2[k] <span class="ot">&lt;-</span> <span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female,</span>
-<span id="cb39-448"><a href="#cb39-448" aria-hidden="true" tabindex="-1"></a>                           train_data, test_data)</span>
-<span id="cb39-449"><a href="#cb39-449" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-450"><a href="#cb39-450" aria-hidden="true" tabindex="-1"></a>  MSE_m3[k] <span class="ot">&lt;-</span> <span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female,</span>
-<span id="cb39-451"><a href="#cb39-451" aria-hidden="true" tabindex="-1"></a>                           train_data, test_data)</span>
-<span id="cb39-452"><a href="#cb39-452" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb39-453"><a href="#cb39-453" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-454"><a href="#cb39-454" aria-hidden="true" tabindex="-1"></a><span class="co"># average performance across folds</span></span>
-<span id="cb39-455"><a href="#cb39-455" aria-hidden="true" tabindex="-1"></a>mean_MSE_m2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(MSE_m2)</span>
-<span id="cb39-456"><a href="#cb39-456" aria-hidden="true" tabindex="-1"></a>mean_MSE_m3 <span class="ot">&lt;-</span> <span class="fu">mean</span>(MSE_m3)</span>
-<span id="cb39-457"><a href="#cb39-457" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-458"><a href="#cb39-458" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Average test MSE over %d folds:</span><span class="sc">\n</span><span class="st">"</span>, K))</span>
-<span id="cb39-459"><a href="#cb39-459" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  model m2 (height + female): %.2f</span><span class="sc">\n</span><span class="st">"</span>, mean_MSE_m2))</span>
-<span id="cb39-460"><a href="#cb39-460" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  model m3 (height * female): %.2f</span><span class="sc">\n</span><span class="st">"</span>, mean_MSE_m3))</span>
-<span id="cb39-461"><a href="#cb39-461" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-462"><a href="#cb39-462" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb46" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Advanced R programming --- worksheet"</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "PS3192 25-26"</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Matteo Lisi"</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true     # run/copy buttons</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Activity 1 — Explanation vs. prediction: two perspective on liner regression</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>This dataset contains the annual earnings (in $), the heights (in inches) and the sex (male/female) of a random sample (N=1192) of adult Americans, surveyed in the 1990.</span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>Download the file <span class="in">`earnings.csv`</span> from the Moodle page, copy it in your working directory, and run the following code:</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a><span class="in">earnings &lt;- read.csv("earnings.csv")</span></span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a>Alternatively, you can directly import the data from a URL</span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a>earnings <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://mlisi.xyz/PS3192/datasets/earnings.csv"</span>)</span>
+<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-37"><a href="#cb46-37" aria-hidden="true" tabindex="-1"></a>The command <span class="in">`str()`</span> comes handy to examine the nature of objects in the working space</span>
+<span id="cb46-38"><a href="#cb46-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-41"><a href="#cb46-41" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-42"><a href="#cb46-42" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(earnings)</span>
+<span id="cb46-43"><a href="#cb46-43" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-44"><a href="#cb46-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### A scientist/statistician perspective</span></span>
+<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-47"><a href="#cb46-47" aria-hidden="true" tabindex="-1"></a>Suppose we want to sue this data to address a question of whether people's height _causally_ influence their salary.</span>
+<span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a>A first approach could be to fit the linear regression model:</span>
+<span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-53"><a href="#cb46-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-54"><a href="#cb46-54" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height, <span class="at">data =</span> earnings)</span>
+<span id="cb46-55"><a href="#cb46-55" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span>
+<span id="cb46-56"><a href="#cb46-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-57"><a href="#cb46-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-58"><a href="#cb46-58" aria-hidden="true" tabindex="-1"></a>Which reveals a significant effect of <span class="in">`r round(coef(m)[2])`</span> extra dollars per year for each additional in of height.</span>
+<span id="cb46-59"><a href="#cb46-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-60"><a href="#cb46-60" aria-hidden="true" tabindex="-1"></a>At this point the statistician gets suspicious — is this a _real_ effect?</span>
+<span id="cb46-61"><a href="#cb46-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-62"><a href="#cb46-62" aria-hidden="true" tabindex="-1"></a>One possible explanation is that this is _confounded_ by sex. Simply put, it is known that there are gender disparities in salary (and these were likely even larger in 1990), and that men tend to be taller (on average) than women. So this may be just a _spurious_ correlation. This is a common 'confounding by lurkign third variable' situation, which is summarised by the following causal graph<span class="ot">[^dag]</span></span>
+<span id="cb46-63"><a href="#cb46-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-64"><a href="#cb46-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-65"><a href="#cb46-65" aria-hidden="true" tabindex="-1"></a><span class="ot">[^dag]: </span>The correct technical name for this type of representations is a DAG, acronym of "directed acyclic graph". Nodes represent variables, and arrows causal relationships.</span>
+<span id="cb46-66"><a href="#cb46-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-67"><a href="#cb46-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-70"><a href="#cb46-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-71"><a href="#cb46-71" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: FALSE</span></span>
+<span id="cb46-72"><a href="#cb46-72" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
+<span id="cb46-73"><a href="#cb46-73" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb46-74"><a href="#cb46-74" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb46-75"><a href="#cb46-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-76"><a href="#cb46-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-77"><a href="#cb46-77" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb46-78"><a href="#cb46-78" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span>
+<span id="cb46-79"><a href="#cb46-79" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb46-80"><a href="#cb46-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-81"><a href="#cb46-81" aria-hidden="true" tabindex="-1"></a>coord_dag <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="at">X =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">Y =</span> <span class="dv">1</span>, <span class="at">Z =</span> <span class="dv">0</span>)<span class="sc">*</span><span class="fl">1.5</span>,</span>
+<span id="cb46-82"><a href="#cb46-82" aria-hidden="true" tabindex="-1"></a>                  <span class="at">y =</span> <span class="fu">c</span>(<span class="at">X =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">Y =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">Z =</span> <span class="dv">1</span>))</span>
+<span id="cb46-83"><a href="#cb46-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-84"><a href="#cb46-84" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagify</span>(X <span class="sc">~</span> Z,</span>
+<span id="cb46-85"><a href="#cb46-85" aria-hidden="true" tabindex="-1"></a>               Y <span class="sc">~</span> Z,</span>
+<span id="cb46-86"><a href="#cb46-86" aria-hidden="true" tabindex="-1"></a>               Y<span class="sc">~</span>X,</span>
+<span id="cb46-87"><a href="#cb46-87" aria-hidden="true" tabindex="-1"></a>               <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb46-88"><a href="#cb46-88" aria-hidden="true" tabindex="-1"></a>                 <span class="at">X =</span> <span class="st">"Height"</span>,</span>
+<span id="cb46-89"><a href="#cb46-89" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Y =</span> <span class="st">"Salary"</span>,</span>
+<span id="cb46-90"><a href="#cb46-90" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Z =</span> <span class="st">"Sex"</span>),</span>
+<span id="cb46-91"><a href="#cb46-91" aria-hidden="true" tabindex="-1"></a>               <span class="at">coords =</span> coord_dag)</span>
+<span id="cb46-92"><a href="#cb46-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-93"><a href="#cb46-93" aria-hidden="true" tabindex="-1"></a>dag <span class="sc">%&gt;%</span> </span>
+<span id="cb46-94"><a href="#cb46-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy_dagitty</span>(<span class="at">layout =</span> <span class="st">"nicely"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-95"><a href="#cb46-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend))<span class="sc">+</span></span>
+<span id="cb46-96"><a href="#cb46-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_dag_point</span>(<span class="at">colour =</span> <span class="st">'white'</span>, <span class="at">size =</span> <span class="dv">40</span>) <span class="sc">+</span></span>
+<span id="cb46-97"><a href="#cb46-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_dag_text</span>(<span class="fu">aes</span>(<span class="at">label=</span>label), <span class="at">colour =</span> <span class="st">'black'</span>,<span class="at">family=</span><span class="st">"URWGothic"</span>, <span class="at">size=</span><span class="dv">7</span>) <span class="sc">+</span></span>
+<span id="cb46-98"><a href="#cb46-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_dag_edges</span>(<span class="at">start_cap =</span> ggraph<span class="sc">::</span><span class="fu">circle</span>(<span class="dv">14</span>, <span class="st">'mm'</span>),</span>
+<span id="cb46-99"><a href="#cb46-99" aria-hidden="true" tabindex="-1"></a>                 <span class="at">end_cap =</span> ggraph<span class="sc">::</span><span class="fu">circle</span>(<span class="dv">14</span>, <span class="st">'mm'</span>)) <span class="sc">+</span></span>
+<span id="cb46-100"><a href="#cb46-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_dag</span>() <span class="sc">+</span></span>
+<span id="cb46-101"><a href="#cb46-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb46-102"><a href="#cb46-102" aria-hidden="true" tabindex="-1"></a>              <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb46-103"><a href="#cb46-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-104"><a href="#cb46-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-105"><a href="#cb46-105" aria-hidden="true" tabindex="-1"></a>Indeed if we visualise the data we can see that the sex seems to be a major confounding factor:</span>
+<span id="cb46-106"><a href="#cb46-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-109"><a href="#cb46-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-110"><a href="#cb46-110" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb46-111"><a href="#cb46-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb46-112"><a href="#cb46-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb46-113"><a href="#cb46-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-114"><a href="#cb46-114" aria-hidden="true" tabindex="-1"></a><span class="co"># prepare plotting window</span></span>
+<span id="cb46-115"><a href="#cb46-115" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
+<span id="cb46-116"><a href="#cb46-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-117"><a href="#cb46-117" aria-hidden="true" tabindex="-1"></a><span class="co"># scatterplot. first we plot males as blue dots</span></span>
+<span id="cb46-118"><a href="#cb46-118" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(earnings<span class="sc">$</span>height[earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">0</span>], </span>
+<span id="cb46-119"><a href="#cb46-119" aria-hidden="true" tabindex="-1"></a>     earnings<span class="sc">$</span>earn[earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">0</span>], </span>
+<span id="cb46-120"><a href="#cb46-120" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">"blue"</span>,<span class="at">cex=</span><span class="fl">0.5</span>, </span>
+<span id="cb46-121"><a href="#cb46-121" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"annual earnings [$]"</span>,</span>
+<span id="cb46-122"><a href="#cb46-122" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"height [inches]"</span>,</span>
+<span id="cb46-123"><a href="#cb46-123" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim=</span><span class="fu">range</span>(earnings<span class="sc">$</span>height))</span>
+<span id="cb46-124"><a href="#cb46-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-125"><a href="#cb46-125" aria-hidden="true" tabindex="-1"></a><span class="co"># add females as red dots</span></span>
+<span id="cb46-126"><a href="#cb46-126" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(earnings<span class="sc">$</span>height[earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">1</span>], </span>
+<span id="cb46-127"><a href="#cb46-127" aria-hidden="true" tabindex="-1"></a>       earnings<span class="sc">$</span>earn[earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">1</span>], </span>
+<span id="cb46-128"><a href="#cb46-128" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="st">"red"</span>,<span class="at">cex=</span><span class="fl">0.5</span>)</span>
+<span id="cb46-129"><a href="#cb46-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-130"><a href="#cb46-130" aria-hidden="true" tabindex="-1"></a><span class="co"># add regression line</span></span>
+<span id="cb46-131"><a href="#cb46-131" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(earn<span class="sc">~</span>height, earnings),<span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb46-132"><a href="#cb46-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-133"><a href="#cb46-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-134"><a href="#cb46-134" aria-hidden="true" tabindex="-1"></a><span class="co"># for X label in boxplot</span></span>
+<span id="cb46-135"><a href="#cb46-135" aria-hidden="true" tabindex="-1"></a>earnings<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(earnings<span class="sc">$</span>female<span class="sc">==</span><span class="dv">1</span>,<span class="st">"female"</span>,<span class="st">"male"</span>)</span>
+<span id="cb46-136"><a href="#cb46-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-137"><a href="#cb46-137" aria-hidden="true" tabindex="-1"></a><span class="co"># boxplots</span></span>
+<span id="cb46-138"><a href="#cb46-138" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(height <span class="sc">~</span> sex, earnings, <span class="at">notch=</span>T, <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">"height [inches]"</span>,<span class="at">col=</span><span class="fu">c</span>(<span class="fu">rgb</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="fl">0.5</span>),<span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)))</span>
+<span id="cb46-139"><a href="#cb46-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-140"><a href="#cb46-140" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(earn <span class="sc">~</span> sex, earnings, <span class="at">notch=</span>T, <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">"annual earnings [$]"</span>,<span class="at">col=</span><span class="fu">c</span>(<span class="fu">rgb</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="fl">0.5</span>),<span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)))</span>
+<span id="cb46-141"><a href="#cb46-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-142"><a href="#cb46-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-143"><a href="#cb46-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-144"><a href="#cb46-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-145"><a href="#cb46-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-146"><a href="#cb46-146" aria-hidden="true" tabindex="-1"></a>One way to check this is to adjust our estimate of he effect of <span class="in">`height`</span> by including sex in our model</span>
+<span id="cb46-147"><a href="#cb46-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-150"><a href="#cb46-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-151"><a href="#cb46-151" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female, <span class="at">data =</span> earnings)</span>
+<span id="cb46-152"><a href="#cb46-152" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span>
+<span id="cb46-153"><a href="#cb46-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-154"><a href="#cb46-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-155"><a href="#cb46-155" aria-hidden="true" tabindex="-1"></a>(Note that here <span class="in">`female`</span> is a so-called "dummy" variable, that is a variable use to encode a categorical label by means of 0 and 1 values. Specifically, we have that <span class="in">`female`</span>=1 when the datapoint correspond to a female respondent, and <span class="in">`female`</span>=0 otherwise.)</span>
+<span id="cb46-156"><a href="#cb46-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-157"><a href="#cb46-157" aria-hidden="true" tabindex="-1"></a>Our new model still reveal some effect of height, but this is substantially smaller, and a very large effect of sex, where women earn about 9 thousands dollar less than men per year on average. </span>
+<span id="cb46-158"><a href="#cb46-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-159"><a href="#cb46-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-160"><a href="#cb46-160" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb46-161"><a href="#cb46-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-162"><a href="#cb46-162" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Linear regression recap</span></span>
+<span id="cb46-163"><a href="#cb46-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-164"><a href="#cb46-164" aria-hidden="true" tabindex="-1"></a>In linear regression we model a variable (_outcome_) as a function of one or more _predictor_ variable</span>
+<span id="cb46-165"><a href="#cb46-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-166"><a href="#cb46-166" aria-hidden="true" tabindex="-1"></a>$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$</span>
+<span id="cb46-167"><a href="#cb46-167" aria-hidden="true" tabindex="-1"></a>where $y$ is the outcome (sometime referred to as "dependent" variable), $x$ is the predictor, and $\beta_0$ and $\beta_1$ the intercept and slope coefficients, respectively. $\beta_0$ tells us the expected value of $y$ when $x=0$ and $\beta_1$ the expected increase in $y$ for a unitary increase (+1) in $x$.</span>
+<span id="cb46-168"><a href="#cb46-168" aria-hidden="true" tabindex="-1"></a>$\epsilon$ indicates the residual or error terms, corresponding to the variability in the data that is not explained by our model. The key assumptions in linear regression (and all linear models, including ANOVA, t-test, etc.) are that these errors are _normally_ distributed and they they are i.i.d. (independent and identically distributed).</span>
+<span id="cb46-169"><a href="#cb46-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-170"><a href="#cb46-170" aria-hidden="true" tabindex="-1"></a>You can sometime see the model also notates as</span>
+<span id="cb46-171"><a href="#cb46-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-172"><a href="#cb46-172" aria-hidden="true" tabindex="-1"></a>$$\hat y_i = \beta_0 + \beta_1 x_i$$</span>
+<span id="cb46-173"><a href="#cb46-173" aria-hidden="true" tabindex="-1"></a>Note that here we have removed the error term, and the dependent variable has a little "hat" symbol $\hat \,$. This is standard notation to indicate that to the left of the equal sign we are now indicating the expected or predicted values of the regressions. The differences between the predicted/expected values and the actual data are the residuals, that is we can write $\epsilon_i = y_i - \hat y_i$.</span>
+<span id="cb46-174"><a href="#cb46-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-175"><a href="#cb46-175" aria-hidden="true" tabindex="-1"></a>Formally, the central assumption of linear regression can be formally expressed as $\epsilon \sim \mathcal{N}(0, \sigma_{\epsilon})$, which reads as "the residuals of regression have a normal distribution with mean 0 and standard deviation of $\sigma_{\epsilon}$".</span>
+<span id="cb46-176"><a href="#cb46-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-177"><a href="#cb46-177" aria-hidden="true" tabindex="-1"></a>We can add more than one predictors , e.g.</span>
+<span id="cb46-178"><a href="#cb46-178" aria-hidden="true" tabindex="-1"></a>$$y_i = \beta_0 + \beta_1 x_i + \beta_3 z_i + \epsilon_i$$</span>
+<span id="cb46-179"><a href="#cb46-179" aria-hidden="true" tabindex="-1"></a>For example, our model <span class="in">`m2`</span> above. which has 2 predictors, could be written formally as</span>
+<span id="cb46-180"><a href="#cb46-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-181"><a href="#cb46-181" aria-hidden="true" tabindex="-1"></a>$$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_3  \, \text{female}_i + \epsilon_i$$</span>
+<span id="cb46-182"><a href="#cb46-182" aria-hidden="true" tabindex="-1"></a>Essentially, the dependent variable is modeled as a weighted sum of the two predictors, plus a constant term (the intercept $\beta_0$).</span>
+<span id="cb46-183"><a href="#cb46-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-184"><a href="#cb46-184" aria-hidden="true" tabindex="-1"></a>As an **exercise**, try to apply the regression formula above using the values of coefficients from the fitted model to compute  the predicted/expected salary of:</span>
+<span id="cb46-185"><a href="#cb46-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-186"><a href="#cb46-186" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>a male, with <span class="in">`height`</span>=70 inches</span>
+<span id="cb46-187"><a href="#cb46-187" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>a female, with <span class="in">`height`</span>=80 inches</span>
+<span id="cb46-188"><a href="#cb46-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-189"><a href="#cb46-189" aria-hidden="true" tabindex="-1"></a>You can extract the precise values using the function <span class="in">`coef()`</span></span>
+<span id="cb46-190"><a href="#cb46-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-193"><a href="#cb46-193" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-194"><a href="#cb46-194" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(m2)</span>
+<span id="cb46-195"><a href="#cb46-195" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-196"><a href="#cb46-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-197"><a href="#cb46-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-198"><a href="#cb46-198" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb46-199"><a href="#cb46-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-200"><a href="#cb46-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-201"><a href="#cb46-201" aria-hidden="true" tabindex="-1"></a><span class="fu">### A data scientist perspective</span></span>
+<span id="cb46-202"><a href="#cb46-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-203"><a href="#cb46-203" aria-hidden="true" tabindex="-1"></a>A data scientist might work for a company that wants to use this data to offer personal styling packages priced relative to clients’ income. That is, we are not interested in _why_salary differs, we just want a model that makes good predictions.</span>
+<span id="cb46-204"><a href="#cb46-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-205"><a href="#cb46-205" aria-hidden="true" tabindex="-1"></a>The data scientist consider that perhaps we can make the model even more accurate by adding an interaction term:</span>
+<span id="cb46-206"><a href="#cb46-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-209"><a href="#cb46-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-210"><a href="#cb46-210" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female, <span class="at">data =</span> earnings)</span>
+<span id="cb46-211"><a href="#cb46-211" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-212"><a href="#cb46-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-213"><a href="#cb46-213" aria-hidden="true" tabindex="-1"></a>But how do we know which model will performs better in new data?</span>
+<span id="cb46-214"><a href="#cb46-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-215"><a href="#cb46-215" aria-hidden="true" tabindex="-1"></a>One standard approach in machine learning is to split the dataset in _train_ and _test_ data. Let's say we want to keep aside 30% of the data as our training set.</span>
+<span id="cb46-216"><a href="#cb46-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-219"><a href="#cb46-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-220"><a href="#cb46-220" aria-hidden="true" tabindex="-1"></a><span class="co"># number of observations in the dataset</span></span>
+<span id="cb46-221"><a href="#cb46-221" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(earnings)</span>
+<span id="cb46-222"><a href="#cb46-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-223"><a href="#cb46-223" aria-hidden="true" tabindex="-1"></a><span class="co"># row-indices of 30% randomly selected datapoints</span></span>
+<span id="cb46-224"><a href="#cb46-224" aria-hidden="true" tabindex="-1"></a>test_idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(n, <span class="at">size =</span> <span class="fu">round</span>(<span class="fl">0.3</span> <span class="sc">*</span> n))</span>
+<span id="cb46-225"><a href="#cb46-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-226"><a href="#cb46-226" aria-hidden="true" tabindex="-1"></a><span class="co"># split in test and training data</span></span>
+<span id="cb46-227"><a href="#cb46-227" aria-hidden="true" tabindex="-1"></a>test_data  <span class="ot">&lt;-</span> earnings[test_idx, ]</span>
+<span id="cb46-228"><a href="#cb46-228" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> earnings[<span class="sc">-</span>test_idx, ]</span>
+<span id="cb46-229"><a href="#cb46-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-230"><a href="#cb46-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-231"><a href="#cb46-231" aria-hidden="true" tabindex="-1"></a>Now let's fit again our models <span class="in">`m2`</span> adn <span class="in">`m3`</span> but using only the training data</span>
+<span id="cb46-232"><a href="#cb46-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-235"><a href="#cb46-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-236"><a href="#cb46-236" aria-hidden="true" tabindex="-1"></a>m2_train <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female, <span class="at">data =</span> train_data)</span>
+<span id="cb46-237"><a href="#cb46-237" aria-hidden="true" tabindex="-1"></a>m3_train <span class="ot">&lt;-</span> <span class="fu">lm</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female, <span class="at">data =</span> train_data)</span>
+<span id="cb46-238"><a href="#cb46-238" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-239"><a href="#cb46-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-240"><a href="#cb46-240" aria-hidden="true" tabindex="-1"></a>Now let's evaluate their predictive performance on the training data. We will use the mean squared error (MSE) as an error metric:</span>
+<span id="cb46-241"><a href="#cb46-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-242"><a href="#cb46-242" aria-hidden="true" tabindex="-1"></a>$$\text{MSE} = \frac{\sum_{i=1}^n (y_i - \hat y_i)^2}{n}$$</span>
+<span id="cb46-243"><a href="#cb46-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-246"><a href="#cb46-246" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-247"><a href="#cb46-247" aria-hidden="true" tabindex="-1"></a><span class="co"># for model m2</span></span>
+<span id="cb46-248"><a href="#cb46-248" aria-hidden="true" tabindex="-1"></a>pred_m2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(m2_train, <span class="at">newdata =</span> test_data)</span>
+<span id="cb46-249"><a href="#cb46-249" aria-hidden="true" tabindex="-1"></a>MSE_m2 <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>earn <span class="sc">-</span> pred_m2)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb46-250"><a href="#cb46-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-251"><a href="#cb46-251" aria-hidden="true" tabindex="-1"></a><span class="co"># for model m3</span></span>
+<span id="cb46-252"><a href="#cb46-252" aria-hidden="true" tabindex="-1"></a>pred_m3 <span class="ot">&lt;-</span> <span class="fu">predict</span>(m3_train, <span class="at">newdata =</span> test_data)</span>
+<span id="cb46-253"><a href="#cb46-253" aria-hidden="true" tabindex="-1"></a>MSE_m3 <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>earn <span class="sc">-</span> pred_m3)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb46-254"><a href="#cb46-254" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-255"><a href="#cb46-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-256"><a href="#cb46-256" aria-hidden="true" tabindex="-1"></a>Results:</span>
+<span id="cb46-257"><a href="#cb46-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-260"><a href="#cb46-260" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-261"><a href="#cb46-261" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">" MSE model m2: %.2f</span><span class="sc">\n</span><span class="st"> MSE model m3: %.2f"</span>, MSE_m2, MSE_m3))</span>
+<span id="cb46-262"><a href="#cb46-262" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-263"><a href="#cb46-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-264"><a href="#cb46-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-265"><a href="#cb46-265" aria-hidden="true" tabindex="-1"></a>One concern, however, is that the results observed might be specific to this particular split of observations in train and test data. In other words, would we find the same results if a different subset of observations went in training and test sets?</span>
+<span id="cb46-266"><a href="#cb46-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-267"><a href="#cb46-267" aria-hidden="true" tabindex="-1"></a>A standard approach to deal with this is repeating the analysis with different splits of training and test sets, and then average the results. In order to do this, is helpful to get familiar with **control flow statements**, a fundamental but powerful type of programming structure. This allows to automatise complex tasks involving multiple steps and branching logic. When coding complex projects, it is also often helpful to build our own **custom functions**, especially when the same set of operations may be needed in multiple places within a project. The two boxes below illustrate these conceps, and you can find a more systematic introduction in the Chapter 1 of the textbook<span class="ot">[^bookref]</span></span>
+<span id="cb46-268"><a href="#cb46-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-269"><a href="#cb46-269" aria-hidden="true" tabindex="-1"></a><span class="ot">[^bookref]: </span>Clarke, A., &amp; Lisi, M. (2025). Statistics for psychology using R: A linear models perspective. McGraw-Hill Education (UK). <span class="co">[</span><span class="ot">ISBN 9780335252626</span><span class="co">](https://www.mheducation.co.uk/statistics-for-psychology-using-r-a-linear-models-perspective-9780335252626-emea-group)</span>. The book is available in the RHUL Library.</span>
+<span id="cb46-270"><a href="#cb46-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-271"><a href="#cb46-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-272"><a href="#cb46-272" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb46-273"><a href="#cb46-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-274"><a href="#cb46-274" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Control flow `for` &amp; `if` statements</span></span>
+<span id="cb46-275"><a href="#cb46-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-276"><a href="#cb46-276" aria-hidden="true" tabindex="-1"></a>Some of the most powerful tools in computer coding are **for loops** and **if statements**. These allow us to repeat the same operations over different values, or ask a question about some variables and run code only if certain conditions are met. </span>
+<span id="cb46-277"><a href="#cb46-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-278"><a href="#cb46-278" aria-hidden="true" tabindex="-1"></a>We will start with <span class="in">`for`</span> loops. The basic structure is illustrated by the example below:</span>
+<span id="cb46-279"><a href="#cb46-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-282"><a href="#cb46-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-283"><a href="#cb46-283" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">7</span>)) {</span>
+<span id="cb46-284"><a href="#cb46-284" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-285"><a href="#cb46-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>( <span class="dv">3</span><span class="sc">*</span>i <span class="sc">-</span><span class="dv">2</span> )</span>
+<span id="cb46-286"><a href="#cb46-286" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-287"><a href="#cb46-287" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-288"><a href="#cb46-288" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-289"><a href="#cb46-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-290"><a href="#cb46-290" aria-hidden="true" tabindex="-1"></a>What is going on here? The <span class="in">`for (i in c(5, 2, 7))`</span> part of the loop creates a new variable called <span class="in">`i`</span> and initially sets it to 5. It runs the code in between the parenthesis <span class="in">`{}`</span> using this value of <span class="in">`i`</span>. It then sets <span class="in">`i`</span> to the next value (2) and repeats. Finally, it runs the code one more with <span class="in">`i=7`</span>. This can be very powerful! In our simple example here, the for loop doesn't save much time over writing out the <span class="in">`print()`</span> statement three times (one for 5, 2 and 7), but imagine if we wanted to run <span class="in">`for(i in 1:1000)`</span>! Similarly, the code in between the <span class="in">`{}`</span> is quite short in this example, but in practise we often use more complex series of operations. </span>
+<span id="cb46-291"><a href="#cb46-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-292"><a href="#cb46-292" aria-hidden="true" tabindex="-1"></a>On the other hand, <span class="in">`if`</span> statement allows us to run a block of code *if* some condition is true. </span>
+<span id="cb46-293"><a href="#cb46-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-296"><a href="#cb46-296" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-297"><a href="#cb46-297" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">7</span></span>
+<span id="cb46-298"><a href="#cb46-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-299"><a href="#cb46-299" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (n <span class="sc">&gt;</span> <span class="dv">5</span>) </span>
+<span id="cb46-300"><a href="#cb46-300" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb46-301"><a href="#cb46-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"x is greater than 5!"</span>)</span>
+<span id="cb46-302"><a href="#cb46-302" aria-hidden="true" tabindex="-1"></a>} </span>
+<span id="cb46-303"><a href="#cb46-303" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-304"><a href="#cb46-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-305"><a href="#cb46-305" aria-hidden="true" tabindex="-1"></a>We can combine these with an <span class="in">`else`</span> statement that tells R what to do if the conditions of the if statement are not true. For example:</span>
+<span id="cb46-306"><a href="#cb46-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-309"><a href="#cb46-309" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-310"><a href="#cb46-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb46-311"><a href="#cb46-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-312"><a href="#cb46-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-313"><a href="#cb46-313" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (n <span class="sc">&gt;</span> <span class="dv">5</span>) </span>
+<span id="cb46-314"><a href="#cb46-314" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb46-315"><a href="#cb46-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"x is greater than 5!"</span>)</span>
+<span id="cb46-316"><a href="#cb46-316" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-317"><a href="#cb46-317" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb46-318"><a href="#cb46-318" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-319"><a href="#cb46-319" aria-hidden="true" tabindex="-1"></a> <span class="fu">print</span>(<span class="st">"x is NOT greater than 5!"</span>)</span>
+<span id="cb46-320"><a href="#cb46-320" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-321"><a href="#cb46-321" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-322"><a href="#cb46-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-323"><a href="#cb46-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-324"><a href="#cb46-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-325"><a href="#cb46-325" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb46-326"><a href="#cb46-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-327"><a href="#cb46-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-328"><a href="#cb46-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-329"><a href="#cb46-329" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb46-330"><a href="#cb46-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-331"><a href="#cb46-331" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Custom functions</span></span>
+<span id="cb46-332"><a href="#cb46-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-333"><a href="#cb46-333" aria-hidden="true" tabindex="-1"></a>We can extend R by writing our own functions. Here is an example of a function that 'center' a variable; that is it subtract its mean, so that as a result the centered variable values will have a mean of zero. (This is often useful when interpreting a multiple regression model with interactions.)</span>
+<span id="cb46-334"><a href="#cb46-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-335"><a href="#cb46-335" aria-hidden="true" tabindex="-1"></a>Here is one way to write such a function:</span>
+<span id="cb46-336"><a href="#cb46-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-339"><a href="#cb46-339" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-340"><a href="#cb46-340" aria-hidden="true" tabindex="-1"></a>center <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb46-341"><a href="#cb46-341" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subtract the mean from each value</span></span>
+<span id="cb46-342"><a href="#cb46-342" aria-hidden="true" tabindex="-1"></a>  x_centered <span class="ot">&lt;-</span> x <span class="sc">-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb46-343"><a href="#cb46-343" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-344"><a href="#cb46-344" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x_centered)</span>
+<span id="cb46-345"><a href="#cb46-345" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-346"><a href="#cb46-346" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-347"><a href="#cb46-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-348"><a href="#cb46-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-349"><a href="#cb46-349" aria-hidden="true" tabindex="-1"></a>Notice the general form for defining a function in R. The name for our new function comes first, followed by <span class="in">`&lt;- function(  )`</span>. Between the <span class="in">`( )`</span> we list the values we want to pass to the function. Finally, we have a pair of <span class="in">`{ }`</span> parenthesis which contain all of the code we wish to run when the function is called. The only new concept here is the <span class="in">`return()`</span> function that passes the answer of our function back out to our R environment. </span>
+<span id="cb46-350"><a href="#cb46-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-351"><a href="#cb46-351" aria-hidden="true" tabindex="-1"></a>Once we have executed the code above, the function is now available in R workspace (if you run the command <span class="in">`ls()`</span> you should see a list of all objects in the workspace, and that should include something called <span class="in">`"center"`</span>).</span>
+<span id="cb46-352"><a href="#cb46-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-353"><a href="#cb46-353" aria-hidden="true" tabindex="-1"></a>We can now use our function:</span>
+<span id="cb46-354"><a href="#cb46-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-357"><a href="#cb46-357" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-358"><a href="#cb46-358" aria-hidden="true" tabindex="-1"></a><span class="co"># create a variable</span></span>
+<span id="cb46-359"><a href="#cb46-359" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>)</span>
+<span id="cb46-360"><a href="#cb46-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-361"><a href="#cb46-361" aria-hidden="true" tabindex="-1"></a><span class="co"># check it's mean</span></span>
+<span id="cb46-362"><a href="#cb46-362" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(v)</span>
+<span id="cb46-363"><a href="#cb46-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-364"><a href="#cb46-364" aria-hidden="true" tabindex="-1"></a><span class="co"># use our function to center</span></span>
+<span id="cb46-365"><a href="#cb46-365" aria-hidden="true" tabindex="-1"></a>v_centered <span class="ot">&lt;-</span> <span class="fu">center</span>(v)</span>
+<span id="cb46-366"><a href="#cb46-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-367"><a href="#cb46-367" aria-hidden="true" tabindex="-1"></a><span class="co"># the mean should now be zero (or approximately zero)</span></span>
+<span id="cb46-368"><a href="#cb46-368" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(v_centered)</span>
+<span id="cb46-369"><a href="#cb46-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-370"><a href="#cb46-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-371"><a href="#cb46-371" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-372"><a href="#cb46-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-373"><a href="#cb46-373" aria-hidden="true" tabindex="-1"></a>(Note that the mean of the centered varial is not exacly zero, but something like <span class="in">`2.960403e-16`</span>. This is scientific notation for $2.9\times 10^{-16}$ which is a very small number. It is not exactly zero because computers use something something called "floating-point arithmetic" to represent and perform calculations on real numbers, which introduces small rounding errors because most decimal fractions can't be perfectly represented).</span>
+<span id="cb46-374"><a href="#cb46-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-375"><a href="#cb46-375" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb46-376"><a href="#cb46-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-377"><a href="#cb46-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-378"><a href="#cb46-378" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Putting it all together: cross-validation</span></span>
+<span id="cb46-379"><a href="#cb46-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-380"><a href="#cb46-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-381"><a href="#cb46-381" aria-hidden="true" tabindex="-1"></a>Having covered this background, we can performa what machine learning folks call a 10-fold crossvalidation procedure:</span>
+<span id="cb46-382"><a href="#cb46-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-383"><a href="#cb46-383" aria-hidden="true" tabindex="-1"></a>First, it can be useful to write a custom function that compute the MSE given model and a formula syntax (note that you can pass the model formula to <span class="in">`lm()`</span> as a character string).</span>
+<span id="cb46-384"><a href="#cb46-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-387"><a href="#cb46-387" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-388"><a href="#cb46-388" aria-hidden="true" tabindex="-1"></a><span class="co"># function to compute test-set MSE -----------------------------</span></span>
+<span id="cb46-389"><a href="#cb46-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-390"><a href="#cb46-390" aria-hidden="true" tabindex="-1"></a>compute_MSE <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, train_data, test_data) {</span>
+<span id="cb46-391"><a href="#cb46-391" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-392"><a href="#cb46-392" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit the model on the training data</span></span>
+<span id="cb46-393"><a href="#cb46-393" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data =</span> train_data)</span>
+<span id="cb46-394"><a href="#cb46-394" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-395"><a href="#cb46-395" aria-hidden="true" tabindex="-1"></a>  <span class="co"># predict outcomes for the test data</span></span>
+<span id="cb46-396"><a href="#cb46-396" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> test_data)</span>
+<span id="cb46-397"><a href="#cb46-397" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-398"><a href="#cb46-398" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute mean squared error</span></span>
+<span id="cb46-399"><a href="#cb46-399" aria-hidden="true" tabindex="-1"></a>  MSE <span class="ot">&lt;-</span> <span class="fu">mean</span>((test_data<span class="sc">$</span>earn <span class="sc">-</span> pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb46-400"><a href="#cb46-400" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-401"><a href="#cb46-401" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(MSE)</span>
+<span id="cb46-402"><a href="#cb46-402" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-403"><a href="#cb46-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-404"><a href="#cb46-404" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-405"><a href="#cb46-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-406"><a href="#cb46-406" aria-hidden="true" tabindex="-1"></a>We can check that using this in the split we have used above return the same values:</span>
+<span id="cb46-407"><a href="#cb46-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-410"><a href="#cb46-410" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-411"><a href="#cb46-411" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female, train_data, test_data)</span>
+<span id="cb46-412"><a href="#cb46-412" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female, train_data, test_data)</span>
+<span id="cb46-413"><a href="#cb46-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-414"><a href="#cb46-414" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-415"><a href="#cb46-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-416"><a href="#cb46-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-417"><a href="#cb46-417" aria-hidden="true" tabindex="-1"></a>Finally, we can use this function in a <span class="in">`for`</span> loop, and compute the predictive performance of our two models:</span>
+<span id="cb46-418"><a href="#cb46-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-421"><a href="#cb46-421" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-422"><a href="#cb46-422" aria-hidden="true" tabindex="-1"></a><span class="co"># 10-fold cross-validation ------------------------------------</span></span>
+<span id="cb46-423"><a href="#cb46-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-424"><a href="#cb46-424" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># for reproducibility</span></span>
+<span id="cb46-425"><a href="#cb46-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-426"><a href="#cb46-426" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(earnings)</span>
+<span id="cb46-427"><a href="#cb46-427" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb46-428"><a href="#cb46-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-429"><a href="#cb46-429" aria-hidden="true" tabindex="-1"></a><span class="co"># assign each observation to one of K folds</span></span>
+<span id="cb46-430"><a href="#cb46-430" aria-hidden="true" tabindex="-1"></a>fold_id <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>K, <span class="at">length.out =</span> n)</span>
+<span id="cb46-431"><a href="#cb46-431" aria-hidden="true" tabindex="-1"></a>fold_id <span class="ot">&lt;-</span> <span class="fu">sample</span>(fold_id)</span>
+<span id="cb46-432"><a href="#cb46-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-433"><a href="#cb46-433" aria-hidden="true" tabindex="-1"></a><span class="co"># storage for test MSEs</span></span>
+<span id="cb46-434"><a href="#cb46-434" aria-hidden="true" tabindex="-1"></a>MSE_m2 <span class="ot">&lt;-</span> <span class="fu">numeric</span>(K)</span>
+<span id="cb46-435"><a href="#cb46-435" aria-hidden="true" tabindex="-1"></a>MSE_m3 <span class="ot">&lt;-</span> <span class="fu">numeric</span>(K)</span>
+<span id="cb46-436"><a href="#cb46-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-437"><a href="#cb46-437" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>K) {</span>
+<span id="cb46-438"><a href="#cb46-438" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-439"><a href="#cb46-439" aria-hidden="true" tabindex="-1"></a>  <span class="co"># split data into training and test sets</span></span>
+<span id="cb46-440"><a href="#cb46-440" aria-hidden="true" tabindex="-1"></a>  test_idx  <span class="ot">&lt;-</span> <span class="fu">which</span>(fold_id <span class="sc">==</span> k)</span>
+<span id="cb46-441"><a href="#cb46-441" aria-hidden="true" tabindex="-1"></a>  train_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(fold_id <span class="sc">!=</span> k)</span>
+<span id="cb46-442"><a href="#cb46-442" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-443"><a href="#cb46-443" aria-hidden="true" tabindex="-1"></a>  train_data <span class="ot">&lt;-</span> earnings[train_idx, ]</span>
+<span id="cb46-444"><a href="#cb46-444" aria-hidden="true" tabindex="-1"></a>  test_data  <span class="ot">&lt;-</span> earnings[test_idx, ]</span>
+<span id="cb46-445"><a href="#cb46-445" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-446"><a href="#cb46-446" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute test MSE using our custom function</span></span>
+<span id="cb46-447"><a href="#cb46-447" aria-hidden="true" tabindex="-1"></a>  MSE_m2[k] <span class="ot">&lt;-</span> <span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female,</span>
+<span id="cb46-448"><a href="#cb46-448" aria-hidden="true" tabindex="-1"></a>                           train_data, test_data)</span>
+<span id="cb46-449"><a href="#cb46-449" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-450"><a href="#cb46-450" aria-hidden="true" tabindex="-1"></a>  MSE_m3[k] <span class="ot">&lt;-</span> <span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female,</span>
+<span id="cb46-451"><a href="#cb46-451" aria-hidden="true" tabindex="-1"></a>                           train_data, test_data)</span>
+<span id="cb46-452"><a href="#cb46-452" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-453"><a href="#cb46-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-454"><a href="#cb46-454" aria-hidden="true" tabindex="-1"></a><span class="co"># average performance across folds</span></span>
+<span id="cb46-455"><a href="#cb46-455" aria-hidden="true" tabindex="-1"></a>mean_MSE_m2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(MSE_m2)</span>
+<span id="cb46-456"><a href="#cb46-456" aria-hidden="true" tabindex="-1"></a>mean_MSE_m3 <span class="ot">&lt;-</span> <span class="fu">mean</span>(MSE_m3)</span>
+<span id="cb46-457"><a href="#cb46-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-458"><a href="#cb46-458" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Average test MSE over %d folds:</span><span class="sc">\n</span><span class="st">"</span>, K))</span>
+<span id="cb46-459"><a href="#cb46-459" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  model m2 (height + female): %.2f</span><span class="sc">\n</span><span class="st">"</span>, mean_MSE_m2))</span>
+<span id="cb46-460"><a href="#cb46-460" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  model m3 (height * female): %.2f</span><span class="sc">\n</span><span class="st">"</span>, mean_MSE_m3))</span>
+<span id="cb46-461"><a href="#cb46-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-462"><a href="#cb46-462" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-463"><a href="#cb46-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-464"><a href="#cb46-464" aria-hidden="true" tabindex="-1"></a><span class="fu">## Activity 2 — Predicting California house prices</span></span>
+<span id="cb46-465"><a href="#cb46-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-466"><a href="#cb46-466" aria-hidden="true" tabindex="-1"></a>In this activity you will work with a real-world housing dataset and focus explicitly on prediction rather than explanation.</span>
+<span id="cb46-467"><a href="#cb46-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-468"><a href="#cb46-468" aria-hidden="true" tabindex="-1"></a>Your goal is to build a model that predicts the median house value (<span class="in">`medv`</span>) as accurately as possible for new, unseen data.</span>
+<span id="cb46-469"><a href="#cb46-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-470"><a href="#cb46-470" aria-hidden="true" tabindex="-1"></a>**Instructions**</span>
+<span id="cb46-471"><a href="#cb46-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-472"><a href="#cb46-472" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Load the training data california_housing_train.csv from Moodle.</span>
+<span id="cb46-473"><a href="#cb46-473" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fit a linear regression model to predict medv using a subset of the available predictors.</span>
+<span id="cb46-474"><a href="#cb46-474" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>You are encouraged to experiment with:</span>
+<span id="cb46-475"><a href="#cb46-475" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Different combinations of predictors</span>
+<span id="cb46-476"><a href="#cb46-476" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Interaction terms</span>
+<span id="cb46-477"><a href="#cb46-477" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Non-linear terms (e.g. squared predictors)</span>
+<span id="cb46-478"><a href="#cb46-478" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>To decide which model generalizes best, you may want to use hold-out validation or cross-validation on the training data.</span>
+<span id="cb46-479"><a href="#cb46-479" aria-hidden="true" tabindex="-1"></a>_No code is provided for this step — designing and implementing it is part of the exercise._</span>
+<span id="cb46-480"><a href="#cb46-480" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Once you have selected a final model, use it to generate predictions for the test set.</span>
+<span id="cb46-481"><a href="#cb46-481" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Save your predictions (see below for an example).</span>
+<span id="cb46-482"><a href="#cb46-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-483"><a href="#cb46-483" aria-hidden="true" tabindex="-1"></a>In the next workshop, a test set with the true values will be released, and we will compare predictive performance across models.</span>
+<span id="cb46-484"><a href="#cb46-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-485"><a href="#cb46-485" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Example</span></span>
+<span id="cb46-486"><a href="#cb46-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-487"><a href="#cb46-487" aria-hidden="true" tabindex="-1"></a>The code below illustrates a very simple baseline model using only a few predictors.</span>
+<span id="cb46-488"><a href="#cb46-488" aria-hidden="true" tabindex="-1"></a>This is not expected to be optimal.</span>
+<span id="cb46-489"><a href="#cb46-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-492"><a href="#cb46-492" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-493"><a href="#cb46-493" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the training data</span></span>
+<span id="cb46-494"><a href="#cb46-494" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"california_housing_train.csv"</span>)</span>
+<span id="cb46-495"><a href="#cb46-495" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-496"><a href="#cb46-496" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the variables</span></span>
+<span id="cb46-497"><a href="#cb46-497" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(train)</span>
+<span id="cb46-498"><a href="#cb46-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-499"><a href="#cb46-499" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-500"><a href="#cb46-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-501"><a href="#cb46-501" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-504"><a href="#cb46-504" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-505"><a href="#cb46-505" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a simple linear regression model</span></span>
+<span id="cb46-506"><a href="#cb46-506" aria-hidden="true" tabindex="-1"></a><span class="co"># (you are encouraged to improve on this)</span></span>
+<span id="cb46-507"><a href="#cb46-507" aria-hidden="true" tabindex="-1"></a>model_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(medv <span class="sc">~</span> rm <span class="sc">+</span> lstat <span class="sc">+</span> ptratio <span class="sc">+</span> nox, <span class="at">data =</span> train)</span>
+<span id="cb46-508"><a href="#cb46-508" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-509"><a href="#cb46-509" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect model output</span></span>
+<span id="cb46-510"><a href="#cb46-510" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_lm)</span>
+<span id="cb46-511"><a href="#cb46-511" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-512"><a href="#cb46-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-513"><a href="#cb46-513" aria-hidden="true" tabindex="-1"></a>**Predicting on the test set**</span>
+<span id="cb46-514"><a href="#cb46-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-515"><a href="#cb46-515" aria-hidden="true" tabindex="-1"></a>The file <span class="in">`california_housing_test_nomedv.csv`</span> (available on Moodle) contains the same predictors as the training data,</span>
+<span id="cb46-516"><a href="#cb46-516" aria-hidden="true" tabindex="-1"></a>but does not include <span class="in">`medv`</span>.</span>
+<span id="cb46-517"><a href="#cb46-517" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-520"><a href="#cb46-520" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-521"><a href="#cb46-521" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the test data (no medv column)</span></span>
+<span id="cb46-522"><a href="#cb46-522" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"california_housing_test_nomedv.csv"</span>)</span>
+<span id="cb46-523"><a href="#cb46-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-524"><a href="#cb46-524" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate predictions for the test set</span></span>
+<span id="cb46-525"><a href="#cb46-525" aria-hidden="true" tabindex="-1"></a>pred_medv <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_lm, <span class="at">newdata =</span> test)</span>
+<span id="cb46-526"><a href="#cb46-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-527"><a href="#cb46-527" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the first few predictions</span></span>
+<span id="cb46-528"><a href="#cb46-528" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred_medv)</span>
+<span id="cb46-529"><a href="#cb46-529" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-530"><a href="#cb46-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-531"><a href="#cb46-531" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-532"><a href="#cb46-532" aria-hidden="true" tabindex="-1"></a>**Saving your predictions for submission**</span>
+<span id="cb46-533"><a href="#cb46-533" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-534"><a href="#cb46-534" aria-hidden="true" tabindex="-1"></a>Save your predictions as a CSV file with one column only, named <span class="in">`pred_medv`</span>.</span>
+<span id="cb46-535"><a href="#cb46-535" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-538"><a href="#cb46-538" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-539"><a href="#cb46-539" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for submission</span></span>
+<span id="cb46-540"><a href="#cb46-540" aria-hidden="true" tabindex="-1"></a>submission <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">pred_medv =</span> pred_medv)</span>
+<span id="cb46-541"><a href="#cb46-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-542"><a href="#cb46-542" aria-hidden="true" tabindex="-1"></a><span class="co"># Export to CSV</span></span>
+<span id="cb46-543"><a href="#cb46-543" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(submission,</span>
+<span id="cb46-544"><a href="#cb46-544" aria-hidden="true" tabindex="-1"></a>          <span class="at">file =</span> <span class="st">"california_housing_predictions.csv"</span>,</span>
+<span id="cb46-545"><a href="#cb46-545" aria-hidden="true" tabindex="-1"></a>          <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb46-546"><a href="#cb46-546" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-547"><a href="#cb46-547" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-548"><a href="#cb46-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-549"><a href="#cb46-549" aria-hidden="true" tabindex="-1"></a>This is optional, but if you send me this file via email (matteo.lisi <span class="co">[</span><span class="ot">at</span><span class="co">]</span> rhul.ac.uk) I will evaluate the predictions and make a ranking list for next time (please use **"california data exercise PS3192"** in the subject line). In the next session we will in any case discuss this example further.</span>
+<span id="cb46-550"><a href="#cb46-550" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-551"><a href="#cb46-551" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
