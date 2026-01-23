@@ -305,8 +305,8 @@ Linear regression recap
 <p>You can sometime see the model also notates as</p>
 <p><span class="math display">\[\hat y_i = \beta_0 + \beta_1 x_i\]</span> Note that here we have removed the error term, and the dependent variable has a little “hat” symbol <span class="math inline">\(\hat \,\)</span>. This is standard notation to indicate that to the left of the equal sign we are now indicating the expected or predicted values of the regressions. The differences between the predicted/expected values and the actual data are the residuals, that is we can write <span class="math inline">\(\epsilon_i = y_i - \hat y_i\)</span>.</p>
 <p>Formally, the central assumption of linear regression can be formally expressed as <span class="math inline">\(\epsilon \sim \mathcal{N}(0, \sigma_{\epsilon})\)</span>, which reads as “the residuals of regression have a normal distribution with mean 0 and standard deviation of <span class="math inline">\(\sigma_{\epsilon}\)</span>”.</p>
-<p>We can add more than one predictors , e.g. <span class="math display">\[y_i = \beta_0 + \beta_1 x_i + \beta_3 z_i + \epsilon_i\]</span> For example, our model <code>m2</code> above. which has 2 predictors, could be written formally as</p>
-<p><span class="math display">\[\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_3  \, \text{female}_i + \epsilon_i\]</span> Essentially, the dependent variable is modeled as a weighted sum of the two predictors, plus a constant term (the intercept <span class="math inline">\(\beta_0\)</span>).</p>
+<p>We can add more than one predictors , e.g. <span class="math display">\[y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \epsilon_i\]</span> For example, our model <code>m2</code> above. which has 2 predictors, could be written formally as</p>
+<p><span class="math display">\[\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_2  \, \text{female}_i + \epsilon_i\]</span> Essentially, the dependent variable is modeled as a weighted sum of the two predictors, plus a constant term (the intercept <span class="math inline">\(\beta_0\)</span>).</p>
 <p>As an <strong>exercise</strong>, try to apply the regression formula above using the values of coefficients from the fitted model to compute the predicted/expected salary of:</p>
 <ul>
 <li>a male, with <code>height</code>=70 inches</li>
@@ -328,7 +328,7 @@ Linear regression recap
 </section>
 <section id="a-data-scientist-perspective" class="level3">
 <h3 class="anchored" data-anchor-id="a-data-scientist-perspective">A data scientist perspective</h3>
-<p>A data scientist might work for a company that wants to use this data to offer personal styling packages priced relative to clients’ income. That is, we are not interested in _why_salary differs, we just want a model that makes good predictions.</p>
+<p>A data scientist might work for a company that wants to use this data to offer personal styling packages priced relative to clients’ income. That is, we are not interested in <em>why</em> salary differs, we just want a model that makes good predictions.</p>
 <p>The data scientist consider that perhaps we can make the model even more accurate by adding an interaction term:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -381,8 +381,8 @@ Linear regression recap
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">" MSE model m2: %.2f</span><span class="sc">\n</span><span class="st"> MSE model m3: %.2f"</span>, MSE_m2, MSE_m3))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> MSE model m2: 387450540.03
- MSE model m3: 386259951.03</code></pre>
+<pre><code> MSE model m2: 323382404.16
+ MSE model m3: 322356453.46</code></pre>
 </div>
 </div>
 <p>One concern, however, is that the results observed might be specific to this particular split of observations in train and test data. In other words, would we find the same results if a different subset of observations went in training and test sets?</p>
@@ -522,14 +522,14 @@ Custom functions
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">+</span> female, train_data, test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 387450540</code></pre>
+<pre><code>[1] 323382404</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_MSE</span>(earn <span class="sc">~</span> height <span class="sc">*</span> female, train_data, test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 386259951</code></pre>
+<pre><code>[1] 322356453</code></pre>
 </div>
 </div>
 <p>Finally, we can use this function in a <code>for</code> loop, and compute the predictive performance of our two models:</p>
@@ -1363,10 +1363,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb46-175"><a href="#cb46-175" aria-hidden="true" tabindex="-1"></a>Formally, the central assumption of linear regression can be formally expressed as $\epsilon \sim \mathcal{N}(0, \sigma_{\epsilon})$, which reads as "the residuals of regression have a normal distribution with mean 0 and standard deviation of $\sigma_{\epsilon}$".</span>
 <span id="cb46-176"><a href="#cb46-176" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-177"><a href="#cb46-177" aria-hidden="true" tabindex="-1"></a>We can add more than one predictors , e.g.</span>
-<span id="cb46-178"><a href="#cb46-178" aria-hidden="true" tabindex="-1"></a>$$y_i = \beta_0 + \beta_1 x_i + \beta_3 z_i + \epsilon_i$$</span>
+<span id="cb46-178"><a href="#cb46-178" aria-hidden="true" tabindex="-1"></a>$$y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \epsilon_i$$</span>
 <span id="cb46-179"><a href="#cb46-179" aria-hidden="true" tabindex="-1"></a>For example, our model <span class="in">`m2`</span> above. which has 2 predictors, could be written formally as</span>
 <span id="cb46-180"><a href="#cb46-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-181"><a href="#cb46-181" aria-hidden="true" tabindex="-1"></a>$$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_3  \, \text{female}_i + \epsilon_i$$</span>
+<span id="cb46-181"><a href="#cb46-181" aria-hidden="true" tabindex="-1"></a>$$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_2  \, \text{female}_i + \epsilon_i$$</span>
 <span id="cb46-182"><a href="#cb46-182" aria-hidden="true" tabindex="-1"></a>Essentially, the dependent variable is modeled as a weighted sum of the two predictors, plus a constant term (the intercept $\beta_0$).</span>
 <span id="cb46-183"><a href="#cb46-183" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-184"><a href="#cb46-184" aria-hidden="true" tabindex="-1"></a>As an **exercise**, try to apply the regression formula above using the values of coefficients from the fitted model to compute  the predicted/expected salary of:</span>
@@ -1386,7 +1386,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb46-200"><a href="#cb46-200" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-201"><a href="#cb46-201" aria-hidden="true" tabindex="-1"></a><span class="fu">### A data scientist perspective</span></span>
 <span id="cb46-202"><a href="#cb46-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-203"><a href="#cb46-203" aria-hidden="true" tabindex="-1"></a>A data scientist might work for a company that wants to use this data to offer personal styling packages priced relative to clients’ income. That is, we are not interested in _why_salary differs, we just want a model that makes good predictions.</span>
+<span id="cb46-203"><a href="#cb46-203" aria-hidden="true" tabindex="-1"></a>A data scientist might work for a company that wants to use this data to offer personal styling packages priced relative to clients’ income. That is, we are not interested in _why_ salary differs, we just want a model that makes good predictions.</span>
 <span id="cb46-204"><a href="#cb46-204" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-205"><a href="#cb46-205" aria-hidden="true" tabindex="-1"></a>The data scientist consider that perhaps we can make the model even more accurate by adding an interaction term:</span>
 <span id="cb46-206"><a href="#cb46-206" aria-hidden="true" tabindex="-1"></a></span>
