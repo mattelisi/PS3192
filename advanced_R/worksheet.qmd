@@ -163,10 +163,10 @@ Note that here we have removed the error term, and the dependent variable has a 
 Formally, the central assumption of linear regression can be formally expressed as $\epsilon \sim \mathcal{N}(0, \sigma_{\epsilon})$, which reads as "the residuals of regression have a normal distribution with mean 0 and standard deviation of $\sigma_{\epsilon}$".
 
 We can add more than one predictors , e.g.
-$$y_i = \beta_0 + \beta_1 x_i + \beta_3 z_i + \epsilon_i$$
+$$y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \epsilon_i$$
 For example, our model `m2` above. which has 2 predictors, could be written formally as
 
-$$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_3  \, \text{female}_i + \epsilon_i$$
+$$\text{earnings}_i = \beta_0 + \beta_1 \, \text{height}_i + \beta_2  \, \text{female}_i + \epsilon_i$$
 Essentially, the dependent variable is modeled as a weighted sum of the two predictors, plus a constant term (the intercept $\beta_0$).
 
 As an **exercise**, try to apply the regression formula above using the values of coefficients from the fitted model to compute  the predicted/expected salary of:
@@ -186,7 +186,7 @@ coef(m2)
 
 ### A data scientist perspective
 
-A data scientist might work for a company that wants to use this data to offer personal styling packages priced relative to clients’ income. That is, we are not interested in _why_salary differs, we just want a model that makes good predictions.
+A data scientist might work for a company that wants to use this data to offer personal styling packages priced relative to clients’ income. That is, we are not interested in _why_ salary differs, we just want a model that makes good predictions.
 
 The data scientist consider that perhaps we can make the model even more accurate by adding an interaction term:
 
