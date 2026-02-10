@@ -1,13 +1,29 @@
 ---
-title: "PS3192: Real World Data Science"
+title: "PS3192: Data science for psychology"
+subtitle: "<br>"
 author: "Matteo Lisi"
 format:
   revealjs:
-    incremental: true
-    auto-stretch: true
+    logo: img/logo-small-london-cmyk.jpg
+    footer: "PS3192 25-26"
+    incremental: true  
+    auto-stretch: false
+    code-fold: false   # don’t fold
+    code-line-numbers: false
     theme: [default, matteo_rhul.css]
-editor: visual
+editor: source
+keep-md: true
+filters: [bg_style.lua]
 ---
+
+
+::: {.cell}
+
+:::
+
+
+
+
 
 # Introduction to Machine Learning
 
@@ -85,8 +101,73 @@ Residuals errors: $$\epsilon_i = y_i - \hat y_i$$
 :::
 
 ::: fragment
-The *loss* function is the mean squared error: $$\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 $$
+The *loss* function is the **mean squared error**: $$\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 $$
 :::
+
+
+## Logistic regression as a supervised ML algorithm {.scrollable}
+
+::: fragment
+Model (predicting a probability):
+$$
+\hat p_i = P(y_i = 1 \mid \mathbf X_i)
+= \sigma(\beta_0 + \beta_1 X_{i1} + \ldots + \beta_k X_{ik})
+$$
+
+where
+$$
+\sigma(z) = \frac{1}{1 + e^{-z}}
+$$
+:::
+
+::: fragment
+Observed outcome:
+$$
+y_i \in \{0,1\}
+$$
+
+We compare the predicted probability $\hat p_i$ to the true class $y_i$.
+:::
+
+ 
+
+::: fragment
+Loss function (**cross-entropy / log loss**):
+$$
+\mathcal L_i
+= - \Big[ y_i \log(\hat p_i)
++ (1 - y_i)\log(1 - \hat p_i) \Big]
+$$
+:::
+
+::: fragment
+Average loss over the dataset:
+$$
+\text{Cross-entropy}
+= \frac{1}{n}\sum_{i=1}^n \mathcal L_i
+$$
+
+The model is trained by choosing coefficients $\beta$ that minimise this loss.
+:::
+
+
+##
+
+#### Cross-entropy / log loss
+
+ 
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](intro2ML_slides_files/figure-revealjs/unnamed-chunk-2-1.png){fig-align='center' width=672}
+:::
+:::
+
+
+
+
 
 # Machine-learning concepts
 
@@ -104,40 +185,15 @@ The *loss* function is the mean squared error: $$\text{MSE} = \frac{1}{n}\sum_{i
 
 #### Non-parametric supervised learning: decision trees
 
-```{r}
-#| fig-height: 4
-#| fig-width: 10  # Half the slider width when default slide width is 4
-#| fig-align: center
 
-# intro to ML notes
-library(rpart)
-library(palmerpenguins)
-library(partykit)
 
-# tree example
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](intro2ML_slides_files/figure-revealjs/unnamed-chunk-3-1.png){fig-align='center' width=960}
+:::
+:::
 
-p_m <- rpart(species~ ., data = penguins)
 
-# # Prettier plot
-# rpart.plot(
-#   p_m, 
-#   type = 2,         # Split labels are drawn at the decision nodes
-#   #extra = 104,      # Show predicted class and probability percentages
-#   box.palette = "RdYlGn",  # Color nodes by prediction (red → yellow → green)
-#   fallen.leaves = TRUE,    # Arrange terminal nodes at the same level
-#   tweak = 1,     # Slightly increase text size for readability
-#   shadow.col = "gray",  # Add shadows to the boxes
-#   branch = 0.6    # Make branches less steep
-# )
-
-p_m2 <- as.party(p_m)
-plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALSE, rot=0),
-     inner_panel = node_inner(p_m2, id = FALSE, pval = FALSE),
-     gp=gpar(fontsize=8,
-             height = 21))
-     
-
-```
 
 ## 
 
@@ -160,25 +216,15 @@ The amount of data that we need to learn effectively grows exponentially with th
 
 :::: {.column width="50%"}
 ::: {.fragment fragment-index="2"}
-```{r}
-#| fig-height: 3
-#| fig-width: 3  # Half the slider width when default slide width is 4
-#| fig-align: center
-#| echo: FALSE
 
-library(tidyverse)
 
-x <- seq(10, 20, length.out=100)
-y <- exp(x)
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](intro2ML_slides_files/figure-revealjs/unnamed-chunk-4-1.png){fig-align='center' width=288}
+:::
+:::
 
-data.frame(x,y) %>%
-  ggplot(aes(x=x, y=y))+
-  geom_line(lwd=2,col="red")+theme_void()+
-  theme(axis.title.x = element_text(),
-        axis.title.y = element_text(angle=90))+
-  labs(x="n. features",y="amount of data")
 
-```
 :::
 ::::
 :::::::
@@ -193,10 +239,11 @@ data.frame(x,y) %>%
 
 ::::: columns
 ::: {.column width="60%"}
-```{r}
-#| echo: TRUE
-#| eval: FALSE
 
+
+::: {.cell}
+
+```{.r .cell-code}
 # assume a "true" underlying function
 x <- seq(-10, 10, length.out = 200)
 y <- x + x^2 -0.2*x^3
@@ -215,31 +262,19 @@ points(x_obs, y_obs, pch=19)
 ```
 :::
 
+
+:::
+
 ::: {.column width="40%"}
-```{r}
-#| fig-height: 4
-#| fig-width: 4  # Half the slider width when default slide width is 4
-#| fig-align: center
-#| echo: FALSE
 
-set.seed(23)
 
-par(mar=c(5,4,1.5,1)+0.1)
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](intro2ML_slides_files/figure-revealjs/unnamed-chunk-6-1.png){fig-align='center' width=384}
+:::
+:::
 
-# assume a "true" underlying function
-x <- seq(-10, 10, length.out = 200)
-y <- x + x^2 -0.2*x^3
-plot(x,y, type="l", col="blue", lwd=2, ylim=c(-200, 300))
 
-# simulate some noisy observations
-x_obs <- x[sample(1:200, 10)]
-y_obs <- x_obs + x_obs^2  -0.2*x_obs^3+ rnorm(10, mean=0, sd=50)
-points(x_obs, y_obs, pch=19)
-
-# observed data
-d <- data.frame(y=y_obs,
-                x=x_obs)
-```
 :::
 :::::
 
@@ -251,10 +286,11 @@ Known "true" model: $$y = x + x^2 -0.2x^3$$
 
 We can fit polynomial functions of increasing order using `lm()`
 
-```{r}
-#| eval: FALSE
-#| echo: TRUE
 
+
+::: {.cell}
+
+```{.r .cell-code}
 m <- list()
 m[[1]] <- lm(y~1, d)
 m[[2]] <- lm(y~x, d)
@@ -262,8 +298,10 @@ m[[3]] <- lm(y~x +I(x^2), d)
 m[[4]] <- lm(y~x +I(x^2) +I(x^3), d)
 m[[5]] <- lm(y~x +I(x^2) +I(x^3) +I(x^4), d)
 m[[6]] <- lm(y~x +I(x^2) +I(x^3) +I(x^4) +I(x^5), d)
-
 ```
+:::
+
+
 
 ## Overfitting example
 
@@ -273,9 +311,11 @@ We can fit polynomial functions of increasing order using `lm()`
 
 We can use a `for` loop to programmatically fit models of increasing complexity
 
-```{r}
-#| echo: TRUE
 
+
+::: {.cell}
+
+```{.r .cell-code}
 m <- list() # an empty list
 
 # intercept-only model in the 1st slot
@@ -287,14 +327,19 @@ for (p in 0:8) {
   m[[p + 1]] <- lm(formula, data = d)
 }
 ```
+:::
+
+
 
 ## Overfitting example
 
 For each model, let's compute the error in the training set
 
-```{r}
-#| echo: TRUE
-#| 
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # error on training set
 training_error <- rep(NA, length(m))
 
@@ -306,15 +351,20 @@ for(i in 1:length(m)){
   # mean squared error
   training_error[i] <- mean((d$y -  pred_y)^2)
 }
-
 ```
+:::
+
+
 
 ## Overfitting example
 
 We know the "true" generative model and we can use to generate new data unseen by our models
 
-```{r}
-#| echo: TRUE
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # generate unseen data
 x_new <- runif(100, min=-10, max=10)
 y_new <- x_new + x_new^2  -0.2*x_new^3 + rnorm(100, mean=0, sd=50)
@@ -325,59 +375,45 @@ for(i in 1:length(m)){
   pred_y <- predict(m[[i]], newdata=d_new)
   test_error[i] <-  mean((d_new$y -  pred_y)^2)
 }
-
 ```
+:::
+
+
 
 ## Overfitting example
 
-```{r}
-#| fig-height: 4
-#| fig-width: 6  # Half the slider width when default slide width is 4
-#| fig-align: center
-#| echo: TRUE
 
+
+::: {.cell layout-align="center"}
+
+```{.r .cell-code}
 plot(1:length(m), training_error,
      xlab="n. parameters", ylab="MSE",
      ylim=c(0,9000), type="o", col="blue")
 
 lines(1:length(m), test_error, type="o", col="red")
-
 ```
+
+::: {.cell-output-display}
+![](intro2ML_slides_files/figure-revealjs/unnamed-chunk-11-1.png){fig-align='center' width=576}
+:::
+:::
+
+
 
 ## Overfitting example
 
 The higher order polynomials are clearly too complex and overfit the data
 
-```{r}
-#| fig-height: 4
-#| fig-width: 6  # Half the slider width when default slide width is 4
-#| fig-align: center
-#| echo: false
 
-library(viridis)
 
-# Generate predictions for plotting
-preds <- data.frame(x = rep(x, 9), Degree = rep(0:8, each = length(x)))
-preds$y_hat <- unlist(lapply(m, function(mod) predict(mod, newdata = data.frame(x = x))))
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](intro2ML_slides_files/figure-revealjs/unnamed-chunk-12-1.png){fig-align='center' width=576}
+:::
+:::
 
-# Define a perceptually uniform color palette
-palette_colors <- viridis(9)
 
-# Create the ggplot
-ggplot() +
-  # True function
-  geom_line(aes(x, y), color = "black", lwd = 2) +
-  # Fitted models
-  geom_line(data = preds, aes(x = x, y = y_hat, color = factor(Degree)), lwd = 1) +
-  # Noisy observations
-  geom_point(aes(x_obs, y_obs), color = "black", size = 4) +
-  # Aesthetic adjustments
-  scale_color_manual(values = palette_colors, name = "Polynomial Degree") +
-  labs(x = "x", y = "y") +
-  theme_minimal()+
-  coord_cartesian(ylim=c(-200,300))
-
-```
 
 ## Approached to mitigage overfitting: cross-Validation
 
@@ -396,7 +432,11 @@ The key idea is that we put aside some data when training the model, and then us
 
 **Example code 1**: evaluating a linear model on a hold-out set
 
-```{r, eval=FALSE, echo=TRUE}
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Suppose 'mydata' has columns: y, X1, X2
 mydata <- read.csv("mydata.csv")
 
@@ -414,12 +454,19 @@ preds <- predict(model, newdata = test_data)
 # Calculate Mean Squared Error
 mse <- mean((test_data$y - preds)^2)
 ```
+:::
+
+
 
 ## 
 
 **Example code 2**: LOO cross-validation
 
-```{r, eval=FALSE, echo=TRUE}
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Suppose 'mydata' has columns: y, X1, X2
 mydata <- read.csv("mydata.csv")
 
@@ -442,8 +489,10 @@ for (i in 1:n) {
 
 # Compute overall Mean Squared Error
 mse_loo <- mean((mydata$y - preds)^2)
-
 ```
+:::
+
+
 
 ## "No Free Lunch Theorem" (Wolpert, 1996)
 
@@ -495,21 +544,21 @@ Load the `california_housing_train.csv` data from Moodle and find the best predi
 
 **Dataset bias** More data is not always better.
 
-![](survey_bias.png){fig-align="center" width="90%"}
+![](img/survey_bias.png){fig-align="center" width="90%"}
 
 ## 
 
 **Leakage of information from test set to training set** ("feature hacking", "double-dipping")
 
 ::: fragment
-![](ML_suicide_1.png){fig-align="center" width="90%"}
+![](img/ML_suicide_1.png){fig-align="center" width="90%"}
 :::
 
 ## 
 
 Retraction
 
-![](ML_suicide_2.png){fig-align="center" width="60%"}
+![](img/ML_suicide_2.png){fig-align="center" width="60%"}
 
 > *Using information from data in a validation set to determine the structure of a model leads to inflated estimates of performance. This can happen either by selecting the observations (for example, only including the subset of participants that maximize validation set performance) or features (for example, applying arbitrary transformations of variables based on validation set performance) based on information from what should be a protected part of the sample. Our re-analysis shows that the classification results reported by ref. 3 are probably inflated due to the presence of information leakage somewhere in the feature selection process.*
 

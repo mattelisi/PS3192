@@ -1,13 +1,27 @@
 ---
-title: "PS3192: Real World Data Science"
+title: "PS3192: Data science for psychology"
+subtitle: "<br>"
 author: "Matteo Lisi"
 format:
   revealjs:
-    incremental: true
-    auto-stretch: true
+    logo: img/logo-small-london-cmyk.jpg
+    footer: "PS3192 25-26"
+    incremental: true  
+    auto-stretch: false
+    code-fold: false   # don’t fold
+    code-line-numbers: false
     theme: [default, matteo_rhul.css]
-editor: visual
+editor: source
+keep-md: true
+filters: [bg_style.lua]
 ---
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+
 
 # Introduction to Machine Learning
 
@@ -85,8 +99,99 @@ Residuals errors: $$\epsilon_i = y_i - \hat y_i$$
 :::
 
 ::: fragment
-The *loss* function is the mean squared error: $$\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 $$
+The *loss* function is the **mean squared error**: $$\text{MSE} = \frac{1}{n}\sum_{i=1}^n \epsilon_i^2 $$
 :::
+
+
+## Logistic regression as a supervised ML algorithm {.scrollable}
+
+::: fragment
+Model (predicting a probability):
+$$
+\hat p_i = P(y_i = 1 \mid \mathbf X_i)
+= \sigma(\beta_0 + \beta_1 X_{i1} + \ldots + \beta_k X_{ik})
+$$
+
+where
+$$
+\sigma(z) = \frac{1}{1 + e^{-z}}
+$$
+:::
+
+::: fragment
+Observed outcome:
+$$
+y_i \in \{0,1\}
+$$
+
+We compare the predicted probability $\hat p_i$ to the true class $y_i$.
+:::
+
+ 
+
+::: fragment
+Loss function (**cross-entropy / log loss**):
+$$
+\mathcal L_i
+= - \Big[ y_i \log(\hat p_i)
++ (1 - y_i)\log(1 - \hat p_i) \Big]
+$$
+:::
+
+::: fragment
+Average loss over the dataset:
+$$
+\text{Cross-entropy}
+= \frac{1}{n}\sum_{i=1}^n \mathcal L_i
+$$
+
+The model is trained by choosing coefficients $\beta$ that minimise this loss.
+:::
+
+
+##
+
+#### Cross-entropy / log loss
+
+ 
+
+```{r}
+#| fig-height: 4
+#| fig-width: 7  # Half the slider width when default slide width is 4
+#| fig-align: center
+#| echo: FALSE
+
+# Predicted probabilities
+p1 <- seq(0.001, 0.999, length.out = 500)
+
+# Log-loss for a single observation
+log_loss <- function(y, p) {
+  - (y * log(p) + (1 - y) * log(1 - p))
+}
+
+# Build dataset
+df <- tibble(
+  p = rep(p1, 2),
+  y = factor(rep(c(1, 0), each = length(p1))),
+  loss = c(
+    log_loss(1, p1),
+    log_loss(0, p1)
+  )
+)
+
+# Plot
+ggplot(df, aes(x = p, y = loss, colour = y)) +
+  geom_line(linewidth = 1.2) +
+  labs(
+    x = "Predicted probability P(y = 1)",
+    y = "Log loss (single observation)",
+    colour = "Observed outcome"
+  ) +
+  theme_minimal(base_size = 14)
+
+```
+
+
 
 # Machine-learning concepts
 
@@ -495,21 +600,21 @@ Load the `california_housing_train.csv` data from Moodle and find the best predi
 
 **Dataset bias** More data is not always better.
 
-![](survey_bias.png){fig-align="center" width="90%"}
+![](img/survey_bias.png){fig-align="center" width="90%"}
 
 ## 
 
 **Leakage of information from test set to training set** ("feature hacking", "double-dipping")
 
 ::: fragment
-![](ML_suicide_1.png){fig-align="center" width="90%"}
+![](img/ML_suicide_1.png){fig-align="center" width="90%"}
 :::
 
 ## 
 
 Retraction
 
-![](ML_suicide_2.png){fig-align="center" width="60%"}
+![](img/ML_suicide_2.png){fig-align="center" width="60%"}
 
 > *Using information from data in a validation set to determine the structure of a model leads to inflated estimates of performance. This can happen either by selecting the observations (for example, only including the subset of participants that maximize validation set performance) or features (for example, applying arbitrary transformations of variables based on validation set performance) based on information from what should be a protected part of the sample. Our re-analysis shows that the classification results reported by ref. 3 are probably inflated due to the presence of information leakage somewhere in the feature selection process.*
 
