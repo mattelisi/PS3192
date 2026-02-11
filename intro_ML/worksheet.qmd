@@ -1,0 +1,163 @@
+---
+title: "Introduction to Machine Learning --- worksheet"
+subtitle: "PS3192 25-26"
+author: "Matteo Lisi"
+format:
+  html:
+    toc: true
+    code-tools: true     # run/copy buttons
+    code-fold: show
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+
+## Activity 1 — Setup and data
+
+In this session we work with the **California Housing** dataset.
+We will use a training set to fit regularised regression models, and a test set to evaluate generalisation.
+
+```{r}
+library(caret)
+library(glmnet)
+```
+
+Load the training and test data:
+
+```{r}
+d_train <- read.csv("california_housing_train.csv")
+d_test <- read.csv("california_housing_test.csv")
+```
+
+Inspect the data structure and variables:
+
+```{r}
+str(d_train)
+summary(d_train$medv)
+```
+
+::: callout-tip
+
+#### Regularised regression
+
+Regularisation modifies the regression loss function by adding a penalty term:
+
+$$\text{Loss} = \underbrace{\frac{1}{n} \sum_{i=1}^{n} \left(y_i - \hat y_i \right)^2}_{\text{mean squared error}} \, + \, \underbrace{\lambda \left[ \alpha \sum |\boldsymbol{\beta}| + (1-\alpha) \sum \boldsymbol{\beta}^2 \right]}_{\text{penalty}}$$
+
+- `alpha = 1` gives **lasso** (L1 penalty)
+- `alpha = 0` gives **ridge** (L2 penalty)
+- `lambda` controls the **strength** of the penalty
+
+:::
+
+
+## Activity 2 — Lasso regression (L1 penalty)
+
+We will use 5-fold cross-validation to select the best value of `lambda`.
+
+```{r}
+set.seed(123)
+
+ctrl <- trainControl(
+  method = "cv",
+  number = 5
+)
+
+lasso_grid <- expand.grid(
+  alpha  = 1,
+  lambda = 10^seq(-3, 0, length = 20)
+)
+
+lasso_fit <- train(
+  medv ~ .,
+  data      = d_train,
+  method    = "glmnet",
+  trControl = ctrl,
+  tuneGrid  = lasso_grid
+)
+```
+
+Check the selected penalty and the fitted coefficients:
+
+```{r}
+lasso_fit
+lasso_fit$bestTune
+coef(lasso_fit$finalModel, lasso_fit$bestTune$lambda)
+```
+
+Visualise performance across `lambda` values:
+
+```{r}
+plot(lasso_fit)
+```
+
+### Test-set evaluation (MSE)
+
+```{r}
+pred_lasso <- predict(lasso_fit, newdata = d_test)
+mse_lasso <- mean((d_test$medv - pred_lasso)^2)
+mse_lasso
+```
+
+
+## Activity 3 — Ridge regression (L2 penalty)
+
+Now fit a ridge model. In this example we use a smaller subset of predictors (as in the script), but you can try `medv ~ .` as an extension exercise.
+
+```{r}
+set.seed(123)
+
+ridge_grid <- expand.grid(
+  alpha  = 0,
+  lambda = 10^seq(-3, 0, length = 20)
+)
+
+ridge_fit <- train(
+  medv ~ .,
+  data      = d_train,
+  method    = "glmnet",
+  trControl = ctrl,
+  tuneGrid  = ridge_grid
+)
+```
+
+Check the selected penalty and coefficients:
+
+```{r}
+ridge_fit$bestTune
+coef(ridge_fit$finalModel, ridge_fit$bestTune$lambda)
+```
+
+Plot the cross-validated performance:
+
+```{r}
+plot(ridge_fit)
+```
+
+### Test-set evaluation (MSE)
+
+```{r}
+pred_ridge <- predict(ridge_fit, newdata = d_test)
+mse_ridge <- mean((d_test$medv - pred_ridge)^2)
+mse_ridge
+```
+
+
+## Activity 4 — Compare and reflect
+
+Answer these short questions:
+
+- Which model achieved the lower **test-set MSE**?
+- Does the lasso set any coefficients exactly to zero? What does that imply about *feature selection*?
+- Can you improve the model performance by engineering some features? e.g. try adding the square of the average number of rooms per dwelling (`rm^2`) as an additional predictor.
+
+Optional extension: try an **elastic net** by setting `alpha` between 0 and 1 (e.g., 0.25, 0.5, 0.75).
+
+```{r}
+elastic_grid <- expand.grid(
+  alpha  = seq(0, 1, by = 0.25),
+  lambda = 10^seq(-3, 1, length = 20)
+)
+```

@@ -416,7 +416,7 @@ Matteo Lisi
 <li>Data wrangling (data cleaning &amp; preparation)</li>
 <li>Data visualization</li>
 <li>Statistics &amp; probability</li>
-<li><strong>Machine learning &amp; predictive modeling</strong></li>
+<li><strong>Machine learning &amp; predictive modelling</strong></li>
 <li>Causal inference</li>
 <li>Big data &amp; data engineering</li>
 <li>Applied context (actionable insights)</li>
@@ -557,30 +557,38 @@ y_i \in \{0,1\}
 </section>
 <section id="section-4" class="slide level2">
 <h2></h2>
-<h3 id="curse-of-dimensionality">Curse of dimensionality</h3>
-<p>&nbsp;</p>
-<div class="fragment" data-fragment-index="1">
-<p>ML learning problems tend to be high-dimensional (e.g.&nbsp;datasets can easily have thousands or more feature <span class="math inline">\(X\)</span> that we can use for learning and prediction).</p>
-</div>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="fragment" data-fragment-index="2">
-<p>&nbsp;</p>
-<p>The amount of data that we need to learn effectively grows exponentially with the number of features</p>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="fragment" data-fragment-index="2">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div></div>
+<!-- ### Curse of dimensionality -->
+<!--   -->
+<!-- ::: {.fragment fragment-index="1"} -->
+<!-- ML learning problems tend to be high-dimensional (e.g. datasets can easily have thousands or more feature $X$ that we can use for learning and prediction). -->
+<!-- ::: -->
+<!-- ::::::: columns -->
+<!-- :::: {.column width="50%"} -->
+<!-- ::: {.fragment fragment-index="2"} -->
+<!--   -->
+<!-- The amount of data that we need to learn effectively grows exponentially with the number of features -->
+<!-- ::: -->
+<!-- :::: -->
+<!-- :::: {.column width="50%"} -->
+<!-- ::: {.fragment fragment-index="2"} -->
+<!-- ```{r} -->
+<!-- #| fig-height: 3 -->
+<!-- #| fig-width: 3  # Half the slider width when default slide width is 4 -->
+<!-- #| fig-align: center -->
+<!-- #| echo: FALSE -->
+<!-- library(tidyverse) -->
+<!-- x <- seq(10, 20, length.out=100) -->
+<!-- y <- exp(x) -->
+<!-- data.frame(x,y) %>% -->
+<!--   ggplot(aes(x=x, y=y))+ -->
+<!--   geom_line(lwd=2,col="red")+theme_void()+ -->
+<!--   theme(axis.title.x = element_text(), -->
+<!--         axis.title.y = element_text(angle=90))+ -->
+<!--   labs(x="n. features",y="amount of data") -->
+<!-- ``` -->
+<!-- ::: -->
+<!-- :::: -->
+<!-- ::::::: -->
 </section>
 <section id="overfitting" class="slide level2">
 <h2>Overfitting</h2>
@@ -615,7 +623,7 @@ y_i \in \{0,1\}
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center" width="384"></p>
+<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" width="384"></p>
 </figure>
 </div>
 </div>
@@ -700,7 +708,7 @@ y_i \in \{0,1\}
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -713,7 +721,7 @@ y_i \in \{0,1\}
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -784,27 +792,9 @@ y_i \in \{0,1\}
 <span id="cb8-22"><a href="" aria-hidden="true" tabindex="-1"></a>mse_loo <span class="ot">&lt;-</span> <span class="fu">mean</span>((mydata<span class="sc">$</span>y <span class="sc">-</span> preds)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="no-free-lunch-theorem-wolpert-1996" class="slide level2">
-<h2>“No Free Lunch Theorem” (Wolpert, 1996)</h2>
-<ul>
-<li class="fragment"><p>No single model or approach is universally the best across all problems.</p></li>
-<li class="fragment"><p>A method that performs well in one domain may fail in another.</p></li>
-<li class="fragment"><p>Model selection depends on <strong>problem-specific assumptions</strong> and <strong>data characteristics</strong>.</p></li>
-</ul>
-</section>
-<section id="exercise" class="slide level2">
-<h2>Exercise</h2>
-<p>Load the <code>california_housing_train.csv</code> data from Moodle and find the best predictive model to predict house value (<code>medv</code>).</p>
-<p>&nbsp;</p>
-<ol type="1">
-<li class="fragment"><p>Aim to build a model that generalizes well to new data.</p></li>
-<li class="fragment"><p>Use any approach you find suitable—incorporate interactions, higher-order (polynomial) terms, and evaluate performance using hold-out samples.</p></li>
-<li class="fragment"><p>Once you’ve selected a model, assess its predictive performance on out-of-sample data.</p></li>
-<li class="fragment"><p>After these steps, I will release a test set on Moodle, allowing you to check your model’s true predictive performance on unseen data.</p></li>
-</ol>
-</section>
-<section id="data-dictionary-for-california-housing-dataset" class="slide level2">
-<h2>Data Dictionary for California Housing Dataset</h2>
+<section id="last-week-california-housing-dataset" class="slide level2">
+<h2>Last week: California Housing Dataset</h2>
+<p>(See week 1 worksheet)</p>
 <div style="font-size: 60%;">
 <table class="caption-top">
 <colgroup>
@@ -819,8 +809,8 @@ y_i \in \{0,1\}
 </thead>
 <tbody>
 <tr class="odd">
-<td>medv</td>
-<td>Median value of owner-occupied homes (in $1000s)</td>
+<td><strong>medv</strong></td>
+<td><strong>Median value of owner-occupied homes (in $1000s)</strong></td>
 </tr>
 <tr class="even">
 <td>crim</td>
@@ -883,11 +873,485 @@ y_i \in \{0,1\}
 </div>
 </section></section>
 <section>
+<section id="last-week-california-housing-dataset-1" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
+<h1>Last week: California Housing Dataset</h1>
+
+</section>
+<section id="california-housing-exercise" class="slide level2">
+<h2>California Housing exercise</h2>
+<p>If you have attempted it (it was optional), you may have realised that it is <em>hard</em>:</p>
+<ul>
+<li class="fragment">a lot of degrees of freedom and possible modelling choices</li>
+<li class="fragment">a lot of uncertainty on which model will perform better on new data (the test set)</li>
+</ul>
+<p>&nbsp;</p>
+<div class="fragment">
+<ul>
+<li class="fragment">On possible approach is to simply test models with different subset of predictors</li>
+<li class="fragment">(also a good example of how we can use control flow statements to do automatise data-science tasks)</li>
+</ul>
+</div>
+</section>
+<section id="section-7" class="slide level2">
+<h2></h2>
+<p>Load the Training Data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a>d_train <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"california_housing_train.csv"</span>)</span>
+<span id="cb9-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(d_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   100 obs. of  15 variables:
+ $ lon    : num  -71.1 -71.1 -71 -71.1 -71.1 ...
+ $ lat    : num  42.2 42.2 42.2 42.2 42.2 ...
+ $ medv   : num  22.5 46.7 11.3 25 33.2 36 17.5 22.5 21.8 36.1 ...
+ $ crim   : num  0.252 0.298 9.187 0.198 0.105 ...
+ $ zn     : num  0 0 0 0 40 20 0 0 0 33 ...
+ $ indus  : num  10.59 6.2 18.1 10.59 6.41 ...
+ $ chas   : int  0 0 0 0 1 0 0 0 0 0 ...
+ $ nox    : num  0.489 0.504 0.7 0.489 0.447 0.647 0.442 0.449 0.532 0.472 ...
+ $ rm     : num  5.78 7.69 5.54 6.18 7.27 ...
+ $ age    : num  72.7 17 100 42.4 49 100 48.5 45.1 40.3 41.1 ...
+ $ dis    : num  4.35 3.38 1.58 3.95 4.79 ...
+ $ rad    : int  4 8 24 4 4 5 3 3 24 7 ...
+ $ tax    : int  277 307 666 277 254 264 352 247 666 222 ...
+ $ ptratio: num  18.6 17.4 20.2 18.6 17.6 13 18.8 18.5 20.2 18.4 ...
+ $ lstat  : num  18.06 3.92 23.6 9.47 6.05 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="section-8" class="slide level2">
+<h2></h2>
+<p>Generate all model formulas</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a>var_list <span class="ot">&lt;-</span> <span class="fu">colnames</span>(d_train[,<span class="sc">-</span><span class="fu">which</span>(<span class="fu">colnames</span>(d_train)<span class="sc">==</span><span class="st">"medv"</span>)])</span>
+<span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a>dependent_var <span class="ot">&lt;-</span> <span class="st">"medv"</span></span>
+<span id="cb11-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># empty list to hold all formulae</span></span>
+<span id="cb11-5"><a href="" aria-hidden="true" tabindex="-1"></a>all_formulas <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb11-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># generate combinations of variables</span></span>
+<span id="cb11-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(var_list)){</span>
+<span id="cb11-9"><a href="" aria-hidden="true" tabindex="-1"></a>  combinations <span class="ot">&lt;-</span> <span class="fu">combn</span>(var_list, i)</span>
+<span id="cb11-10"><a href="" aria-hidden="true" tabindex="-1"></a>  num_combinations <span class="ot">&lt;-</span> <span class="fu">ncol</span>(combinations)</span>
+<span id="cb11-11"><a href="" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-12"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="co"># loop over combinations and create formulas</span></span>
+<span id="cb11-13"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_combinations){</span>
+<span id="cb11-14"><a href="" aria-hidden="true" tabindex="-1"></a>    formula <span class="ot">&lt;-</span> <span class="fu">paste</span>(dependent_var, <span class="st">"~"</span>, </span>
+<span id="cb11-15"><a href="" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">paste</span>(combinations[,j], <span class="at">collapse =</span> <span class="st">" + "</span>))</span>
+<span id="cb11-16"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-17"><a href="" aria-hidden="true" tabindex="-1"></a>    all_formulas <span class="ot">&lt;-</span> <span class="fu">c</span>(all_formulas, formula)</span>
+<span id="cb11-18"><a href="" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-19"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-9" class="slide level2">
+<h2></h2>
+<p>How many models?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(all_formulas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 16383</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>Example formulas:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a>all_formulas[<span class="fu">sample</span>(<span class="fu">length</span>(all_formulas), <span class="dv">5</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] "medv ~ lon + crim + zn + indus + nox + rm + age + dis + rad + tax + lstat"
+
+[[2]]
+[1] "medv ~ lat + crim + zn + chas + rad + tax + ptratio + lstat"
+
+[[3]]
+[1] "medv ~ lon + lat + indus + chas + nox + rm + ptratio + lstat"
+
+[[4]]
+[1] "medv ~ crim + indus + nox + rm + rad + tax + lstat"
+
+[[5]]
+[1] "medv ~ zn + chas + rm + dis + ptratio + lstat"</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="section-10" class="slide level2 scrollable">
+<h2></h2>
+<p>Custom Function: LOO cross-validation</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a>loocrossval <span class="ot">&lt;-</span> <span class="cf">function</span>(mydata, formula){</span>
+<span id="cb16-2"><a href="" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(mydata)  <span class="co"># Total number of observations</span></span>
+<span id="cb16-3"><a href="" aria-hidden="true" tabindex="-1"></a>  preds <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n)  <span class="co"># Placeholder for predictions</span></span>
+<span id="cb16-4"><a href="" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-5"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract the outcome name from the formula</span></span>
+<span id="cb16-6"><a href="" aria-hidden="true" tabindex="-1"></a>  outcome_var <span class="ot">&lt;-</span> <span class="fu">all.vars</span>(<span class="fu">as.formula</span>(formula))[<span class="dv">1</span>]</span>
+<span id="cb16-7"><a href="" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-8"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Leave-One-Out Cross-Validation</span></span>
+<span id="cb16-9"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb16-10"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-11"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define training and test sets</span></span>
+<span id="cb16-12"><a href="" aria-hidden="true" tabindex="-1"></a>    train_data <span class="ot">&lt;-</span> mydata[<span class="sc">-</span>i, ]  <span class="co"># All except the i-th observation</span></span>
+<span id="cb16-13"><a href="" aria-hidden="true" tabindex="-1"></a>    test_data  <span class="ot">&lt;-</span> mydata[i,  ]  <span class="co"># The i-th observation</span></span>
+<span id="cb16-14"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-15"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fit the model</span></span>
+<span id="cb16-16"><a href="" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data =</span> train_data)</span>
+<span id="cb16-17"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-18"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Predict for the left-out observation</span></span>
+<span id="cb16-19"><a href="" aria-hidden="true" tabindex="-1"></a>    preds[i] <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> test_data)</span>
+<span id="cb16-20"><a href="" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-21"><a href="" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-22"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute Mean Squared Error</span></span>
+<span id="cb16-23"><a href="" aria-hidden="true" tabindex="-1"></a>  mse_loo <span class="ot">&lt;-</span> <span class="fu">mean</span>((mydata[[outcome_var]] <span class="sc">-</span> preds)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb16-24"><a href="" aria-hidden="true" tabindex="-1"></a>  rsquared_loo <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (mse_loo<span class="sc">/</span><span class="fu">mean</span>((mydata[[outcome_var]] <span class="sc">-</span> <span class="fu">mean</span>(mydata[[outcome_var]]))<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb16-25"><a href="" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-26"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return results as named vector</span></span>
+<span id="cb16-27"><a href="" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">c</span>(mse_loo, rsquared_loo)</span>
+<span id="cb16-28"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(res) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"MSE"</span>,<span class="st">"r-squared"</span>)</span>
+<span id="cb16-29"><a href="" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-30"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="co"># result</span></span>
+<span id="cb16-31"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb16-32"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-11" class="slide level2">
+<h2></h2>
+<p>Test All Models</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">list</span>() <span class="co"># an empty list</span></span>
+<span id="cb17-2"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
+<span id="cb17-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># warning: this step may take some time to complete!</span></span>
+<span id="cb17-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(all_formulas)) {</span>
+<span id="cb17-6"><a href="" aria-hidden="true" tabindex="-1"></a>  m[[i]] <span class="ot">&lt;-</span> <span class="fu">lm</span>(all_formulas[[i]], <span class="at">data =</span> d_train)</span>
+<span id="cb17-7"><a href="" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-8"><a href="" aria-hidden="true" tabindex="-1"></a>  crossval_res <span class="ot">&lt;-</span> <span class="fu">loocrossval</span>(d_train, all_formulas[[i]])</span>
+<span id="cb17-9"><a href="" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-10"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print some output to show progress</span></span>
+<span id="cb17-11"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"model "</span>,i, <span class="st">"out of "</span>, <span class="fu">length</span>(all_formulas), <span class="st">"completed:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb17-12"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(crossval_res)</span>
+<span id="cb17-13"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb17-14"><a href="" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-15"><a href="" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">rbind</span>(results, </span>
+<span id="cb17-16"><a href="" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">data.frame</span>(<span class="at">MSE=</span> crossval_res[<span class="st">"MSE"</span>],</span>
+<span id="cb17-17"><a href="" aria-hidden="true" tabindex="-1"></a>                            <span class="at">r_squared =</span> crossval_res[<span class="st">"r-squared"</span>],</span>
+<span id="cb17-18"><a href="" aria-hidden="true" tabindex="-1"></a>                            <span class="at">formula =</span> all_formulas[[i]]))</span>
+<span id="cb17-19"><a href="" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-12" class="slide level2">
+<h2></h2>
+<p>Find the <em>best</em> model (by LOO MSE)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a>best_formula <span class="ot">&lt;-</span> results<span class="sc">$</span>formula[results<span class="sc">$</span>MSE<span class="sc">==</span><span class="fu">min</span>(results<span class="sc">$</span>MSE)]</span>
+<span id="cb18-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(best_formula)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "medv ~ lon + lat + crim + rm + age + dis + tax + lstat"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># LOO MSE error of best model</span></span>
+<span id="cb20-2"><a href="" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>MSE[results<span class="sc">$</span>MSE<span class="sc">==</span><span class="fu">min</span>(results<span class="sc">$</span>MSE)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 13.27313</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># LOO r-squared of best model</span></span>
+<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>r_squared[results<span class="sc">$</span>MSE<span class="sc">==</span><span class="fu">min</span>(results<span class="sc">$</span>MSE)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8486196</code></pre>
+</div>
+</div>
+</section>
+<section id="section-13" class="slide level2">
+<h2></h2>
+<p>Evaluate on the True Test Set</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># load test set</span></span>
+<span id="cb24-2"><a href="" aria-hidden="true" tabindex="-1"></a>d_test <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"california_housing_test.csv"</span>)</span>
+<span id="cb24-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate the model parameters using training set data</span></span>
+<span id="cb24-5"><a href="" aria-hidden="true" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(best_formula, <span class="at">data =</span> d_train)</span>
+<span id="cb24-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict values of test data</span></span>
+<span id="cb24-8"><a href="" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(best_model, <span class="at">newdata =</span> d_test)</span>
+<span id="cb24-9"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate performance in test set</span></span>
+<span id="cb24-11"><a href="" aria-hidden="true" tabindex="-1"></a>test_mse <span class="ot">&lt;-</span> <span class="fu">mean</span>((d_test<span class="sc">$</span>medv <span class="sc">-</span> preds)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb24-12"><a href="" aria-hidden="true" tabindex="-1"></a>test_rsquared <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> (test_mse<span class="sc">/</span><span class="fu">mean</span>((d_test<span class="sc">$</span>medv<span class="sc">-</span> <span class="fu">mean</span>(d_test<span class="sc">$</span>medv))<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb24-13"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="" aria-hidden="true" tabindex="-1"></a>test_mse</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 38.94542</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="" aria-hidden="true" tabindex="-1"></a>test_rsquared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5304341</code></pre>
+</div>
+</div>
+</section>
+<section id="section-14" class="slide level2">
+<h2></h2>
+<p>Train vs Test Error (All Models)</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="section-15" class="slide level2">
+<h2></h2>
+<p>Train vs Test Error (All Models)</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<pre><code>lm(medv ~ rm + I(rm^2) + lstat)</code></pre>
+</div>
+</section>
+<section id="section-16" class="slide level2">
+<h2></h2>
+<p>Histogram of test-set error (all models)</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="intro2ML_slides_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="take-home" class="slide level2">
+<h2>Take-Home</h2>
+<ul>
+<li class="fragment">Cross-validation is helpful, but can be optimistic if used for model selection.</li>
+<li class="fragment">The true test set gives a more honest estimate of generalization.</li>
+<li class="fragment">Even simple models can be competitive with a good feature choice.</li>
+</ul>
+</section>
+<section id="approaches-to-mitigate-overfitting-regularisation" class="slide level2">
+<h2>Approaches to mitigate overfitting: regularisation</h2>
+<p>Cross-validation helps us measure how well a model generalizes.</p>
+<p>&nbsp;</p>
+<div class="fragment">
+<p>Regularisation is a different idea: it changes how the model is fitted in the first place, making overfitting less likely.</p>
+</div>
+</section>
+<section id="the-core-problem" class="slide level2">
+<h2>The core problem</h2>
+<p>When a model has many predictors (or very flexible predictors):</p>
+<ul>
+<li class="fragment">It can fit the training data extremely well</li>
+<li class="fragment">But some of that fit may be:
+<ul>
+<li class="fragment">Noise</li>
+<li class="fragment">Accidental patterns</li>
+<li class="fragment">Idiosyncrasies of this particular sample</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<p>This leads to <strong>overfitting</strong>: good performance on training data, poor performance on new data.</p>
+</div>
+</section>
+<section id="intuition-keeping-models-simple-but-not-too-simple" class="slide level2">
+<h2>Intuition: keeping models simple (but not too simple)</h2>
+<p>Regularisation encodes a preference for <em>simpler</em> models.</p>
+<p>Roughly speaking:</p>
+<ul>
+<li class="fragment">Large regression coefficients mean:
+<ul>
+<li class="fragment">The model is relying very strongly on some predictors</li>
+</ul></li>
+<li class="fragment">Regularisation:
+<ul>
+<li class="fragment">Penalises large coefficients</li>
+<li class="fragment">Induces a form of ‘feature selection’ during model fitting</li>
+</ul></li>
+</ul>
+</section>
+<section id="regularisation-as-a-trade-off" class="slide level2">
+<h2>Regularisation as a trade-off</h2>
+<p>Regularised models balance two competing goals:</p>
+<ol type="1">
+<li class="fragment">Fit the data well</li>
+<li class="fragment">Keep the model simple</li>
+</ol>
+<div class="fragment">
+<p>This trade-off can be written as:</p>
+<p><span class="math display">\[\text{Loss} = \text{Residual error} + \text{Penalty}\]</span></p>
+<ul>
+<li class="fragment">The <strong>residual error</strong> rewards accuracy</li>
+<li class="fragment">The <strong>penalty</strong> discourages complexity (computed as a function of the summed magnitude of the regression coefficients)</li>
+</ul>
+</div>
+</section>
+<section id="the-penalty-parameter" class="slide level2">
+<h2>The penalty parameter</h2>
+<p>Regularised regression introduces a tuning parameter, often called <span class="math inline">\(\lambda\)</span>:</p>
+<ul>
+<li class="fragment">Small <span class="math inline">\(\lambda\)</span>:
+<ul>
+<li class="fragment">Weak penalty<br>
+</li>
+<li class="fragment">Model behaves like ordinary regression</li>
+</ul></li>
+<li class="fragment">Large ():
+<ul>
+<li class="fragment">Strong penalty<br>
+</li>
+<li class="fragment">Coefficients are shrunk towards zero</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<p>Choosing <span class="math inline">\(\lambda\)</span> is crucial — and is typically done using <strong>cross-validation</strong>.</p>
+</div>
+</section>
+<section id="shrinkage" class="slide level2">
+<h2>Shrinkage</h2>
+<p>A key effect of regularisation is <strong>shrinkage</strong>:</p>
+<ul>
+<li class="fragment">Coefficients are pulled towards zero</li>
+<li class="fragment">Large coefficients are reduced the most</li>
+<li class="fragment">Small coefficients may become negligible</li>
+</ul>
+<div class="fragment">
+<p>Shrinkage: - Reduces sensitivity to noise - Stabilises estimates when predictors are correlated - Often improves out-of-sample prediction</p>
+</div>
+</section>
+<section id="two-common-types-of-regularisation" class="slide level2">
+<h2>Two common types of regularisation</h2>
+<p>The two most common forms of regularisation in linear models are:</p>
+<ul>
+<li class="fragment"><strong>Ridge regression</strong></li>
+<li class="fragment"><strong>LASSO regression</strong></li>
+</ul>
+<div class="fragment">
+<p>Both use the same basic idea (a penalty on coefficient size), but differ in how the penalty is applied.</p>
+</div>
+</section>
+<section id="ridge-regression-l2-regularisation" class="slide level2">
+<h2>Ridge regression (L2 regularisation)</h2>
+<p>Ridge regression:</p>
+<ul>
+<li class="fragment">Penalises the <strong>sum of squared coefficients</strong></li>
+<li class="fragment">Shrinks coefficients towards zero</li>
+<li class="fragment">Typically <strong>does not set coefficients exactly to zero</strong></li>
+</ul>
+<div class="fragment">
+<p>Consequences:</p>
+<ul>
+<li class="fragment">All predictors usually remain in the model</li>
+<li class="fragment">Particularly useful when predictors are highly correlated</li>
+<li class="fragment">Produces more stable, less variable estimates</li>
+</ul>
+</div>
+</section>
+<section id="lasso-regression-l1-regularisation" class="slide level2">
+<h2>Lasso regression (L1 regularisation)</h2>
+<p>Lasso regression:</p>
+<ul>
+<li class="fragment">Penalises the <strong>sum of absolute coefficients</strong></li>
+<li class="fragment">Shrinks coefficients towards zero</li>
+<li class="fragment">Can set some coefficients <strong>exactly to zero</strong></li>
+</ul>
+<div class="fragment">
+<p>Consequences:</p>
+<ul>
+<li class="fragment">Performs <strong>automatic variable selection</strong></li>
+<li class="fragment">Produces sparse models</li>
+<li class="fragment">Easier to interpret when many predictors are irrelevant</li>
+</ul>
+</div>
+<!-- ## Sparsity -->
+<!-- A model is called **sparse** if: -->
+<!-- - Many coefficients are exactly zero -->
+<!-- - Only a subset of predictors are used -->
+<!-- Lasso regression encourages sparsity. -->
+<!-- Why this can be useful: -->
+<!-- - Simpler models -->
+<!-- - Easier interpretation -->
+<!-- - Often better generalisation when many predictors are noisy -->
+</section>
+<section id="ridge-vs-lasso" class="slide level2">
+<h2>Ridge vs lasso</h2>
+<ul>
+<li class="fragment">Ridge:
+<ul>
+<li class="fragment">Keeps all predictors</li>
+<li class="fragment">Shrinks them smoothly</li>
+<li class="fragment">Good when many predictors carry small amounts of information</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li class="fragment">Lasso:
+<ul>
+<li class="fragment">Drops some predictors entirely</li>
+<li class="fragment">Performs variable selection</li>
+<li class="fragment">Good when only a few predictors matter</li>
+</ul></li>
+</ul>
+</div>
+<div class="fragment">
+<p>Neither is “always better” — it depends on the data and the goal.</p>
+</div>
+<!-- $$\text{Loss} = \frac{1}{n} -->
+<!-- \sum_{i=1}^{n} -->
+<!-- \left(y_i - \hat y_i \right)^2 -->
+<!-- \;+\; -->
+<!-- \lambda -->
+<!-- \left[ -->
+<!-- \alpha \sum |\boldsymbol{\beta}| -->
+<!-- +(1-\alpha) \sum \boldsymbol{\beta}^2 -->
+<!-- \right]$$ -->
+<!-- $$\min_{\beta_0, \boldsymbol{\beta}} -->
+<!-- \frac{1}{2n} -->
+<!-- \sum_{i=1}^{n} -->
+<!-- \left(y_i - \beta_0 - \mathbf{x}_i^\top \boldsymbol{\beta} \right)^2 -->
+<!-- \;+\; -->
+<!-- \lambda -->
+<!-- \left[ -->
+<!-- \alpha \sum_{j=1}^{p} |\beta_j| -->
+<!-- + -->
+<!-- \frac{1}{2}(1-\alpha) \sum_{j=1}^{p} \beta_j^2 -->
+<!-- \right]$$ -->
+<!-- ## Regularisation and cross-validation work together -->
+<!-- Regularisation introduces a tuning parameter ($\lambda$). -->
+<!-- Cross-validation helps us answer: -->
+<!-- > “How strong should the regularisation be?” -->
+<!-- Typical workflow: -->
+<!-- 1. Choose a model type (ridge or lasso) -->
+<!-- 2. Try many values of $\lambda$ -->
+<!-- 3. Use cross-validation to estimate predictive performance -->
+<!-- 4. Select the value of $\lambda$ that generalizes best -->
+<!-- ## Big picture -->
+<!-- - Cross-validation: -->
+<!--   - Evaluates how well a model generalizes -->
+<!-- - Regularisation: -->
+<!--   - Builds generalisation into the model itself -->
+<!-- Both are core tools in modern machine learning. -->
+</section>
+<section id="no-free-lunch-theorem-wolpert-1996" class="slide level2">
+<h2>“No Free Lunch Theorem” (Wolpert, 1996)</h2>
+<ul>
+<li class="fragment"><p>No single model or approach is universally the best across all problems.</p></li>
+<li class="fragment"><p>A method that performs well in one domain may fail in another.</p></li>
+<li class="fragment"><p>Model selection depends on <strong>problem-specific assumptions</strong> and <strong>data characteristics</strong>.</p></li>
+</ul>
+</section></section>
+<section>
 <section id="common-pitfalls" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
 <h1>Common pitfalls</h1>
 
 </section>
-<section id="section-7" class="slide level2">
+<section id="section-17" class="slide level2">
 <h2></h2>
 <p><strong>Dataset bias</strong> More data is not always better.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -896,7 +1360,7 @@ y_i \in \{0,1\}
 </figure>
 </div>
 </section>
-<section id="section-8" class="slide level2">
+<section id="section-18" class="slide level2">
 <h2></h2>
 <p><strong>Leakage of information from test set to training set</strong> (“feature hacking”, “double-dipping”)</p>
 <div class="fragment">
@@ -907,7 +1371,7 @@ y_i \in \{0,1\}
 </div>
 </div>
 </section>
-<section id="section-9" class="slide level2">
+<section id="section-19" class="slide level2">
 <h2></h2>
 <p>Retraction</p>
 <div class="quarto-figure quarto-figure-center">
@@ -918,9 +1382,9 @@ y_i \in \{0,1\}
 <blockquote>
 <p><em>Using information from data in a validation set to determine the structure of a model leads to inflated estimates of performance. This can happen either by selecting the observations (for example, only including the subset of participants that maximize validation set performance) or features (for example, applying arbitrary transformations of variables based on validation set performance) based on information from what should be a protected part of the sample. Our re-analysis shows that the classification results reported by ref. 3 are probably inflated due to the presence of information leakage somewhere in the feature selection process.</em></p>
 </blockquote>
-</section></section>
-<section id="ethics-of-ml" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
-<h1>Ethics of ML</h1>
+</section>
+<section id="ethics-of-ml" class="slide level2">
+<h2>Ethics of ML</h2>
 <ul>
 <li class="fragment"><p><strong>Algorithmic Bias</strong>. ML models can reinforce or amplify existing biases in data, leading to unfair or discriminatory outcomes.</p></li>
 <li class="fragment"><p><strong>Transparency &amp; interpretability</strong>. Black-box models (e.g., deep neural; networks) can be hard to interpret. Would you trust an AI to make life-changing decisions (hiring, loans, medical diagnoses) if it can’t explain why?</p></li>
@@ -932,7 +1396,7 @@ y_i \in \{0,1\}
 <p>PS3192 25-26</p>
 </div>
 </div>
-</section>
+</section></section>
     </div>
   </div>
 

@@ -11,6 +11,15 @@ Course coordinator: Matteo Lisi
 [Worksheet](advanced_R/worksheet.html)
 
 
+## Introduction to machine learning (13 Feb 2026)
+
+[Slides](intro_ML/intro2ML_slides.html)
+
+[Worksheet](intro_ML/worksheet.html)
+
+
+
+
 <br><br><br><br><br><br>
 
  ---

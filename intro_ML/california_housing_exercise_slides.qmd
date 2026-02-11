@@ -1,0 +1,245 @@
+---
+title: "California Housing Exercise"
+subtitle: "Systematic model testing with control flow"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    logo: img/logo-small-london-cmyk.jpg
+    footer: "PS3192 25-26"
+    incremental: true  
+    auto-stretch: false
+    code-fold: false
+    code-line-numbers: false
+    theme: [default, matteo_rhul.css]
+editor: source
+keep-md: true
+filters: [bg_style.lua]
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+# California Housing Exercise
+
+## 
+
+### Goal
+
+- Fit many candidate models automatically.
+- Use cross-validation to estimate generalization.
+- Check performance on a truly unseen test set.
+
+## Load the Training Data
+
+```{r}
+d_train <- read.csv("california_housing_train.csv")
+str(d_train)
+```
+
+## Generate All Model Formulas
+
+```{r}
+var_list <- colnames(d_train[,-which(colnames(d_train)=="medv")])
+dependent_var <- "medv"
+
+# empty list to hold all formulae
+all_formulas <- list()
+
+# generate combinations of variables
+for(i in 1:length(var_list)){
+  combinations <- combn(var_list, i)
+  num_combinations <- ncol(combinations)
+  
+  # loop over combinations and create formulas
+  for(j in 1:num_combinations){
+    formula <- paste(dependent_var, "~", 
+                     paste(combinations[,j], collapse = " + "))
+    
+    all_formulas <- c(all_formulas, formula)
+  }
+}
+```
+
+## How Many Models?
+
+```{r}
+length(all_formulas)
+```
+
+Example formulas:
+
+```{r}
+all_formulas[sample(length(all_formulas), 5)]
+```
+
+## Custom Function: LOO Cross-Validation
+
+```{r}
+loocrossval <- function(mydata, formula){
+  n <- nrow(mydata)  # Total number of observations
+  preds <- numeric(n)  # Placeholder for predictions
+  
+  # Extract the outcome name from the formula
+  outcome_var <- all.vars(as.formula(formula))[1]
+  
+  # Leave-One-Out Cross-Validation
+  for (i in 1:n) {
+    
+    # Define training and test sets
+    train_data <- mydata[-i, ]  # All except the i-th observation
+    test_data  <- mydata[i,  ]  # The i-th observation
+    
+    # Fit the model
+    model <- lm(formula, data = train_data)
+    
+    # Predict for the left-out observation
+    preds[i] <- predict(model, newdata = test_data)
+  }
+  
+  # Compute Mean Squared Error
+  mse_loo <- mean((mydata[[outcome_var]] - preds)^2)
+  rsquared_loo <- 1 - (mse_loo/mean((mydata[[outcome_var]] - mean(mydata[[outcome_var]]))^2))
+  
+  # return results as named vector
+  res <- c(mse_loo, rsquared_loo)
+  names(res) <- c("MSE","r-squared")
+  
+  # result
+  return(res)
+}
+```
+
+## Test All Models (Control Flow)
+
+```{r, eval=FALSE}
+
+m <- list() # an empty list
+results <- data.frame()
+
+# warning: this step may take some time to complete!
+for (i in 1:length(all_formulas)) {
+  m[[i]] <- lm(all_formulas[[i]], data = d_train)
+  
+  crossval_res <- loocrossval(d_train, all_formulas[[i]])
+  
+  # print some output to show progress
+  cat("model ",i, "out of ", length(all_formulas), "completed:\n")
+  print(crossval_res)
+  cat("\n\n")
+  
+  results <- rbind(results, 
+                   data.frame(MSE= crossval_res["MSE"],
+                            r_squared = crossval_res["r-squared"],
+                            formula = all_formulas[[i]]))
+}
+```
+
+## Load Precomputed Results
+
+```{r}
+results <- readRDS("cali_results.RDS")
+results <- results[,c("MSE","r_squared","formula","test_MSE","test_rsquared")]
+head(results)
+```
+
+## Find the Best Model (by LOO MSE)
+
+```{r}
+best_formula <- results$formula[results$MSE==min(results$MSE)]
+print(best_formula)
+
+# LOO MSE error of best model
+results$MSE[results$MSE==min(results$MSE)]
+
+# LOO r-squared of best model
+results$r_squared[results$MSE==min(results$MSE)]
+```
+
+## Evaluate on the True Test Set
+
+```{r}
+# load test set
+d_test <- read.csv("california_housing_test.csv")
+
+# estimate the model parameters using training set data
+best_model <- lm(best_formula, data = d_train)
+
+# Predict values of test data
+preds <- predict(best_model, newdata = d_test)
+
+# Calculate performance in test set
+test_mse <- mean((d_test$medv - preds)^2)
+test_rsquared <- 1 - (test_mse/mean((d_test$medv- mean(d_test$medv))^2))
+
+test_mse
+test_rsquared
+```
+
+## Train vs Test Error (All Models)
+
+```{r}
+#| fig-height: 5.7
+#| fig-width: 5
+#| fig-align: center
+
+with(results, plot(MSE, test_MSE, pch=21, cex=0.2, col=rgb(0.4,0.4,0.4,0.5), 
+                   xlim=c(10, 90), 
+                   ylim=c(10, 90),
+                   xlab="MSE train set (cross-validated)",
+                   ylab="MSE test set"))
+
+crossval_index <- which(results$MSE==min(results$MSE))
+points(results$MSE[crossval_index], results$test_MSE[crossval_index], pch=19, col="blue")
+legend('topleft', col=c("blue"), pch=19, legend=c("selected by LOO cross-validation"), bty="n")
+
+abline(a=0, b=1, lty=2)
+```
+
+## Add the Optional Student Submission (Azara)
+
+```{r}
+#| fig-height: 5.7
+#| fig-width: 5
+#| fig-align: center
+
+azara <- read.csv("california_housing_submissions/Azara.csv")
+azara_mse <- mean((d_test$medv - azara$pred_medv)^2)
+
+with(results, plot(MSE, test_MSE, pch=21, cex=0.2, col=rgb(0.4,0.4,0.4,0.5), 
+                   xlim=c(10, 90), 
+                   ylim=c(10, 90),
+                   xlab="MSE train set (cross-validated)",
+                   ylab="MSE test set"))
+
+crossval_index <- which(results$MSE==min(results$MSE))
+points(results$MSE[crossval_index], results$test_MSE[crossval_index], pch=19, col="blue")
+
+abline(h=azara_mse, col="darkorange", lwd=2)
+legend('topleft', col=c("blue","darkorange"), lwd=c(NA,2), pch=c(19,NA),
+       legend=c("selected by LOO cross-validation", "Azara (test MSE only)"), bty="n")
+
+abline(a=0, b=1, lty=2)
+```
+
+## Histogram of Test-Set Error (All Models)
+
+```{r}
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+
+hist(results$test_MSE, breaks=40, col="gray80", border="white",
+     xlab="Test-set MSE", main="Test-set Error Across All Models")
+
+abline(v=azara_mse, col="darkorange", lwd=2)
+
+legend('topright', col=c("darkorange"), lwd=2,
+       legend=c("Azara (test MSE)"), bty="n")
+```
+
+## Take-Home
+
+- Cross-validation is helpful, but can be optimistic if used for model selection.
+- The true test set gives a more honest estimate of generalization.
+- Even simple models can be competitive with a good feature choice.
