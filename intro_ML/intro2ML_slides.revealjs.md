@@ -507,9 +507,7 @@ mse_loo <- mean((mydata$y - preds)^2)
 
 
 
-## Last week: California Housing Dataset
-
-(See week 1 worksheet)
+## Last week's optional exercise: California Housing Dataset
 
 ::: {style="font-size: 60%;"}
 | Variable | Description |
@@ -530,8 +528,6 @@ mse_loo <- mean((mydata$y - preds)^2)
 | lon | longitude |
 | lat | latitude |
 :::
-
-# Last week: California Housing Dataset
 
 ## California Housing exercise 
 
