@@ -1,0 +1,735 @@
+---
+title: "PS3192: Data science for psychology"
+subtitle: "<br>"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    logo: img/logo-small-london-cmyk.jpg
+    footer: "PS3192 25-26"
+    incremental: true  
+    auto-stretch: false
+    code-fold: false   # don’t fold
+    code-line-numbers: false
+    theme: [default, matteo_rhul.css]
+editor: source
+keep-md: true
+filters: [bg_style.lua]
+---
+
+```{r, echo = FALSE}
+library(rpart)
+library(palmerpenguins)
+library(ggplot2)
+library(partykit)
+library(dplyr)
+library(caret)
+```
+
+# Supervised learning & classification
+
+
+## Supervised learning
+
+Learn from examples in order to make predictions that generalise to new data.
+
+ 
+
+::: fragment
+**Supervised Learning**\
+- We have a *training* dataset containing some with input features (predictors) $X$ and target labels/outcomes $y$\
+- The algorithm learns a function $f(X)$ that predicts $y$ accurately\
+- Learning is achieved by minimising a *cost* or *loss* function (i.e. an error metric that tells us how bad the predictions are compared to the observed $y$)\
+:::
+
+## Woes of supervised learning
+
+-   **Overfitting**: when the model learns aspects of the training data that are just "noise" and fail to predict well new data.
+    -   It can be due to having a model that is too complex (too many free parameter).
+    -   Methods like cross-validation, and splitting in training/test sets, help monitoring and reducing the chance of overfitting.
+    -   If we care about estimating the predictive performance of our model, we need to be careful about leakage of information from test data.
+    -   Regularisation methods modify the cost function of our model, to promote simpler models and reduce the chance of overfitting.
+-   **Dataset bias**: when the training data is incomplete or systematically different from the broader set of future data that we would like to predict.
+
+
+## Linear regression as a supervised ML algorithm {.scrollable}
+
+::: fragment
+Model: $$\hat y = \beta_0 + \beta_1 X_1 + \ldots + \beta_k X_k$$
+:::
+
+::: fragment
+Residuals errors: $$\epsilon_i = y_i - \hat y_i$$
+:::
+
+::: fragment
+The *loss* function is the mean squared error: $$\text{Loss} = \underbrace{\frac{1}{n}\sum_{i=1}^n ( y_i - \hat y_i)^2}_{\text{mean squared error}} $$
+:::
+
+<!-- ::: fragment -->
+<!-- In *regularised* regression the loss function is augmented with a *penalty* term, defined as a function of the regression coefficients $\boldsymbol{\beta}=\{\beta_0, \beta_1, \ldots, \beta_k\}$ -->
+<!-- $$\text{Loss} = \underbrace{\frac{1}{n} \sum_{i=1}^{n} \left(y_i - \hat y_i \right)^2}_{\text{mean squared error}} \, + \, \underbrace{\lambda \left[ \alpha \sum |\boldsymbol{\beta}| + (1-\alpha) \sum \boldsymbol{\beta}^2 \right]}_{\text{penalty}}$$ -->
+<!-- ::: -->
+
+## Logistic regression as a supervised ML algorithm {.scrollable}
+
+::: fragment
+Model (predicting a probability):
+$$
+\hat p_i = P(y_i = 1 \mid \mathbf X_i)
+= \sigma(\beta_0 + \beta_1 X_{i1} + \ldots + \beta_k X_{ik})
+$$
+
+where
+$$
+\sigma(z) = \frac{1}{1 + e^{-z}}
+$$
+:::
+
+::: fragment
+Observed outcome:
+$$
+y_i \in \{0,1\}
+$$
+
+We compare the predicted probability $\hat p_i$ to the true class $y_i$.
+:::
+
+ 
+
+:::
+
+::: fragment
+*Cross-entropy* loss function
+$$
+\text{Cross-entropy}
+= -\frac{1}{n}\sum_{i=1}^n \Big[ y_i \log(\hat p_i)
++ (1 - y_i)\log(1 - \hat p_i) \Big]
+$$
+
+:::
+
+
+
+
+## Classification
+
+-   Linear regression require a continuous outcome variables; however in many real world problems our target variables is a categorical label.
+
+-   If the label can only take one of two values (like a coin flip) then we can model our data using logistic regression.
+
+-   Dataset with \>2 labels requires different approaches.
+
+
+## Decision trees
+
+```{r}
+#| fig-height: 4
+#| fig-width: 10  # Half the slider width when default slide width is 4
+#| fig-align: center
+
+# intro to ML notes
+library(rpart)
+library(palmerpenguins)
+library(partykit)
+
+# tree example
+
+p_m <- rpart(species~ ., data = penguins)
+
+# # Prettier plot
+# rpart.plot(
+#   p_m, 
+#   type = 2,         # Split labels are drawn at the decision nodes
+#   #extra = 104,      # Show predicted class and probability percentages
+#   box.palette = "RdYlGn",  # Color nodes by prediction (red → yellow → green)
+#   fallen.leaves = TRUE,    # Arrange terminal nodes at the same level
+#   tweak = 1,     # Slightly increase text size for readability
+#   shadow.col = "gray",  # Add shadows to the boxes
+#   branch = 0.6    # Make branches less steep
+# )
+
+p_m2 <- as.party(p_m)
+plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALSE, rot=0),
+     inner_panel = node_inner(p_m2, id = FALSE, pval = FALSE),
+     gp=gpar(fontsize=8,
+             height = 21))
+     
+
+```
+
+## Decision trees: basic ideas
+
+-   Decision trees *split* the data multiple times according to certain cutoff values in the features/predictors.
+
+-   Starting from the *root* node each subsequent node in the tree implements further split of the data; subsequent splits are connected by AND logical connectives\
+    (*if feature* $X$ is \[smaller/bigger\] than threshold AND ... then the predicted class is ...)
+
+-   The splits create a partition of the data into a set of distinct, non-overlapping regions (high-dimensional rectangles or *boxes*), each aiming to contains instances of the same class.
+
+-   The terminal nodes are also known as *leafs*
+
+##  {.smaller .scrollable transition="slide"}
+
+```{r}
+#| fig-height: 4
+#| fig-width: 10  # Half the slider width when default slide width is 4
+#| fig-align: center
+
+
+p_m2 <- as.party(p_m)
+plot(p_m2, digits = 0, id = FALSE, terminal_panel = node_barplot(p_m2, id = FALSE, rot=0),
+     inner_panel = node_inner(p_m2, id = FALSE, pval = FALSE),
+     gp=gpar(fontsize=8,
+             height = 21))
+     
+
+```
+
+<!-- ##  {.smaller .scrollable transition="slide"} -->
+
+<!-- ```{r} -->
+
+<!-- #| fig-height: 6 -->
+
+<!-- #| fig-width: 7 -->
+
+<!-- #| fig-align: center -->
+
+<!-- # Remove missing values -->
+
+<!-- penguins <- na.omit(penguins) -->
+
+<!-- # Fit a simple decision tree (pruned for clarity) -->
+
+<!-- p_m <- rpart(species ~ flipper_length_mm + bill_length_mm, data = penguins, method = "class") -->
+
+<!-- # Convert to party object for better visualization -->
+
+<!-- p_m2 <- as.party(p_m) -->
+
+<!-- # Create a grid of values for flipper length and bill length -->
+
+<!-- flipper_seq <- seq(min(penguins$flipper_length_mm)-10, max(penguins$flipper_length_mm)+10, length.out = 200) -->
+
+<!-- bill_seq <- seq(min(penguins$bill_length_mm)-5, max(penguins$bill_length_mm)+5, length.out = 200) -->
+
+<!-- grid <- expand.grid( -->
+
+<!--   flipper_length_mm = flipper_seq, -->
+
+<!--   bill_length_mm = bill_seq -->
+
+<!-- ) -->
+
+<!-- # Predict species for each grid point -->
+
+<!-- grid$species <- predict(p_m, newdata = grid, type = "class") -->
+
+<!-- # Plot the decision boundaries -->
+
+<!-- ggplot() + -->
+
+<!--   geom_tile(data = grid, aes(x = flipper_length_mm, y = bill_length_mm, fill = species), alpha = 0.8) + -->
+
+<!--   geom_point(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species), pch=21, size = 2) + -->
+
+<!--   labs( -->
+
+<!--     x = "Flipper length (mm)", -->
+
+<!--     y = "Bill length (mm)", -->
+
+<!--     title = "Decision boundaries" -->
+
+<!--   ) + -->
+
+<!--   scale_fill_manual(values = c("Adelie" = "lightblue", "Chinstrap" = "lightgreen", "Gentoo" = "lightpink")) + -->
+
+<!--   scale_color_manual(values = c("Adelie" = "blue", "Chinstrap" = "dark green", "Gentoo" = "red")) + -->
+
+<!--   theme_minimal()+ -->
+
+<!--   coord_cartesian(xlim=range(penguins$flipper_length_mm),ylim=range(penguins$bill_length_mm)) -->
+
+<!-- ``` -->
+
+##  {.smaller .scrollable transition="slide"}
+
+```{r}
+#| fig-height: 5
+#| fig-width: 10
+#| fig-align: center
+
+# Remove missing values
+penguins <- na.omit(penguins)
+
+# Fit a simple decision tree including island
+p_m <- rpart(species ~ flipper_length_mm + bill_length_mm + island, data = penguins, method = "class")
+
+# Convert to party object (optional, useful for tree visualization)
+p_m2 <- as.party(p_m)
+
+# Create a grid of values for flipper length, bill length, and include island
+flipper_seq <- seq(min(penguins$flipper_length_mm)-10, max(penguins$flipper_length_mm)+10, length.out = 300)
+bill_seq <- seq(min(penguins$bill_length_mm)-5, max(penguins$bill_length_mm)+5, length.out = 300)
+
+# Expand grid for each island
+grid <- expand.grid(
+  flipper_length_mm = flipper_seq,
+  bill_length_mm = bill_seq,
+  island = unique(penguins$island) # Include all island values
+)
+
+# Predict species for each grid point
+grid$species <- predict(p_m, newdata = grid, type = "class")
+
+grid$island2 <- ifelse(grid$island=="Biscoe", "Biscoe", "Dream OR Torgersen")
+penguins$island2 <- ifelse(penguins$island=="Biscoe","Biscoe", "Dream OR Torgersen")
+
+# Plot decision boundaries with facets for each island
+ggplot() +
+  geom_tile(data = grid, aes(x = flipper_length_mm, y = bill_length_mm, fill = species), alpha = 0.8) +
+  geom_point(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species), pch=21, size = 2) +
+  facet_wrap(~island2) +  # Separate plot for each island
+  labs(
+    x = "Flipper Length (mm)",
+    y = "Bill Length (mm)",
+    title = "Decision boundaries (split by island)"
+  ) +
+  scale_fill_manual(values = c("Adelie" = "lightblue", "Chinstrap" = "lightgreen", "Gentoo" = "lightpink")) +
+  scale_color_manual(values = c("Adelie" = "blue", "Chinstrap" = "dark green", "Gentoo" = "red")) +
+  theme_minimal()+
+  coord_cartesian(xlim=range(penguins$flipper_length_mm),ylim=range(penguins$bill_length_mm))
+
+```
+
+------------------------------------------------------------------------
+
+## Growing a decision tree {.scrollable}
+
+How do we choose the split? The most popular approach is **recursive binary splitting**, a *top-down, greedy* algorithm:
+
+::: {style="font-size: 80%;"}
+-   *top-down* because it starts at the top of the tree
+-   *greedy* because it works by optimising the splits *locally*, at each node sequentially, rather than all the splits at once.
+:::
+
+1.  Start with a dataset having features $X$ and class labels $y = \left\{ 1, \ldots, k\right\}$
+2.  Choose a feature (say $X_j$) and a **threshold** $t$ that best **splits** the data into two subsets, depending on whether $\{x_j \le t \}$ or $\{x_j > t \}$.\
+    The **best split** is the one that minimizes an **impurity measure** in child nodes.
+
+::: {style="font-size: 80%;"}
+-   Common impurity measure: **Gini index**: $G = 1 - \sum_{k=1}^K p_k^2$
+-   Here, $p_k$ is the proportion of class $k$ instances in a node.
+-   Gini index is small if all values are close to 0 or 1.
+:::
+
+3.  **Repeat** recursively (by splitting one of the previously identified nodes) until some stopping criterion (e.g., max depth, n. of datapoints per leaf) is met.
+
+## Pruning the tree
+
+-   **The tree-growing algorithm is likely to *overfit* the training data**, producing too complex trees that may not generalise well to new data.
+
+-   One could grow the tree only as long as the decrease in the impurity measure due to each split exceeds a relatively high threshold.  However this is too short-sighted --- a seemingly worthless split early on in the tree might be followed by a very good split.
+
+-   A better strategy is to **grow a large tree, and then *prune* it back to a smaller *sub*-tree**, by removing leaf nodes that add little predictive value.
+
+ 
+
+-   In practice pruning works as follow:
+    1.  set a tuning parameter $\alpha$ penalizes the loss function based on complexity (number of leaf nodes).
+    2.  use cross-validation to select a best value for $\alpha$
+
+## 
+
+*Unpruned* tree for `penguins` data
+
+```{r}
+#| fig-height: 6
+#| fig-width: 13
+#| fig-align: center
+
+
+# Fit decision tree with deeper splits
+p_m <- rpart(
+  species ~ ., 
+  data = penguins, 
+  method = "class", 
+  cp = 0,        # No automatic pruning
+  minsplit = 2,  # Allow small splits
+  xval=50
+)
+
+p_m2 <- as.party(p_m)
+
+plot(p_m2, digits = 0, id = FALSE,
+     terminal_panel =  node_barplot(p_m2, id = FALSE, rot=45, just="top",
+                                    ylines=0.25,
+                                    gp = gpar(fontsize=8)),
+     inner_panel = node_inner(p_m2, id = FALSE, pval = FALSE),
+     gp=gpar(fontsize=8,
+             height = 21))
+
+
+
+
+```
+
+## 
+
+Pruning the tree via cross-validation
+
+```{r}
+#| fig-height: 6
+#| fig-width: 6
+#| fig-align: center
+
+# Extract complexity parameter (CP) table
+cp_data <- as.data.frame(p_m$cptable)
+colnames(cp_data) <- c("cp", "nsplit", "rel_error", "xerror", "xstd")
+
+# Compute number of terminal nodes
+cp_data$size <- cp_data$nsplit + 1
+cp_data$xstd <- cp_data$xstd
+# cp_data
+
+cp_data[,3:5] <- cp_data[,3:5] * 187/333
+
+# Plot misclassification error vs. number of terminal nodes
+ggplot(cp_data, aes(x = size)) +
+  geom_line(aes(y = rel_error, color = "Training"), linewidth = 1) +
+  geom_line(aes(y = xerror, color = "Cross-validation"), linewidth = 1) +
+  geom_errorbar(aes(y = xerror, ymin=xerror-xstd, ymax=xerror+xstd), color="blue", width=0.1, linewidth = 1) +
+  #geom_point(aes(y = xerror), size = 3, shape = 21, fill = "white") +
+  #geom_hline(aes(yintercept = min(xerror) + xstd[which.min(xerror)]), linetype = "dotted") +
+  geom_point(aes(x = size[which.min(xerror)], y = min(xerror)), color = "purple", size = 8, shape = 1) +
+  labs(
+    x = "Number of terminal nodes",
+    y = "Fraction of misclassifications",
+  ) +
+  scale_color_manual(values = c("Training" = "red", "Cross-validation" = "blue"), name="") +
+  theme_minimal()
+
+```
+
+## 
+
+### Estimating a decision tree in R (`rpart` package)
+
+```{r, echo=TRUE}
+library(rpart)
+
+p_m <- rpart(species~ ., data = penguins)
+
+p_m
+```
+
+:::: fragment
+ 
+
+::: {style="font-size: 80%;"}
+This tree has 4 terminal leafs (terminal nodes), rather 8 suggested by the cross-validation.\
+This is because by default `rpart` does not attempt to split a node if it has 20 datapoints or less.
+:::
+::::
+
+## 
+
+We can change parameters to allows smaller splits:
+
+```{r, echo=TRUE}
+p_m <- rpart(species~ ., data = penguins,
+             minsplit = 4,  # minumun N in a node to attempt a split
+             xval=50)       # N. of cross-validations
+
+p_m
+```
+
+:::: fragment
+::: {style="font-size: 80%;"}
+Now the tree has 8 leafs (which correspond to the minimum of the cross-validation error as shown in the cross-validation plot)
+:::
+::::
+
+## 
+
+::: {style="font-size: 80%;"}
+-   In practice `rpart` would choose the simplest model that is within 1 standard error from the minimum, rather than the minimum itself.
+-   (The error typically shows a sharp drop followed by a flat plateau; so the 1 - SE rule allows to choose the simplest model among all those "tied" on the plateau)
+:::
+
+```{r}
+#| fig-height: 6
+#| fig-width: 6
+#| fig-align: center
+
+p_m <- rpart(
+  species ~ ., 
+  data = penguins, 
+  method = "class", 
+  cp = 0,        # No automatic pruning
+  minsplit = 2,  # Allow small splits
+  xval=50
+)
+
+# Extract complexity parameter (CP) table
+cp_data <- as.data.frame(p_m$cptable)
+colnames(cp_data) <- c("cp", "nsplit", "rel_error", "xerror", "xstd")
+
+# Compute number of terminal nodes
+cp_data$size <- cp_data$nsplit + 1
+cp_data$xstd <- cp_data$xstd
+# cp_data
+
+cp_data[,3:5] <- cp_data[,3:5] * 187/333
+
+# Plot misclassification error vs. number of terminal nodes
+ggplot(cp_data, aes(x = size)) +
+  geom_line(aes(y = rel_error, color = "Training"), linewidth = 1) +
+  geom_line(aes(y = xerror, color = "Cross-validation"), linewidth = 1) +
+  geom_errorbar(aes(y = xerror, ymin=xerror-xstd, ymax=xerror+xstd), color="blue", width=0.1, linewidth = 1) +
+  #geom_point(aes(y = xerror), size = 3, shape = 21, fill = "white") +
+  geom_hline(aes(yintercept = min(xerror) + xstd[which.min(xerror)]), linetype = "dotted") +
+  geom_point(aes(x = size[which.min(xerror)], y = min(xerror)), color = "purple", size = 8, shape = 1) +
+  labs(
+    x = "Number of terminal nodes",
+    y = "Fraction of misclassifications",
+  ) +
+  scale_color_manual(values = c("Training" = "red", "Cross-validation" = "blue"), name="") +
+  theme_minimal()
+
+```
+
+## 
+
+*Pruned* tree for `penguins` data, after allowing split also in nodes with as little as `minsplit = 4` observations.
+
+```{r}
+#| fig-height: 6
+#| fig-width: 13
+#| fig-align: center
+
+
+# Fit decision tree with deeper splits
+p_m <- rpart(species~ ., data = penguins,
+             minsplit = 4,  # minumun N in a node to attempt a split
+             xval=50)       # N. of cross-validations
+
+p_m2 <- as.party(p_m)
+
+plot(p_m2, digits = 0, id = FALSE,
+     terminal_panel =  node_barplot(p_m2, id = FALSE, rot=45, just="top",
+                                    ylines=0.75,
+                                    gp = gpar(fontsize=8)),
+     inner_panel = node_inner(p_m2, id = FALSE, pval = FALSE),
+     gp=gpar(fontsize=12,
+             height = 11))
+
+
+```
+
+##  {.scrollable}
+
+The `summary()` function provides further information
+
+```{r, echo=TRUE}
+
+summary(p_m)
+```
+
+## 
+
+Notes on `summary()` output
+
+-   **Primary vs *surrogate* splits**: surrogate splits are rules to make deccisions when the variables in a split point is missing
+
+-   **Variable importance** summarise how useful is a variable for prediction (based on unpruned tree and including surrogate splits)
+
+## Plotting trees (1)
+
+```{r}
+#| fig-height: 6
+#| fig-width: 8
+#| fig-align: center
+#| echo: TRUE
+
+par(xpd = TRUE)
+plot(p_m, compress= TRUE)
+text(p_m, use.n = TRUE, cex=0.8)
+```
+
+::: {style="font-size: 80%;"}
+See `?plot.rpart` for available options.
+:::
+
+## Plotting trees (2) {.scrollable transition="convex"}
+
+Using the `rpart.plot` library.
+
+```{r}
+#| fig-height: 6
+#| fig-width: 8
+#| fig-align: center
+#| echo: TRUE
+
+library(rpart.plot)
+rpart.plot(p_m)
+```
+
+::: {style="font-size: 80%;"}
+See `?rpart.plot` for options.
+:::
+
+## Plotting trees (3) {.scrollable transition="convex"}
+
+Using the `partykit` library.
+
+```{r}
+#| fig-height: 6
+#| fig-width: 12
+#| fig-align: center
+#| echo: TRUE
+
+
+library(partykit)
+p_m2 <- as.party(p_m)
+
+plot(p_m2, 
+     terminal_panel =  node_barplot(p_m2, gp = gpar(fontsize=8)),
+     inner_panel = node_inner(p_m2, id = FALSE),
+     gp=gpar(fontsize=8))
+
+```
+
+## Confusion matrix {.scrollable}
+
+A way to examine the accuracy of classification (*note that the this would be accuracy on the training set; to assess predictive accuracy for new, unseen data we need to use something like cross-validation*)
+
+```{r, echo=TRUE}
+# fit tree
+p_m <- rpart(species~ ., data = penguins)
+
+# compute predictions on training set
+predictions <- predict(p_m, penguins, type = "class")
+
+# compute confusion matrix
+library(caret)
+conf_mat <- confusionMatrix(predictions, penguins$species)
+
+print(conf_mat)
+```
+
+## Plotting a confusion matrix
+
+```{r}
+#| fig-height: 5
+#| fig-width: 5
+#| fig-align: center
+#| echo: TRUE
+#| 
+# Convert confusion matrix to a data frame for ggplot
+conf_df <- as.data.frame(conf_mat$table)
+
+# Create a heatmap plot
+ggplot(conf_df, aes(x = Prediction, y = Reference, fill = Freq)) +
+  geom_tile() +
+  geom_text(aes(label = Freq), color = "white", size = 5) +  # Add text labels
+  scale_fill_gradient(low = "blue", high = "red") +  # Color scale
+  labs(title = "Confusion Matrix",
+       x = "Predicted Class",
+       y = "Actual Class") +
+  coord_equal() +
+  theme_minimal()
+```
+
+## Exercise
+
+-   Use one of the dataset for classification in the 'coursework' folder on Moodle and fit a decision tree model.
+
+
+##  {.scrollable}
+
+#### Advantages
+
+-   **Interpretability**: trees are easy to visualize, interpret and explain.
+
+-   **Flexibility**: trees can easily handle many types of variables; they can also be used for regression (are also known as classification and regression trees, or CART).
+
+-   **Nonlinear Boundaries**: trees naturally model complex, non-linear relationships.
+
+::: fragment
+#### Disadvantages
+
+-   For regression, decision trees approximate linear relationships with *piecewise* functions, which can be inefficient compared to direct linear modeling. They also lack *smoothness* — a small change in a feature can push it past a threshold, causing a sudden jump in predictions.
+
+-   **Non-robust**: a small change in the training data can create a large difference in the final estimated tree\
+    (each split depends on the *parent* split, and if a different root node is selected the whole tree will be different).
+:::
+
+# Ensemble methods
+
+## Ensemble methods to improve robustness
+
+-   Trees suffer from *high variance*: if we split the training data into two parts at random, and fit a decision tree to both halves, the results that we get could be quite different.
+
+-   One approach to improve robustness is *bootstrap aggregation* or *bagging*:
+
+    1.  take repeated samples (with replacement) from the training data (*bootstrapping*)
+    2.  train a tree on each of these *bootstrapped* dataset
+    3.  combine the predictions (*mojority vote*)
+
+-   Bagging can be used to combine together hundreds or thousands of trees in a single procedure, and can give more robust and accurate results.
+
+## Random forests
+
+-   Random forests provide a further improvements over bagged trees: in addition to resampling the observations (the rows in our data) in each resampled training dataset we include only a subset of the predictor variables.
+
+-   This small tweak decorrelate the trees in each resampled dataset and make the ensemble even less variable and more robust.
+
+-   Particularly helpful when we hav a large number of correlated predictors
+
+![](Random_Forest_Bagging_Illustration.png){fig-align="center" width="90%"}
+
+## Random forests in R
+
+```{r, echo=TRUE}
+library(randomForest)
+
+# Fit Random Forest model
+rf_model <- randomForest(species ~ ., data = penguins, ntree = 500, importance = TRUE)
+
+# Print summary
+print(rf_model)
+```
+
+-   One advantage of random forest is that they provide automatically an estimate of predictive performance.
+-   On average each boostrapped dataset include about 2/3 of training data, and we can assess how well the model predict the remaining 1/3 of data (Out-of-Bag, or OOB accuracy).
+
+## OOB confusion matrix
+
+We can use a confusion matrix to assess the out-of-bag predictive accuracy
+
+```{r}
+#| fig-height: 5
+#| fig-width: 5
+#| fig-align: center
+#| echo: TRUE
+
+ggplot(data = as.data.frame(conf_mat$table), aes(Prediction, Reference, fill = Freq)) +
+  geom_tile() +
+  geom_text(aes(label = Freq), color = "white", size = 5) +
+  scale_fill_gradient(low = "blue", high = "red") +
+  labs(title = "Confusion Matrix",
+       x = "Predicted Class",
+       y = "Actual Class") +
+  coord_equal() +
+  theme_minimal()
+```
+
+## Boosting
+
+-   Boosting is also an ensemble method, in the sense that combine many models to produce a result that is more accurate and robust.
+
+-   However, rather than combining many decision trees that were estimated independently, boosting work by sequentially improving a single model, focusing in particular in areas where it does not perform well.
+
+-   A state-of-the-art improvement of boosting is gradient boosting, and is implemented in the R package [`xgboost`](https://xgboost.readthedocs.io/en/stable/#)
