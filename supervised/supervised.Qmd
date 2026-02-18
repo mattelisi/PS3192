@@ -651,16 +651,10 @@ data(GermanCredit)
 str(GermanCredit)
 ```
 
-## A more complex example: `GermanCredit` dataset
-
-Unpruned tree
-
-```{r}
-credit_tree <- rpart(Class  ~ ., data = GermanCredit,
-                     cp = 0, minsplit = 2)
-```
 
 ## 
+
+Estimated decision tree (with pruning)
 
 ```{r}
 #| fig-height: 8
@@ -677,7 +671,7 @@ text(credit_tree, use.n = TRUE, cex=0.9)
 
 ## 
 
-Unpruned tree plot
+Unpruned tree
 
 ```{r}
 #| fig-height: 8
@@ -685,6 +679,8 @@ Unpruned tree plot
 #| fig-align: center
 #| echo: TRUE
 
+credit_tree <- rpart(Class  ~ ., data = GermanCredit,
+                     cp = 0, minsplit = 2)
 
 plot(credit_tree)
 text(credit_tree, use.n = TRUE, cex=0.4)
@@ -738,7 +734,7 @@ text(credit_tree, use.n = TRUE, cex=0.4)
 
 -   Particularly helpful when we hav a large number of correlated predictors
 
-![](Random_Forest_Bagging_Illustration.png){fig-align="center" width="90%"}
+![](Random_Forest_Bagging_Illustration.png){fig-align="center" width="60%"}
 
 ## Random forests in R
 

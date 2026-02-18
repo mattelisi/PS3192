@@ -454,7 +454,7 @@ rpart(formula = species ~ ., data = penguins, minsplit = 4, xval = 50)
 1 0.62032086      0 1.00000000 1.00000000 0.04842097
 2 0.28877005      1 0.37967914 0.38502674 0.04017194
 3 0.02673797      2 0.09090909 0.11764706 0.02423973
-4 0.01604278      3 0.06417112 0.09625668 0.02206621
+4 0.01604278      3 0.06417112 0.08556150 0.02087017
 5 0.01069519      4 0.04812834 0.08021390 0.02023930
 6 0.01000000      7 0.01604278 0.06951872 0.01890092
 
@@ -870,19 +870,10 @@ ggplot(conf_df, aes(x = Prediction, y = Reference, fill = Freq)) +
 
 
 
-## A more complex example: `GermanCredit` dataset
-
-Unpruned tree
-
-
-
-::: {.cell}
-
-:::
-
-
 
 ## 
+
+Estimated decision tree (with pruning)
 
 
 
@@ -896,7 +887,7 @@ text(credit_tree, use.n = TRUE, cex=0.9)
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-19-1.png){fig-align='center' width=1536}
+![](supervised_files/figure-revealjs/unnamed-chunk-18-1.png){fig-align='center' width=1536}
 :::
 :::
 
@@ -905,19 +896,22 @@ text(credit_tree, use.n = TRUE, cex=0.9)
 
 ## 
 
-Unpruned tree plot
+Unpruned tree
 
 
 
 ::: {.cell layout-align="center"}
 
 ```{.r .cell-code}
+credit_tree <- rpart(Class  ~ ., data = GermanCredit,
+                     cp = 0, minsplit = 2)
+
 plot(credit_tree)
 text(credit_tree, use.n = TRUE, cex=0.4)
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-20-1.png){fig-align='center' width=1536}
+![](supervised_files/figure-revealjs/unnamed-chunk-19-1.png){fig-align='center' width=1536}
 :::
 :::
 
@@ -971,7 +965,7 @@ text(credit_tree, use.n = TRUE, cex=0.4)
 
 -   Particularly helpful when we hav a large number of correlated predictors
 
-![](Random_Forest_Bagging_Illustration.png){fig-align="center" width="90%"}
+![](Random_Forest_Bagging_Illustration.png){fig-align="center" width="60%"}
 
 ## Random forests in R
 
@@ -999,12 +993,12 @@ Call:
                      Number of trees: 500
 No. of variables tried at each split: 2
 
-        OOB estimate of  error rate: 1.2%
+        OOB estimate of  error rate: 0.9%
 Confusion matrix:
           Adelie Chinstrap Gentoo class.error
-Adelie       144         2      0  0.01369863
-Chinstrap      2        66      0  0.02941176
-Gentoo         0         0    119  0.00000000
+Adelie       145         1      0 0.006849315
+Chinstrap      2        66      0 0.029411765
+Gentoo         0         0    119 0.000000000
 ```
 
 
@@ -1037,7 +1031,7 @@ ggplot(data = as.data.frame(conf_mat$table), aes(Prediction, Reference, fill = F
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-22-1.png){fig-align='center' width=480}
+![](supervised_files/figure-revealjs/unnamed-chunk-21-1.png){fig-align='center' width=480}
 :::
 :::
 
