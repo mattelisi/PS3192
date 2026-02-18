@@ -45,9 +45,9 @@ Learn from examples in order to make predictions that generalise to new data.
 
 -   **Overfitting**: when the model learns aspects of the training data that are just "noise" and fail to predict well new data.
     -   It can be due to having a model that is too complex (too many free parameter).
-    -   Methods like cross-validation, and splitting in training/test sets, help monitoring and reducing the chance of overfitting.
+    -   Methods like *cross-validation*, and splitting in training/test sets, help monitoring and reducing the chance of overfitting.
     -   If we care about estimating the predictive performance of our model, we need to be careful about leakage of information from test data.
-    -   Regularisation methods modify the cost function of our model, to promote simpler models and reduce the chance of overfitting.
+    -   *Regularisation* methods modify the cost function of our model, to favour simpler models and reduce the chance of overfitting.
 -   **Dataset bias**: when the training data is incomplete or systematically different from the broader set of future data that we would like to predict.
 
 
@@ -96,7 +96,6 @@ We compare the predicted probability $\hat p_i$ to the true class $y_i$.
 
  
 
-:::
 
 ::: fragment
 *Cross-entropy* loss function
@@ -119,6 +118,8 @@ $$
 
 -   Dataset with \>2 labels requires different approaches.
 
+
+# Decision trees
 
 ## Decision trees
 
@@ -541,7 +542,7 @@ summary(p_m)
 
 Notes on `summary()` output
 
--   **Primary vs *surrogate* splits**: surrogate splits are rules to make deccisions when the variables in a split point is missing
+-   **Primary vs *surrogate* splits**: surrogate splits are rules to make decisions when the variables in a split point is missing
 
 -   **Variable importance** summarise how useful is a variable for prediction (based on unpruned tree and including surrogate splits)
 
@@ -642,6 +643,55 @@ ggplot(conf_df, aes(x = Prediction, y = Reference, fill = Freq)) +
   theme_minimal()
 ```
 
+## A more complex example: `GermanCredit` dataset {.scrollable}
+
+```{r}
+library(caret)
+data(GermanCredit)
+str(GermanCredit)
+```
+
+## A more complex example: `GermanCredit` dataset
+
+Unpruned tree
+
+```{r}
+credit_tree <- rpart(Class  ~ ., data = GermanCredit,
+                     cp = 0, minsplit = 2)
+```
+
+## 
+
+```{r}
+#| fig-height: 8
+#| fig-width: 16
+#| fig-align: center
+#| echo: TRUE
+
+credit_tree <- rpart(Class  ~ ., data = GermanCredit, xval=100)
+
+plot(credit_tree)
+text(credit_tree, use.n = TRUE, cex=0.9)
+```
+
+
+## 
+
+Unpruned tree plot
+
+```{r}
+#| fig-height: 8
+#| fig-width: 16
+#| fig-align: center
+#| echo: TRUE
+
+
+plot(credit_tree)
+text(credit_tree, use.n = TRUE, cex=0.4)
+```
+
+
+
 ## Exercise
 
 -   Use one of the dataset for classification in the 'coursework' folder on Moodle and fit a decision tree model.
@@ -733,3 +783,10 @@ ggplot(data = as.data.frame(conf_mat$table), aes(Prediction, Reference, fill = F
 -   However, rather than combining many decision trees that were estimated independently, boosting work by sequentially improving a single model, focusing in particular in areas where it does not perform well.
 
 -   A state-of-the-art improvement of boosting is gradient boosting, and is implemented in the R package [`xgboost`](https://xgboost.readthedocs.io/en/stable/#)
+
+```{r}
+
+```
+
+
+

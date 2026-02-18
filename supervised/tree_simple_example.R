@@ -18,7 +18,7 @@ d$vaccine_recoded <- ifelse(grepl("unlikely|Don’t know",d$vaccine_intention), 
 table(d$vaccine_recoded)
 
 unique(d$past_vote_euref)
-d$voteEU <- ifelse()
+#d$voteEU <- ifelse()
 
 d %>%
   ggplot(aes(y=social_grade))+
@@ -112,6 +112,14 @@ credit_pk <- as.party(credit_tree)
 plot(credit_pk, digits = 0, id = FALSE, terminal_panel = node_barplot(credit_pk, id = FALSE, rot=0),
      inner_panel = node_inner(credit_pk, id = FALSE, pval = FALSE),
      gp=gpar(fontsize=8,height = 21))
+
+
+plot(credit_tree)
+text(credit_tree, use.n = TRUE, cex=0.6)
+
+
+credit_tree <- rpart(Class  ~ ., data = GermanCredit,
+                     cp = 0, minsplit = 2, maxdepth=50)
 
 
 ###########################################################################

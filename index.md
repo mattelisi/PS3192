@@ -18,6 +18,11 @@ Course coordinator: Matteo Lisi
 [Worksheet](intro_ML/worksheet.html)
 
 
+## Supervised learning & classification (20 Feb 2026)
+
+[Slides](supervised/supervised.html)
+
+
 
 
 <br><br><br><br><br><br>
