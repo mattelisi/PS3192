@@ -734,7 +734,7 @@ text(credit_tree, use.n = TRUE, cex=0.4)
 
 -   Particularly helpful when we hav a large number of correlated predictors
 
-![](Random_Forest_Bagging_Illustration.png){fig-align="center" width="60%"}
+![](img/Random_Forest_Bagging_Illustration.png){fig-align="center" width="60%"}
 
 ## Random forests in R
 

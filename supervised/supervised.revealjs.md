@@ -455,7 +455,7 @@ rpart(formula = species ~ ., data = penguins, minsplit = 4, xval = 50)
 2 0.28877005      1 0.37967914 0.38502674 0.04017194
 3 0.02673797      2 0.09090909 0.11764706 0.02423973
 4 0.01604278      3 0.06417112 0.08556150 0.02087017
-5 0.01069519      4 0.04812834 0.08021390 0.02023930
+5 0.01069519      4 0.04812834 0.08556150 0.02087017
 6 0.01000000      7 0.01604278 0.06951872 0.01890092
 
 Variable importance
@@ -965,7 +965,7 @@ text(credit_tree, use.n = TRUE, cex=0.4)
 
 -   Particularly helpful when we hav a large number of correlated predictors
 
-![](Random_Forest_Bagging_Illustration.png){fig-align="center" width="60%"}
+![](img/Random_Forest_Bagging_Illustration.png){fig-align="center" width="60%"}
 
 ## Random forests in R
 
