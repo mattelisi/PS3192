@@ -22,6 +22,8 @@ Course coordinator: Matteo Lisi
 
 [Slides](supervised/supervised.html)
 
+[Worked example `GermanCredit` dataset](supervised/credit_tree_example.html)
+
 
 
 

@@ -1,5 +1,5 @@
 ---
-title: "Decision tree — worked example"
+title: "Decision tree — worked example on `GermanCredit` dataset"
 subtitle: "PS3192 25-26"
 author: "Matteo Lisi"
 format:
@@ -36,7 +36,12 @@ Essentially our goal is to predict the class of credit worthiness (`good` vs `ba
 
 ## Estimating a decision tree with default settings
 
-As we saw in the workshop, using the default settigns of `rpart` will give us a decisiont tree pruned to a reasonable expect. Here we are using all available variables as potential predictors (by using the dot `.` in the formula `Class  ~ .`) and we only have slightly increased the number of cross-validation iteration to 250.
+As we saw in the workshop, using the default settigns of `rpart` will give us a decisiont will not return a "fully grown" unpruned decision tree, but instead some default constraints in terms of complexity penalty and other parameters are applied. Here we are using all available variables as potential predictors (by using the dot `.` in the formula `Class  ~ .`) and we only have slightly increased the number of cross-validation iteration to 500.
+
+```{r, echo=FALSE}
+set.seed(123)
+```
+
 
 ```{r}
 #| fig-height: 8
@@ -45,7 +50,7 @@ As we saw in the workshop, using the default settigns of `rpart` will give us a 
 #| echo: TRUE
 
 # estimate decision tree
-credit_tree <- rpart(Class  ~ ., data = GermanCredit, xval=250)
+credit_tree <- rpart(Class  ~ ., data = GermanCredit, xval=500)
 
 # make a plot
 plot(credit_tree)
@@ -70,11 +75,11 @@ Essentially the values listed there are the "default" value. This tells us for e
 
 In addition to `minsplit` two key arguments are:
 
-- **`cp`** is the complexity parameter. It defines the minimum amount of improvement in the overall fit of the model for any node: any split that does not decrease the overall "cost" of the tree by a factor of `cp` will note be attempted. Note that this refers to the _overall_ cost of the model, which depends on the proportion of misclassified observations (thus not the local impurity measure that is minimized at each node during the initial part of model fitting). 
+- **`cp`** is the complexity parameter. It defines the minimum amount of improvement in the overall fit of the model for any node: any split that does not decrease the overall "cost" of the tree by a factor of `cp` will note be attempted. Note that this refers to the _overall_ cost of the model, which depends on the proportion of misclassified observations (thus not the local impurity measure that is minimized at each node during the initial part of model fitting). This is the key parameters that regulates the amount of pruning of our tree.
 
 - **`xval`** is the number of cross-validation iterations. The cross-validation is done internally by `rpart` to decide the optimal level of complexity
 
-### Cross-validation results
+## Cross-validation results
 
 We can visualise the cross-validation results as
 
@@ -91,11 +96,18 @@ In class we defined the values in the table as follow:
 - `xerror` is the error in the test sets of the crossvalidation
 - `xstd` is the standard deviation of the test error across the cross-validation folds
 
-Strictly speaking, `CP` should be interpreted as the smallest complexity penalty at which the tree in each row of the table becomes optimal under cost-complexity pruning. Let's unpack this, and define more formally in the optional box below.
+Strictly speaking, `CP` should be interpreted as the smallest complexity penalty at which the tree in each row of the table becomes optimal under cost-complexity pruning. Intuitively, the larger is the complexity parameter, the more we are penalising complexity when pruning the tree. You can think of this as a dial that says _"How much extra error am I willing to tolerate to remove splits and make the tree simpler?"_. If `CP` is quite large (say `CP`=0.04) if means we accepts splits only if they reduce the error by a large amount. Based on the table above, if we were to set the penalty threshold to 0.04, we would conclude that the best model is the tree with no splits (since the table indicates this is optimal up until values of `CP` of 0.044444).
 
-Intuitively, the larger is the complexity parameter, the more we are penalising complexity when pruning the tree. You can think of this as a dial that says "How much extra error am I willing to tolerate to remove splits and make the tree simpler?". If `CP` is quite large (say `CP`=0.04) if means we accepts splits only if they reduce the error by a large amount. Based on the table above, if we were to set the penalty threshold to 0.04, we would conclude that the best model is the tree with no splits (since the table indicates this is optimal up until values of `CP` of 0.044444).
+At this point you might wonder how to interpret the values of the complexity parameter. For example, is the default 0.01 large or small? In the `rpart` implementation, the complexity parameter is defined in such a way that it does not directly related to the error of the model (e.g. to the proportion of misclassified observations). Instead it is defined relatively to the error of model with no-splits; because of this it is a _unitless_ parameter. (For those interested in the details, I define this more formally in the optional box at the bottom of this page.) Being unitless has some disadvantages, for example is not straightforward to link a specific value of `cp` to the error rate of the model. It ahs also some advantages, as it allows to define plausible default values that tend to work reasonably well in many cases.
 
-Plotting the cross-validation results display nicely how the cross-validation error increases for overly complex trees. Note that I am transforming the cost into "raw" misclassification units.
+Plotting the cross-validation results (next figure) display nicely how the cross-validation error increases for overly complex trees. Note that I am transforming the cost into "raw" misclassification units: in oder to do this we need to multiply the columns of the cross-validation table by the error of the model with no split. In this case, we have only two classes, and if we did not use any split the best we could do is predict all observations to be of the majority class. We can explore this also using hte `table()` function:
+
+```{r}
+table(GermanCredit$Class)
+```
+Which tells us that the majority of observations are in the `Good` class, and that expected error when predicting all datapointss to be `good` is the fraction of `bad` datapoints, that is 300 / (700 + 300) = 0.3.
+
+Here is the code to plot the cross-validation results in natural units if the error (fraction of misclassified observations).
 
 ```{r}
 #| fig-height: 6
@@ -103,9 +115,8 @@ Plotting the cross-validation results display nicely how the cross-validation er
 #| fig-align: center
 #| echo: TRUE
 
-# extract table
-cp_data <- as.data.frame(credit_tree$cptable)
-colnames(cp_data) <- c("cp", "nsplit", "rel_error", "xerror", "xstd")
+# extract table, and convert to data.frame (make it easier to work with)
+cp_data <- data.frame(printcp(credit_tree))
 
 # Compute number of terminal nodes
 cp_data$size <- cp_data$nsplit + 1
@@ -114,15 +125,12 @@ cp_data$xstd <- cp_data$xstd
 # The errors are normalised relative to the model with no-splits
 # to put them in the natural scale we need to multiply by the fraction 
 # of errors in the no-split model, that is the same as the error we 
-# would make by always simply predicting the majority class:
-table(GermanCredit$Class)
-
-# we can re-scale the errors as follow
-cp_data[,c("rel_error", "xerror", "xstd")] <- cp_data[,c("rel_error", "xerror", "xstd")] * 300/(300 + 700)
+# would make by always simply predicting the majority class
+cp_data[,c("rel.error", "xerror", "xstd")] <- cp_data[,c("rel.error", "xerror", "xstd")] * 300/(300 + 700)
 
 # Plot misclassification error vs. number of terminal nodes
 ggplot(cp_data, aes(x = size)) +
-  geom_line(aes(y = rel_error, color = "Training"), linewidth = 1) +
+  geom_line(aes(y = rel.error, color = "Training"), linewidth = 1) +
   geom_line(aes(y = xerror, color = "Cross-validation"), linewidth = 1) +
   geom_errorbar(aes(y = xerror, ymin=xerror-xstd, ymax=xerror+xstd), color="blue", width=0.1, linewidth = 1) +
   geom_point(aes(x = size[which.min(xerror)], y = min(xerror)), color = "purple", size = 8, shape = 1) +
@@ -136,9 +144,129 @@ ggplot(cp_data, aes(x = size)) +
 ```
 
 
+## Manually pruning the tree
+
+As noted above `rpart` use the default value of `cp`=0.01, which may not be optimal. If we want to use a different value, we can either re-run the model fitting, setting a different value of `cp` as argument; or, more efficiently, We can use the `prune` function to prune the tree manually. 
+
+
+For example, if we wanted to implement the 1 - SE rule (e.g. selecting the simplest tree within 1 SE from the minimum), we can do it 
+
+```{r}
+# find the row with the minimum
+min_row <- which.min(cp_data[, "xerror"])
+
+# extract min error and SE of min error
+min_xerror <- cp_data[min_row, "xerror"]
+min_xstd   <- cp_data[min_row, "xstd"]
+
+# compute the threshold: the best model according to the 
+# 1 - SE rule is the first (simplest) within the threshold
+threshold <- min_xerror + min_xstd
+
+# find smallest tree within threshold
+best_row <- which(cp_data[, "xerror"] <= threshold)[1]
+
+best_cp <- cp_data[best_row, "CP"]
+
+best_cp
+```
+
+
+We can now manually prune using:
+
+```{r}
+#| fig-height: 8
+#| fig-width: 16
+#| fig-align: center
+#| echo: TRUE
+
+# manually prune the tree
+pruned_tree = prune(credit_tree, cp=best_cp)
+
+# plot pruned tree
+plot(pruned_tree)
+text(pruned_tree, use.n = TRUE, cex=0.9)
+```
+
+The cross-validation and the application of the 1 -SE rule indicate this is hte simplest model that is statistically not different (in terms of probability of errors) from the best model.
+
+
+
+## Testing a larger tree
+
+```{r, echo=FALSE}
+set.seed(123)
+```
+
+
+In this case, the set of more complex models tested are all quite close in terms of performance and have similar misclassification rate. One might wonder if there may be a more complex tree that perform better We can test this by removing some of the contraints and growing a larger tree as follow:
+
+```{r}
+#| fig-height: 6
+#| fig-width: 6
+#| fig-align: center
+#| echo: TRUE
+
+larger_tree <- rpart(Class  ~ ., data = GermanCredit,
+                     cp = 0.001, minsplit = 10,
+                     xval=500)
+
+# extract table, and convert to data.frame (make it easier to work with)
+cp_data <- data.frame(printcp(larger_tree))
+
+# Compute number of terminal nodes
+cp_data$size <- cp_data$nsplit + 1
+cp_data$xstd <- cp_data$xstd
+
+# The errors are normalised relative to the model with no-splits
+# to put them in the natural scale we need to multiply by the fraction 
+# of errors in the no-split model, that is the same as the error we 
+# would make by always simply predicting the majority class
+cp_data[,c("rel.error", "xerror", "xstd")] <- cp_data[,c("rel.error", "xerror", "xstd")] * 300/(300 + 700)
+
+# Plot misclassification error vs. number of terminal nodes
+ggplot(cp_data, aes(x = size)) +
+  geom_line(aes(y = rel.error, color = "Training"), linewidth = 1) +
+  geom_line(aes(y = xerror, color = "Cross-validation"), linewidth = 1) +
+  geom_errorbar(aes(y = xerror, ymin=xerror-xstd, ymax=xerror+xstd), color="blue", width=0.1, linewidth = 1) +
+  geom_point(aes(x = size[which.min(xerror)], y = min(xerror)), color = "purple", size = 8, shape = 1) +
+  labs(
+    x = "Number of terminal nodes",
+    y = "Fraction of misclassifications",
+  ) +
+  scale_color_manual(values = c("Training" = "red", "Cross-validation" = "blue"), name="") +
+  theme_minimal()
+
+```
+
+
+The error function in the cross-validation has an irregular shape but also display the expected "U" pattern. Nevertheless, while the minimum has slightly changed, the 1- SE rule return the same level of complexity as begin equivalent with the minimum.
+
+```{r}
+# find the row with the minimum
+min_row <- which.min(cp_data[, "xerror"])
+
+# extract min error and SE of min error
+min_xerror <- cp_data[min_row, "xerror"]
+min_xstd   <- cp_data[min_row, "xstd"]
+
+# compute the threshold: the best model according to the 
+# 1 - SE rule is the first (simplest) within the threshold
+threshold <- min_xerror + min_xstd
+
+# find smallest tree within threshold
+best_row <- which(cp_data[, "xerror"] <= threshold)[1]
+
+best_cp <- cp_data[best_row, "CP"]
+
+best_cp
+```
+
+
+
 ::: callout-tip
 
-### The cost function of decision trees
+## The cost function of decision trees
 
 In the classical formulation of decision trees[^breiman] the cost is defined as follow.
 
@@ -155,7 +283,7 @@ R_{\alpha}(T) = R(T)+\alpha \left| T \right|
 $$
  $\left| T \right|$ is the number of terminal nodes or leafs (so it would be $\left| T \right| = k$ as we have $k$ terminal nodes). 
  
-Note that in this formulation the $alpha$ is expressed in the same units of measurements of $R(T)$, which in our case would the proportion or _rate_ of misclassification.
+Note that in this formulation the $\alpha$ is expressed in the same units of measurements of $R(T)$, which in our case would the proportion or _rate_ of misclassification.
 
 `rpart` implementation adopts a slightly different formulation: the error that appear in the table as `rel error` is defined as 
 
@@ -179,53 +307,4 @@ $$
 R_{\alpha}(T) = R(T) + \text{cp} \cdot R(T_0)  \cdot \left| T \right|
 $$
 :::
-
-### Manually pruning the tree
-
-Note that `rpart` use the default value of `cp`=0.01, which may not be optimal. We can use the `prune` function to prune the tree manually. 
-
-
-For example, if we wanted to implement the 1 - SE rule, 
-
-```{r}
-# explore the table
-cp_table <- credit_tree$cptable
-
-# find the row with the minimum
-min_row <- which.min(cp_table[, "xerror"])
-
-# extract min error and SE of min error
-min_xerror <- cp_table[min_row, "xerror"]
-min_xstd   <- cp_table[min_row, "xstd"]
-
-# compute the threshold: the best model according to the 
-# 1 - SE rule is the first (simplest) within the threshold
-threshold <- min_xerror + min_xstd
-
-# find smallest tree within threshold
-best_row <- which(cp_table[, "xerror"] <= threshold)[1]
-
-best_cp <- cp_table[best_row, "CP"]
-
-best_cp
-```
-
-
-We can now manually prune using:
-
-```{r}
-#| fig-height: 8
-#| fig-width: 16
-#| fig-align: center
-#| echo: TRUE
-
-# manually prune the tree
-pruned_tree = prune(credit_tree, cp=best_cp)
-
-# plot pruned tree
-plot(pruned_tree)
-text(pruned_tree, use.n = TRUE, cex=0.9)
-```
-
-
 
