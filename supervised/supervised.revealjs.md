@@ -299,6 +299,7 @@ Pruning the tree via cross-validation
 
 
 
+
 ## 
 
 ### Estimating a decision tree in R (`rpart` package)
@@ -342,7 +343,7 @@ node), split, n, loss, yval, (yprob)
  
 
 ::: {style="font-size: 80%;"}
-This tree has 4 terminal leafs (terminal nodes), rather 8 suggested by the cross-validation.\
+This tree has only 4 terminal leafs (terminal nodes).\
 This is because by default `rpart` does not attempt to split a node if it has 20 datapoints or less.
 :::
 ::::
@@ -400,10 +401,12 @@ Now the tree has 8 leafs (which correspond to the minimum of the cross-validatio
 :::
 ::::
 
+
+
 ## 
 
 ::: {style="font-size: 80%;"}
--   In practice `rpart` would choose the simplest model that is within 1 standard error from the minimum, rather than the minimum itself.
+-   In practice we may want to choose the simplest model that is within 1 standard error from the minimum, rather than the minimum itself.
 -   (The error typically shows a sharp drop followed by a flat plateau; so the 1 - SE rule allows to choose the simplest model among all those "tied" on the plateau)
 :::
 
@@ -419,7 +422,7 @@ Now the tree has 8 leafs (which correspond to the minimum of the cross-validatio
 
 ## 
 
-*Pruned* tree for `penguins` data, after allowing split also in nodes with as little as `minsplit = 4` observations.
+Tree for `penguins` data, after allowing split also in nodes with as little as `minsplit = 4` observations.
 
 
 
@@ -429,6 +432,91 @@ Now the tree has 8 leafs (which correspond to the minimum of the cross-validatio
 :::
 :::
 
+
+
+
+##  {.scrollable}
+
+We can print on the console the cross-validation results using the `printcp()` function:
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
+printcp(p_m)
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+
+Classification tree:
+rpart(formula = species ~ ., data = penguins, minsplit = 4, xval = 50)
+
+Variables actually used in tree construction:
+[1] bill_depth_mm     bill_length_mm    flipper_length_mm island           
+
+Root node error: 187/333 = 0.56156
+
+n= 333 
+
+        CP nsplit rel error   xerror     xstd
+1 0.620321      0  1.000000 1.000000 0.048421
+2 0.288770      1  0.379679 0.385027 0.040172
+3 0.026738      2  0.090909 0.117647 0.024240
+4 0.016043      3  0.064171 0.085561 0.020870
+5 0.010695      4  0.048128 0.080214 0.020239
+6 0.010000      7  0.016043 0.069519 0.018901
+```
+
+
+:::
+:::
+
+
+
+ 
+
+::: fragment
+
+We can manually prune the tree at any value we may want. e.g. if we decide that 4 splits are preferable, as its error is close to the best model, we can prune the tree using 
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
+prune(p_m, cp=0.011)
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+n= 333 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+ 1) root 333 187 Adelie (0.438438438 0.204204204 0.357357357)  
+   2) flipper_length_mm< 206.5 208  64 Adelie (0.692307692 0.302884615 0.004807692)  
+     4) bill_length_mm< 43.35 145   5 Adelie (0.965517241 0.034482759 0.000000000) *
+     5) bill_length_mm>=43.35 63   5 Chinstrap (0.063492063 0.920634921 0.015873016)  
+      10) island=Biscoe,Torgersen 4   1 Adelie (0.750000000 0.000000000 0.250000000) *
+      11) island=Dream 59   1 Chinstrap (0.016949153 0.983050847 0.000000000) *
+   3) flipper_length_mm>=206.5 125   7 Gentoo (0.016000000 0.040000000 0.944000000)  
+     6) island=Dream,Torgersen 7   2 Chinstrap (0.285714286 0.714285714 0.000000000) *
+     7) island=Biscoe 118   0 Gentoo (0.000000000 0.000000000 1.000000000) *
+```
+
+
+:::
+:::
+
+
+
+
+:::
 
 
 ##  {.scrollable}
@@ -455,7 +543,7 @@ rpart(formula = species ~ ., data = penguins, minsplit = 4, xval = 50)
 2 0.28877005      1 0.37967914 0.38502674 0.04017194
 3 0.02673797      2 0.09090909 0.11764706 0.02423973
 4 0.01604278      3 0.06417112 0.08556150 0.02087017
-5 0.01069519      4 0.04812834 0.08556150 0.02087017
+5 0.01069519      4 0.04812834 0.08021390 0.02023930
 6 0.01000000      7 0.01604278 0.06951872 0.01890092
 
 Variable importance
@@ -640,7 +728,7 @@ text(p_m, use.n = TRUE, cex=0.8)
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-12-1.png){fig-align='center' width=768}
+![](supervised_files/figure-revealjs/unnamed-chunk-14-1.png){fig-align='center' width=768}
 :::
 :::
 
@@ -664,7 +752,7 @@ rpart.plot(p_m)
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-13-1.png){fig-align='center' width=768}
+![](supervised_files/figure-revealjs/unnamed-chunk-15-1.png){fig-align='center' width=768}
 :::
 :::
 
@@ -693,7 +781,7 @@ plot(p_m2,
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-14-1.png){fig-align='center' width=1152}
+![](supervised_files/figure-revealjs/unnamed-chunk-16-1.png){fig-align='center' width=1152}
 :::
 :::
 
@@ -785,7 +873,7 @@ ggplot(conf_df, aes(x = Prediction, y = Reference, fill = Freq)) +
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-16-1.png){fig-align='center' width=480}
+![](supervised_files/figure-revealjs/unnamed-chunk-18-1.png){fig-align='center' width=480}
 :::
 :::
 
@@ -887,7 +975,7 @@ text(credit_tree, use.n = TRUE, cex=0.9)
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-18-1.png){fig-align='center' width=1536}
+![](supervised_files/figure-revealjs/unnamed-chunk-20-1.png){fig-align='center' width=1536}
 :::
 :::
 
@@ -911,7 +999,7 @@ text(credit_tree, use.n = TRUE, cex=0.4)
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-19-1.png){fig-align='center' width=1536}
+![](supervised_files/figure-revealjs/unnamed-chunk-21-1.png){fig-align='center' width=1536}
 :::
 :::
 
@@ -1031,7 +1119,7 @@ ggplot(data = as.data.frame(conf_mat$table), aes(Prediction, Reference, fill = F
 ```
 
 ::: {.cell-output-display}
-![](supervised_files/figure-revealjs/unnamed-chunk-21-1.png){fig-align='center' width=480}
+![](supervised_files/figure-revealjs/unnamed-chunk-23-1.png){fig-align='center' width=480}
 :::
 :::
 

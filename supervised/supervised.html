@@ -662,7 +662,7 @@ node), split, n, loss, yval, (yprob)
 <div class="fragment">
 <p>&nbsp;</p>
 <div style="font-size: 80%;">
-<p>This tree has 4 terminal leafs (terminal nodes), rather 8 suggested by the cross-validation.<br>
+<p>This tree has only 4 terminal leafs (terminal nodes).<br>
 This is because by default <code>rpart</code> does not attempt to split a node if it has 20 datapoints or less.</p>
 </div>
 </div>
@@ -709,7 +709,7 @@ node), split, n, loss, yval, (yprob)
 <h2></h2>
 <div style="font-size: 80%;">
 <ul>
-<li class="fragment">In practice <code>rpart</code> would choose the simplest model that is within 1 standard error from the minimum, rather than the minimum itself.</li>
+<li class="fragment">In practice we may want to choose the simplest model that is within 1 standard error from the minimum, rather than the minimum itself.</li>
 <li class="fragment">(The error typically shows a sharp drop followed by a flat plateau; so the 1 - SE rule allows to choose the simplest model among all those “tied” on the plateau)</li>
 </ul>
 </div>
@@ -725,7 +725,7 @@ node), split, n, loss, yval, (yprob)
 </section>
 <section id="section-7" class="slide level2">
 <h2></h2>
-<p><em>Pruned</em> tree for <code>penguins</code> data, after allowing split also in nodes with as little as <code>minsplit = 4</code> observations.</p>
+<p>Tree for <code>penguins</code> data, after allowing split also in nodes with as little as <code>minsplit = 4</code> observations.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -738,9 +738,59 @@ node), split, n, loss, yval, (yprob)
 </section>
 <section id="section-8" class="slide level2 scrollable">
 <h2></h2>
+<p>We can print on the console the cross-validation results using the <code>printcp()</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">printcp</span>(p_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Classification tree:
+rpart(formula = species ~ ., data = penguins, minsplit = 4, xval = 50)
+
+Variables actually used in tree construction:
+[1] bill_depth_mm     bill_length_mm    flipper_length_mm island           
+
+Root node error: 187/333 = 0.56156
+
+n= 333 
+
+        CP nsplit rel error   xerror     xstd
+1 0.620321      0  1.000000 1.000000 0.048421
+2 0.288770      1  0.379679 0.385027 0.040172
+3 0.026738      2  0.090909 0.117647 0.024240
+4 0.016043      3  0.064171 0.085561 0.020870
+5 0.010695      4  0.048128 0.080214 0.020239
+6 0.010000      7  0.016043 0.069519 0.018901</code></pre>
+</div>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<p>We can manually prune the tree at any value we may want. e.g.&nbsp;if we decide that 4 splits are preferable, as its error is close to the best model, we can prune the tree using</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">prune</span>(p_m, <span class="at">cp=</span><span class="fl">0.011</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n= 333 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+ 1) root 333 187 Adelie (0.438438438 0.204204204 0.357357357)  
+   2) flipper_length_mm&lt; 206.5 208  64 Adelie (0.692307692 0.302884615 0.004807692)  
+     4) bill_length_mm&lt; 43.35 145   5 Adelie (0.965517241 0.034482759 0.000000000) *
+     5) bill_length_mm&gt;=43.35 63   5 Chinstrap (0.063492063 0.920634921 0.015873016)  
+      10) island=Biscoe,Torgersen 4   1 Adelie (0.750000000 0.000000000 0.250000000) *
+      11) island=Dream 59   1 Chinstrap (0.016949153 0.983050847 0.000000000) *
+   3) flipper_length_mm&gt;=206.5 125   7 Gentoo (0.016000000 0.040000000 0.944000000)  
+     6) island=Dream,Torgersen 7   2 Chinstrap (0.285714286 0.714285714 0.000000000) *
+     7) island=Biscoe 118   0 Gentoo (0.000000000 0.000000000 1.000000000) *</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="section-9" class="slide level2 scrollable">
+<h2></h2>
 <p>The <code>summary()</code> function provides further information</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(p_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(p_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 rpart(formula = species ~ ., data = penguins, minsplit = 4, xval = 50)
@@ -751,7 +801,7 @@ rpart(formula = species ~ ., data = penguins, minsplit = 4, xval = 50)
 2 0.28877005      1 0.37967914 0.38502674 0.04017194
 3 0.02673797      2 0.09090909 0.11764706 0.02423973
 4 0.01604278      3 0.06417112 0.08556150 0.02087017
-5 0.01069519      4 0.04812834 0.08556150 0.02087017
+5 0.01069519      4 0.04812834 0.08021390 0.02023930
 6 0.01000000      7 0.01604278 0.06951872 0.01890092
 
 Variable importance
@@ -910,7 +960,7 @@ Node number 19: 4 observations
 </div>
 </div>
 </section>
-<section id="section-9" class="slide level2">
+<section id="section-10" class="slide level2">
 <h2></h2>
 <p>Notes on <code>summary()</code> output</p>
 <ul>
@@ -921,13 +971,13 @@ Node number 19: 4 observations
 <section id="plotting-trees-1" class="slide level2">
 <h2>Plotting trees (1)</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">xpd =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p_m, <span class="at">compress=</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(p_m, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">xpd =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p_m, <span class="at">compress=</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(p_m, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
+<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
 </figure>
 </div>
 </div>
@@ -940,12 +990,12 @@ Node number 19: 4 observations
 <h2>Plotting trees (2)</h2>
 <p>Using the <code>rpart.plot</code> library.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
-<span id="cb8-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(p_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(p_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
+<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
 </figure>
 </div>
 </div>
@@ -958,17 +1008,17 @@ Node number 19: 4 observations
 <h2>Plotting trees (3)</h2>
 <p>Using the <code>partykit</code> library.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(partykit)</span>
-<span id="cb9-2"><a href="" aria-hidden="true" tabindex="-1"></a>p_m2 <span class="ot">&lt;-</span> <span class="fu">as.party</span>(p_m)</span>
-<span id="cb9-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p_m2, </span>
-<span id="cb9-5"><a href="" aria-hidden="true" tabindex="-1"></a>     <span class="at">terminal_panel =</span>  <span class="fu">node_barplot</span>(p_m2, <span class="at">gp =</span> <span class="fu">gpar</span>(<span class="at">fontsize=</span><span class="dv">8</span>)),</span>
-<span id="cb9-6"><a href="" aria-hidden="true" tabindex="-1"></a>     <span class="at">inner_panel =</span> <span class="fu">node_inner</span>(p_m2, <span class="at">id =</span> <span class="cn">FALSE</span>),</span>
-<span id="cb9-7"><a href="" aria-hidden="true" tabindex="-1"></a>     <span class="at">gp=</span><span class="fu">gpar</span>(<span class="at">fontsize=</span><span class="dv">8</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(partykit)</span>
+<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a>p_m2 <span class="ot">&lt;-</span> <span class="fu">as.party</span>(p_m)</span>
+<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p_m2, </span>
+<span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a>     <span class="at">terminal_panel =</span>  <span class="fu">node_barplot</span>(p_m2, <span class="at">gp =</span> <span class="fu">gpar</span>(<span class="at">fontsize=</span><span class="dv">8</span>)),</span>
+<span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a>     <span class="at">inner_panel =</span> <span class="fu">node_inner</span>(p_m2, <span class="at">id =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a>     <span class="at">gp=</span><span class="fu">gpar</span>(<span class="at">fontsize=</span><span class="dv">8</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center" width="1152"></p>
+<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center" width="1152"></p>
 </figure>
 </div>
 </div>
@@ -978,17 +1028,17 @@ Node number 19: 4 observations
 <h2>Confusion matrix</h2>
 <p>A way to examine the accuracy of classification (<em>note that the this would be accuracy on the training set; to assess predictive accuracy for new, unseen data we need to use something like cross-validation</em>)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># fit tree</span></span>
-<span id="cb10-2"><a href="" aria-hidden="true" tabindex="-1"></a>p_m <span class="ot">&lt;-</span> <span class="fu">rpart</span>(species<span class="sc">~</span> ., <span class="at">data =</span> penguins)</span>
-<span id="cb10-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># compute predictions on training set</span></span>
-<span id="cb10-5"><a href="" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(p_m, penguins, <span class="at">type =</span> <span class="st">"class"</span>)</span>
-<span id="cb10-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># compute confusion matrix</span></span>
-<span id="cb10-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
-<span id="cb10-9"><a href="" aria-hidden="true" tabindex="-1"></a>conf_mat <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predictions, penguins<span class="sc">$</span>species)</span>
-<span id="cb10-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(conf_mat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># fit tree</span></span>
+<span id="cb14-2"><a href="" aria-hidden="true" tabindex="-1"></a>p_m <span class="ot">&lt;-</span> <span class="fu">rpart</span>(species<span class="sc">~</span> ., <span class="at">data =</span> penguins)</span>
+<span id="cb14-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># compute predictions on training set</span></span>
+<span id="cb14-5"><a href="" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(p_m, penguins, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb14-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># compute confusion matrix</span></span>
+<span id="cb14-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb14-9"><a href="" aria-hidden="true" tabindex="-1"></a>conf_mat <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predictions, penguins<span class="sc">$</span>species)</span>
+<span id="cb14-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(conf_mat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Confusion Matrix and Statistics
 
@@ -1026,23 +1076,23 @@ Balanced Accuracy           0.9661           0.9500        0.9958</code></pre>
 <section id="plotting-a-confusion-matrix" class="slide level2">
 <h2>Plotting a confusion matrix</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert confusion matrix to a data frame for ggplot</span></span>
-<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a>conf_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(conf_mat<span class="sc">$</span>table)</span>
-<span id="cb12-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a heatmap plot</span></span>
-<span id="cb12-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(conf_df, <span class="fu">aes</span>(<span class="at">x =</span> Prediction, <span class="at">y =</span> Reference, <span class="at">fill =</span> Freq)) <span class="sc">+</span></span>
-<span id="cb12-6"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
-<span id="cb12-7"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span>  <span class="co"># Add text labels</span></span>
-<span id="cb12-8"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">high =</span> <span class="st">"red"</span>) <span class="sc">+</span>  <span class="co"># Color scale</span></span>
-<span id="cb12-9"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confusion Matrix"</span>,</span>
-<span id="cb12-10"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Predicted Class"</span>,</span>
-<span id="cb12-11"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Actual Class"</span>) <span class="sc">+</span></span>
-<span id="cb12-12"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb12-13"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert confusion matrix to a data frame for ggplot</span></span>
+<span id="cb16-2"><a href="" aria-hidden="true" tabindex="-1"></a>conf_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(conf_mat<span class="sc">$</span>table)</span>
+<span id="cb16-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a heatmap plot</span></span>
+<span id="cb16-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(conf_df, <span class="fu">aes</span>(<span class="at">x =</span> Prediction, <span class="at">y =</span> Reference, <span class="at">fill =</span> Freq)) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb16-7"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span>  <span class="co"># Add text labels</span></span>
+<span id="cb16-8"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">high =</span> <span class="st">"red"</span>) <span class="sc">+</span>  <span class="co"># Color scale</span></span>
+<span id="cb16-9"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confusion Matrix"</span>,</span>
+<span id="cb16-10"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Predicted Class"</span>,</span>
+<span id="cb16-11"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Actual Class"</span>) <span class="sc">+</span></span>
+<span id="cb16-12"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb16-13"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>
@@ -1118,36 +1168,36 @@ Balanced Accuracy           0.9661           0.9500        0.9958</code></pre>
 </div>
 </div>
 </section>
-<section id="section-10" class="slide level2">
+<section id="section-11" class="slide level2">
 <h2></h2>
 <p>Estimated decision tree (with pruning)</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a>credit_tree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(Class  <span class="sc">~</span> ., <span class="at">data =</span> GermanCredit, <span class="at">xval=</span><span class="dv">100</span>)</span>
-<span id="cb14-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(credit_tree)</span>
-<span id="cb14-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(credit_tree, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a>credit_tree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(Class  <span class="sc">~</span> ., <span class="at">data =</span> GermanCredit, <span class="at">xval=</span><span class="dv">100</span>)</span>
+<span id="cb18-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(credit_tree)</span>
+<span id="cb18-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(credit_tree, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center" width="1536"></p>
+<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center" width="1536"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="section-11" class="slide level2">
+<section id="section-12" class="slide level2">
 <h2></h2>
 <p>Unpruned tree</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a>credit_tree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(Class  <span class="sc">~</span> ., <span class="at">data =</span> GermanCredit,</span>
-<span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a>                     <span class="at">cp =</span> <span class="dv">0</span>, <span class="at">minsplit =</span> <span class="dv">2</span>)</span>
-<span id="cb15-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(credit_tree)</span>
-<span id="cb15-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(credit_tree, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="" aria-hidden="true" tabindex="-1"></a>credit_tree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(Class  <span class="sc">~</span> ., <span class="at">data =</span> GermanCredit,</span>
+<span id="cb19-2"><a href="" aria-hidden="true" tabindex="-1"></a>                     <span class="at">cp =</span> <span class="dv">0</span>, <span class="at">minsplit =</span> <span class="dv">2</span>)</span>
+<span id="cb19-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(credit_tree)</span>
+<span id="cb19-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(credit_tree, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center" width="1536"></p>
+<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center" width="1536"></p>
 </figure>
 </div>
 </div>
@@ -1159,7 +1209,7 @@ Balanced Accuracy           0.9661           0.9500        0.9958</code></pre>
 <li class="fragment">Use one of the dataset for classification in the ‘coursework’ folder on Moodle and fit a decision tree model.</li>
 </ul>
 </section>
-<section id="section-12" class="slide level2 scrollable">
+<section id="section-13" class="slide level2 scrollable">
 <h2></h2>
 <h4 id="advantages">Advantages</h4>
 <ul>
@@ -1211,13 +1261,13 @@ Balanced Accuracy           0.9661           0.9500        0.9958</code></pre>
 <section id="random-forests-in-r" class="slide level2">
 <h2>Random forests in R</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(randomForest)</span>
-<span id="cb16-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Random Forest model</span></span>
-<span id="cb16-4"><a href="" aria-hidden="true" tabindex="-1"></a>rf_model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(species <span class="sc">~</span> ., <span class="at">data =</span> penguins, <span class="at">ntree =</span> <span class="dv">500</span>, <span class="at">importance =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Print summary</span></span>
-<span id="cb16-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(rf_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(randomForest)</span>
+<span id="cb20-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Random Forest model</span></span>
+<span id="cb20-4"><a href="" aria-hidden="true" tabindex="-1"></a>rf_model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(species <span class="sc">~</span> ., <span class="at">data =</span> penguins, <span class="at">ntree =</span> <span class="dv">500</span>, <span class="at">importance =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Print summary</span></span>
+<span id="cb20-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(rf_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1243,19 +1293,19 @@ Gentoo         0         0    119 0.000000000</code></pre>
 <h2>OOB confusion matrix</h2>
 <p>We can use a confusion matrix to assess the out-of-bag predictive accuracy</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">as.data.frame</span>(conf_mat<span class="sc">$</span>table), <span class="fu">aes</span>(Prediction, Reference, <span class="at">fill =</span> Freq)) <span class="sc">+</span></span>
-<span id="cb18-2"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
-<span id="cb18-3"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb18-4"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">high =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb18-5"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confusion Matrix"</span>,</span>
-<span id="cb18-6"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Predicted Class"</span>,</span>
-<span id="cb18-7"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Actual Class"</span>) <span class="sc">+</span></span>
-<span id="cb18-8"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb18-9"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">as.data.frame</span>(conf_mat<span class="sc">$</span>table), <span class="fu">aes</span>(Prediction, Reference, <span class="at">fill =</span> Freq)) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb22-3"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">high =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb22-5"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confusion Matrix"</span>,</span>
+<span id="cb22-6"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Predicted Class"</span>,</span>
+<span id="cb22-7"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Actual Class"</span>) <span class="sc">+</span></span>
+<span id="cb22-8"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb22-9"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+<p><img data-src="supervised_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>

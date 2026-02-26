@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Matteo Lisi">
+
+<title>Decision tree — worked example</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="credit_tree_example_files/libs/clipboard/clipboard.min.js"></script>
+<script src="credit_tree_example_files/libs/quarto-html/quarto.js"></script>
+<script src="credit_tree_example_files/libs/quarto-html/popper.min.js"></script>
+<script src="credit_tree_example_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="credit_tree_example_files/libs/quarto-html/anchor.min.js"></script>
+<link href="credit_tree_example_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="credit_tree_example_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="credit_tree_example_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="credit_tree_example_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="credit_tree_example_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#estimating-a-decision-tree-with-default-settings" id="toc-estimating-a-decision-tree-with-default-settings" class="nav-link" data-scroll-target="#estimating-a-decision-tree-with-default-settings">Estimating a decision tree with default settings</a>
+  <ul class="collapse">
+  <li><a href="#default-settings" id="toc-default-settings" class="nav-link" data-scroll-target="#default-settings">Default settings</a></li>
+  <li><a href="#cross-validation-results" id="toc-cross-validation-results" class="nav-link" data-scroll-target="#cross-validation-results">Cross-validation results</a></li>
+  <li><a href="#manually-pruning-the-tree" id="toc-manually-pruning-the-tree" class="nav-link" data-scroll-target="#manually-pruning-the-tree">Manually pruning the tree</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Decision tree — worked example</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">PS3192 25-26</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Matteo Lisi </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<p>Load all necessary libraries</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The dataset is</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(GermanCredit)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(GermanCredit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   1000 obs. of  62 variables:
+ $ Duration                              : int  6 48 12 42 24 36 24 36 12 30 ...
+ $ Amount                                : int  1169 5951 2096 7882 4870 9055 2835 6948 3059 5234 ...
+ $ InstallmentRatePercentage             : int  4 2 2 2 3 2 3 2 2 4 ...
+ $ ResidenceDuration                     : int  4 2 3 4 4 4 4 2 4 2 ...
+ $ Age                                   : int  67 22 49 45 53 35 53 35 61 28 ...
+ $ NumberExistingCredits                 : int  2 1 1 1 2 1 1 1 1 2 ...
+ $ NumberPeopleMaintenance               : int  1 1 2 2 2 2 1 1 1 1 ...
+ $ Telephone                             : num  0 1 1 1 1 0 1 0 1 1 ...
+ $ ForeignWorker                         : num  1 1 1 1 1 1 1 1 1 1 ...
+ $ Class                                 : Factor w/ 2 levels "Bad","Good": 2 1 2 2 1 2 2 2 2 1 ...
+ $ CheckingAccountStatus.lt.0            : num  1 0 0 1 1 0 0 0 0 0 ...
+ $ CheckingAccountStatus.0.to.200        : num  0 1 0 0 0 0 0 1 0 1 ...
+ $ CheckingAccountStatus.gt.200          : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ CheckingAccountStatus.none            : num  0 0 1 0 0 1 1 0 1 0 ...
+ $ CreditHistory.NoCredit.AllPaid        : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ CreditHistory.ThisBank.AllPaid        : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ CreditHistory.PaidDuly                : num  0 1 0 1 0 1 1 1 1 0 ...
+ $ CreditHistory.Delay                   : num  0 0 0 0 1 0 0 0 0 0 ...
+ $ CreditHistory.Critical                : num  1 0 1 0 0 0 0 0 0 1 ...
+ $ Purpose.NewCar                        : num  0 0 0 0 1 0 0 0 0 1 ...
+ $ Purpose.UsedCar                       : num  0 0 0 0 0 0 0 1 0 0 ...
+ $ Purpose.Furniture.Equipment           : num  0 0 0 1 0 0 1 0 0 0 ...
+ $ Purpose.Radio.Television              : num  1 1 0 0 0 0 0 0 1 0 ...
+ $ Purpose.DomesticAppliance             : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ Purpose.Repairs                       : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ Purpose.Education                     : num  0 0 1 0 0 1 0 0 0 0 ...
+ $ Purpose.Vacation                      : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ Purpose.Retraining                    : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ Purpose.Business                      : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ Purpose.Other                         : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ SavingsAccountBonds.lt.100            : num  0 1 1 1 1 0 0 1 0 1 ...
+ $ SavingsAccountBonds.100.to.500        : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ SavingsAccountBonds.500.to.1000       : num  0 0 0 0 0 0 1 0 0 0 ...
+ $ SavingsAccountBonds.gt.1000           : num  0 0 0 0 0 0 0 0 1 0 ...
+ $ SavingsAccountBonds.Unknown           : num  1 0 0 0 0 1 0 0 0 0 ...
+ $ EmploymentDuration.lt.1               : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ EmploymentDuration.1.to.4             : num  0 1 0 0 1 1 0 1 0 0 ...
+ $ EmploymentDuration.4.to.7             : num  0 0 1 1 0 0 0 0 1 0 ...
+ $ EmploymentDuration.gt.7               : num  1 0 0 0 0 0 1 0 0 0 ...
+ $ EmploymentDuration.Unemployed         : num  0 0 0 0 0 0 0 0 0 1 ...
+ $ Personal.Male.Divorced.Seperated      : num  0 0 0 0 0 0 0 0 1 0 ...
+ $ Personal.Female.NotSingle             : num  0 1 0 0 0 0 0 0 0 0 ...
+ $ Personal.Male.Single                  : num  1 0 1 1 1 1 1 1 0 0 ...
+ $ Personal.Male.Married.Widowed         : num  0 0 0 0 0 0 0 0 0 1 ...
+ $ Personal.Female.Single                : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ OtherDebtorsGuarantors.None           : num  1 1 1 0 1 1 1 1 1 1 ...
+ $ OtherDebtorsGuarantors.CoApplicant    : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ OtherDebtorsGuarantors.Guarantor      : num  0 0 0 1 0 0 0 0 0 0 ...
+ $ Property.RealEstate                   : num  1 1 1 0 0 0 0 0 1 0 ...
+ $ Property.Insurance                    : num  0 0 0 1 0 0 1 0 0 0 ...
+ $ Property.CarOther                     : num  0 0 0 0 0 0 0 1 0 1 ...
+ $ Property.Unknown                      : num  0 0 0 0 1 1 0 0 0 0 ...
+ $ OtherInstallmentPlans.Bank            : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ OtherInstallmentPlans.Stores          : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ OtherInstallmentPlans.None            : num  1 1 1 1 1 1 1 1 1 1 ...
+ $ Housing.Rent                          : num  0 0 0 0 0 0 0 1 0 0 ...
+ $ Housing.Own                           : num  1 1 1 0 0 0 1 0 1 1 ...
+ $ Housing.ForFree                       : num  0 0 0 1 1 1 0 0 0 0 ...
+ $ Job.UnemployedUnskilled               : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ Job.UnskilledResident                 : num  0 0 1 0 0 1 0 0 1 0 ...
+ $ Job.SkilledEmployee                   : num  1 1 0 1 1 0 1 0 0 0 ...
+ $ Job.Management.SelfEmp.HighlyQualified: num  0 0 0 0 0 0 0 1 0 1 ...</code></pre>
+</div>
+</div>
+<p>Essentially our goal is to predict the class of credit worthiness (<code>good</code> vs <code>bad</code>), and the predictors relates to several attributes in the dataset such age, acount status, credit hostory etc. You can have some more background information about the dataset from the help by typing <code>?GermanCredit</code> in the console<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+</section>
+<section id="estimating-a-decision-tree-with-default-settings" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-a-decision-tree-with-default-settings">Estimating a decision tree with default settings</h2>
+<p>As we saw in the workshop, using the default settigns of <code>rpart</code> will give us a decisiont tree pruned to a reasonable expect. Here we are using all available variables as potential predictors (by using the dot <code>.</code> in the formula <code>Class  ~ .</code>) and we only have slightly increased the number of cross-validation iteration to 250.</p>
+<div class="cell" data-layout-align="center">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate decision tree</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>credit_tree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(Class  <span class="sc">~</span> ., <span class="at">data =</span> GermanCredit, <span class="at">xval=</span><span class="dv">250</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make a plot</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(credit_tree)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(credit_tree, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="credit_tree_example_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1536"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From the plot, we can see that the tree has 18 “leafs” (terminal nodes) and 17 splits.</p>
+<section id="default-settings" class="level3">
+<h3 class="anchored" data-anchor-id="default-settings">Default settings</h3>
+<p>The default parameters that we have used are the ones indicated in the help page of <code>part</code> control settings, which you can find either by typing <code>?rpart.control</code> in the command line, or alternatively simply <code>?rpart</code> and then following the link to <code>rpart.control</code> in the ‘Arguments’ part of the help page.</p>
+<p>You will see that under <strong>Usage</strong> the page indicates:</p>
+<pre><code>rpart.control(minsplit = 20, minbucket = round(minsplit/3), cp = 0.01, 
+              maxcompete = 4, maxsurrogate = 5, usesurrogate = 2, xval = 10,
+              surrogatestyle = 0, maxdepth = 30, ...)</code></pre>
+<p>Essentially the values listed there are the “default” value. This tells us for example that by default <code>rpart</code> won’t attempt to split a node unless the number of observations at that node are at least <code>minsplit = 20</code>.</p>
+<p>In addition to <code>minsplit</code> two key arguments are:</p>
+<ul>
+<li><p><strong><code>cp</code></strong> is the complexity parameter. It defines the minimum amount of improvement in the overall fit of the model for any node: any split that does not decrease the overall “cost” of the tree by a factor of <code>cp</code> will note be attempted. Note that this refers to the <em>overall</em> cost of the model, which depends on the proportion of misclassified observations (thus not the local impurity measure that is minimized at each node during the initial part of model fitting).</p></li>
+<li><p><strong><code>xval</code></strong> is the number of cross-validation iterations. The cross-validation is done internally by <code>rpart</code> to decide the optimal level of complexity</p></li>
+</ul>
+</section>
+<section id="cross-validation-results" class="level3">
+<h3 class="anchored" data-anchor-id="cross-validation-results">Cross-validation results</h3>
+<p>We can visualise the cross-validation results as</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">printcp</span>(credit_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Classification tree:
+rpart(formula = Class ~ ., data = GermanCredit, xval = 250)
+
+Variables actually used in tree construction:
+ [1] Amount                         CheckingAccountStatus.none    
+ [3] CreditHistory.PaidDuly         CreditHistory.ThisBank.AllPaid
+ [5] Duration                       OtherDebtorsGuarantors.None   
+ [7] Property.CarOther              Purpose.NewCar                
+ [9] Purpose.UsedCar                ResidenceDuration             
+[11] SavingsAccountBonds.lt.100     Telephone                     
+
+Root node error: 300/1000 = 0.3
+
+n= 1000 
+
+        CP nsplit rel error  xerror     xstd
+1 0.044444      0   1.00000 1.00000 0.048305
+2 0.030000      3   0.86667 0.85000 0.045944
+3 0.015556      4   0.83667 0.83667 0.045704
+4 0.014444      7   0.79000 0.91333 0.047013
+5 0.011667     15   0.66000 0.85667 0.046062
+6 0.010000     17   0.63667 0.84333 0.045825</code></pre>
+</div>
+</div>
+<p>The table report cross-validation results for trees of increasing complexity.</p>
+<p>In class we defined the values in the table as follow: - <code>CP</code> is the complexity parameter - <code>nsplit</code> the number of split of the tree - <code>rel error</code> is the error in the training set - <code>xerror</code> is the error in the test sets of the crossvalidation - <code>xstd</code> is the standard deviation of the test error across the cross-validation folds</p>
+<p>Strictly speaking, <code>CP</code> should be interpreted as the smallest complexity penalty at which the tree in each row of the table becomes optimal under cost-complexity pruning. Let’s unpack this, and define more formally in the optional box below.</p>
+<p>Intuitively, the larger is the complexity parameter, the more we are penalising complexity when pruning the tree. You can think of this as a dial that says “How much extra error am I willing to tolerate to remove splits and make the tree simpler?”. If <code>CP</code> is quite large (say <code>CP</code>=0.04) if means we accepts splits only if they reduce the error by a large amount. Based on the table above, if we were to set the penalty threshold to 0.04, we would conclude that the best model is the tree with no splits (since the table indicates this is optimal up until values of <code>CP</code> of 0.044444).</p>
+<p>Plotting the cross-validation results display nicely how the cross-validation error increases for overly complex trees. Note that I am transforming the cost into “raw” misclassification units.</p>
+<div class="cell" data-layout-align="center">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract table</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>cp_data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(credit_tree<span class="sc">$</span>cptable)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cp_data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"cp"</span>, <span class="st">"nsplit"</span>, <span class="st">"rel_error"</span>, <span class="st">"xerror"</span>, <span class="st">"xstd"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute number of terminal nodes</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>cp_data<span class="sc">$</span>size <span class="ot">&lt;-</span> cp_data<span class="sc">$</span>nsplit <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>cp_data<span class="sc">$</span>xstd <span class="ot">&lt;-</span> cp_data<span class="sc">$</span>xstd</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># The errors are normalised relative to the model with no-splits</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># to put them in the natural scale we need to multiply by the fraction </span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># of errors in the no-split model, that is the same as the error we </span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># would make by always simply predicting the majority class:</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(GermanCredit<span class="sc">$</span>Class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Bad Good 
+ 300  700 </code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we can re-scale the errors as follow</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cp_data[,<span class="fu">c</span>(<span class="st">"rel_error"</span>, <span class="st">"xerror"</span>, <span class="st">"xstd"</span>)] <span class="ot">&lt;-</span> cp_data[,<span class="fu">c</span>(<span class="st">"rel_error"</span>, <span class="st">"xerror"</span>, <span class="st">"xstd"</span>)] <span class="sc">*</span> <span class="dv">300</span><span class="sc">/</span>(<span class="dv">300</span> <span class="sc">+</span> <span class="dv">700</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot misclassification error vs. number of terminal nodes</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cp_data, <span class="fu">aes</span>(<span class="at">x =</span> size)) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> rel_error, <span class="at">color =</span> <span class="st">"Training"</span>), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> xerror, <span class="at">color =</span> <span class="st">"Cross-validation"</span>), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">y =</span> xerror, <span class="at">ymin=</span>xerror<span class="sc">-</span>xstd, <span class="at">ymax=</span>xerror<span class="sc">+</span>xstd), <span class="at">color=</span><span class="st">"blue"</span>, <span class="at">width=</span><span class="fl">0.1</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> size[<span class="fu">which.min</span>(xerror)], <span class="at">y =</span> <span class="fu">min</span>(xerror)), <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">size =</span> <span class="dv">8</span>, <span class="at">shape =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of terminal nodes"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Fraction of misclassifications"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Training"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Cross-validation"</span> <span class="ot">=</span> <span class="st">"blue"</span>), <span class="at">name=</span><span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="credit_tree_example_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The cost function of decision trees
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the classical formulation of decision trees<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> the cost is defined as follow.</p>
+<p>Say we have a tree with <span class="math inline">\(k\)</span> terminal nodes (leafs), <span class="math inline">\(T_1, T_2, \ldots, T_k\)</span>. (Note: the tree with <span class="math inline">\(k\)</span> leafs has <span class="math inline">\(k-1\)</span> splits.)</p>
+<p>The error of the tree (fraction of misclassified observations in our case) is called <em><strong>risk</strong></em> in jargon, and when it is combined across all leafs, it gives us the overall <em>risk</em> of the tree, notated as <span class="math inline">\(R(T)\)</span>. This is a measure of error that is not <em>penalised</em> for complexity: it is minimised by a tree complex enough to classify all observations perfectly.</p>
+<p>The complexity penalty is introduced by defining the cost of the tree <span class="math inline">\(T\)</span> as follow:</p>
+<p><span class="math display">\[
+R_{\alpha}(T) = R(T)+\alpha \left| T \right|
+\]</span> <span class="math inline">\(\left| T \right|\)</span> is the number of terminal nodes or leafs (so it would be <span class="math inline">\(\left| T \right| = k\)</span> as we have <span class="math inline">\(k\)</span> terminal nodes).</p>
+<p>Note that in this formulation the <span class="math inline">\(alpha\)</span> is expressed in the same units of measurements of <span class="math inline">\(R(T)\)</span>, which in our case would the proportion or <em>rate</em> of misclassification.</p>
+<p><code>rpart</code> implementation adopts a slightly different formulation: the error that appear in the table as <code>rel error</code> is defined as</p>
+<p><span class="math display">\[\tilde{R}(T) = \frac{R(T)}{R(T_0)}\]</span></p>
+<p>Essentially by dividing by <span class="math inline">\(R(T_0)\)</span> we are normalising the cost, so that the cost for the model with 0 splits will be 1, <span class="math inline">\(\tilde{R}(T_0)=1\)</span>, by construction.</p>
+<p>We can divide everything by <span class="math inline">\(R(T_0)\)</span> and obtain the “normalised” cost as</p>
+<p><span class="math display">\[
+\tilde{R}_{\alpha}(T) = \frac{R_{\alpha}(T)}{R(T_0)} =  \frac{R(T)}{R(T_0)} +\frac{\alpha}{R(T_0)} \left| T \right|
+\]</span> The <code>cp</code> parameter in <code>rpart</code> is precisely the normalised value of <code>alpha</code>:</p>
+<p><span class="math display">\[
+\text{cp} = \frac{\alpha}{R(T_0)}
+\]</span> If we wanted to express the cost in the original scale, we can write:</p>
+<p><span class="math display">\[
+R_{\alpha}(T) = R(T) + \text{cp} \cdot R(T_0)  \cdot \left| T \right|
+\]</span></p>
+</div>
+</div>
+</section>
+<section id="manually-pruning-the-tree" class="level3">
+<h3 class="anchored" data-anchor-id="manually-pruning-the-tree">Manually pruning the tree</h3>
+<p>Note that <code>rpart</code> use the default value of <code>cp</code>=0.01, which may not be optimal. We can use the <code>prune</code> function to prune the tree manually.</p>
+<p>For example, if we wanted to implement the 1 - SE rule,</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># explore the table</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>cp_table <span class="ot">&lt;-</span> credit_tree<span class="sc">$</span>cptable</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># find the row with the minimum</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>min_row <span class="ot">&lt;-</span> <span class="fu">which.min</span>(cp_table[, <span class="st">"xerror"</span>])</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># extract min error and SE of min error</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>min_xerror <span class="ot">&lt;-</span> cp_table[min_row, <span class="st">"xerror"</span>]</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>min_xstd   <span class="ot">&lt;-</span> cp_table[min_row, <span class="st">"xstd"</span>]</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the threshold: the best model according to the </span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - SE rule is the first (simplest) within the threshold</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>threshold <span class="ot">&lt;-</span> min_xerror <span class="sc">+</span> min_xstd</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># find smallest tree within threshold</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>best_row <span class="ot">&lt;-</span> <span class="fu">which</span>(cp_table[, <span class="st">"xerror"</span>] <span class="sc">&lt;=</span> threshold)[<span class="dv">1</span>]</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>best_cp <span class="ot">&lt;-</span> cp_table[best_row, <span class="st">"CP"</span>]</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>best_cp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.03</code></pre>
+</div>
+</div>
+<p>We can now manually prune using:</p>
+<div class="cell" data-layout-align="center">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># manually prune the tree</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>pruned_tree <span class="ot">=</span> <span class="fu">prune</span>(credit_tree, <span class="at">cp=</span>best_cp)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot pruned tree</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pruned_tree)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(pruned_tree, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="credit_tree_example_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1536"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- -->
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Mode detailed information about the dataset can be found at this <a href="https://archive.ics.uci.edu/dataset/522/south+german+credit">link</a> and in this <a href="https://www1.beuth-hochschule.de/FB_II/reports/Report-2019-004.pdf">report</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>L. Breiman, J.H. Friedman, R.A. Olshen, , and C.J Stone. <em>Classification and Regression Trees.</em> Wadsworth, Belmont, Ca, 1983.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb14" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Decision tree — worked example"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "PS3192 25-26"</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Matteo Lisi"</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true     # run/copy buttons</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>Load all necessary libraries</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>The dataset is </span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(GermanCredit)</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(GermanCredit)</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>Essentially our goal is to predict the class of credit worthiness (<span class="in">`good`</span> vs <span class="in">`bad`</span>), and the predictors relates to several attributes in the dataset such age, acount status, credit hostory etc. You can have some more background information about the dataset from the help by typing <span class="in">`?GermanCredit`</span> in the console<span class="ot">[^datainfo]</span>.</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="ot">[^datainfo]: </span>Mode detailed information about the dataset can be found at this <span class="co">[</span><span class="ot">link</span><span class="co">](https://archive.ics.uci.edu/dataset/522/south+german+credit)</span> and in this <span class="co">[</span><span class="ot">report</span><span class="co">](https://www1.beuth-hochschule.de/FB_II/reports/Report-2019-004.pdf)</span>. </span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimating a decision tree with default settings</span></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>As we saw in the workshop, using the default settigns of <span class="in">`rpart`</span> will give us a decisiont tree pruned to a reasonable expect. Here we are using all available variables as potential predictors (by using the dot <span class="in">`.`</span> in the formula <span class="in">`Class  ~ .`</span>) and we only have slightly increased the number of cross-validation iteration to 250.</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 16</span></span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: TRUE</span></span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate decision tree</span></span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>credit_tree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(Class  <span class="sc">~</span> ., <span class="at">data =</span> GermanCredit, <span class="at">xval=</span><span class="dv">250</span>)</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a><span class="co"># make a plot</span></span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(credit_tree)</span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(credit_tree, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.9</span>)</span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>From the plot, we can see that the tree has 18 "leafs" (terminal nodes) and 17 splits.</span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a><span class="fu">### Default settings</span></span>
+<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>The default parameters that we have used are the ones indicated in the help page of <span class="in">`part`</span> control settings, which you can find either by typing <span class="in">`?rpart.control`</span> in the command line, or alternatively simply <span class="in">`?rpart`</span> and then following the link to <span class="in">`rpart.control`</span> in the 'Arguments' part of the help page. </span>
+<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a>You will see that under **Usage** the page indicates:</span>
+<span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-70"><a href="#cb14-70" aria-hidden="true" tabindex="-1"></a><span class="in">rpart.control(minsplit = 20, minbucket = round(minsplit/3), cp = 0.01, </span></span>
+<span id="cb14-71"><a href="#cb14-71" aria-hidden="true" tabindex="-1"></a><span class="in">              maxcompete = 4, maxsurrogate = 5, usesurrogate = 2, xval = 10,</span></span>
+<span id="cb14-72"><a href="#cb14-72" aria-hidden="true" tabindex="-1"></a><span class="in">              surrogatestyle = 0, maxdepth = 30, ...)</span></span>
+<span id="cb14-73"><a href="#cb14-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-74"><a href="#cb14-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-75"><a href="#cb14-75" aria-hidden="true" tabindex="-1"></a>Essentially the values listed there are the "default" value. This tells us for example that by default <span class="in">`rpart`</span> won't attempt to split a node unless the number of observations at that node are at least <span class="in">`minsplit = 20`</span>.</span>
+<span id="cb14-76"><a href="#cb14-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-77"><a href="#cb14-77" aria-hidden="true" tabindex="-1"></a>In addition to <span class="in">`minsplit`</span> two key arguments are:</span>
+<span id="cb14-78"><a href="#cb14-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-79"><a href="#cb14-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**`cp`** is the complexity parameter. It defines the minimum amount of improvement in the overall fit of the model for any node: any split that does not decrease the overall "cost" of the tree by a factor of <span class="in">`cp`</span> will note be attempted. Note that this refers to the _overall_ cost of the model, which depends on the proportion of misclassified observations (thus not the local impurity measure that is minimized at each node during the initial part of model fitting). </span>
+<span id="cb14-80"><a href="#cb14-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-81"><a href="#cb14-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**`xval`** is the number of cross-validation iterations. The cross-validation is done internally by <span class="in">`rpart`</span> to decide the optimal level of complexity</span>
+<span id="cb14-82"><a href="#cb14-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-83"><a href="#cb14-83" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cross-validation results</span></span>
+<span id="cb14-84"><a href="#cb14-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-85"><a href="#cb14-85" aria-hidden="true" tabindex="-1"></a>We can visualise the cross-validation results as</span>
+<span id="cb14-86"><a href="#cb14-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-89"><a href="#cb14-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-90"><a href="#cb14-90" aria-hidden="true" tabindex="-1"></a><span class="fu">printcp</span>(credit_tree)</span>
+<span id="cb14-91"><a href="#cb14-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-92"><a href="#cb14-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-93"><a href="#cb14-93" aria-hidden="true" tabindex="-1"></a>The table report cross-validation results for trees of increasing complexity. </span>
+<span id="cb14-94"><a href="#cb14-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-95"><a href="#cb14-95" aria-hidden="true" tabindex="-1"></a>In class we defined the values in the table as follow:</span>
+<span id="cb14-96"><a href="#cb14-96" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`CP`</span> is the complexity parameter</span>
+<span id="cb14-97"><a href="#cb14-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`nsplit`</span> the number of split of the tree</span>
+<span id="cb14-98"><a href="#cb14-98" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`rel error`</span> is the error in the training set</span>
+<span id="cb14-99"><a href="#cb14-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`xerror`</span> is the error in the test sets of the crossvalidation</span>
+<span id="cb14-100"><a href="#cb14-100" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`xstd`</span> is the standard deviation of the test error across the cross-validation folds</span>
+<span id="cb14-101"><a href="#cb14-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-102"><a href="#cb14-102" aria-hidden="true" tabindex="-1"></a>Strictly speaking, <span class="in">`CP`</span> should be interpreted as the smallest complexity penalty at which the tree in each row of the table becomes optimal under cost-complexity pruning. Let's unpack this, and define more formally in the optional box below.</span>
+<span id="cb14-103"><a href="#cb14-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-104"><a href="#cb14-104" aria-hidden="true" tabindex="-1"></a>Intuitively, the larger is the complexity parameter, the more we are penalising complexity when pruning the tree. You can think of this as a dial that says "How much extra error am I willing to tolerate to remove splits and make the tree simpler?". If <span class="in">`CP`</span> is quite large (say <span class="in">`CP`</span>=0.04) if means we accepts splits only if they reduce the error by a large amount. Based on the table above, if we were to set the penalty threshold to 0.04, we would conclude that the best model is the tree with no splits (since the table indicates this is optimal up until values of <span class="in">`CP`</span> of 0.044444).</span>
+<span id="cb14-105"><a href="#cb14-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-106"><a href="#cb14-106" aria-hidden="true" tabindex="-1"></a>Plotting the cross-validation results display nicely how the cross-validation error increases for overly complex trees. Note that I am transforming the cost into "raw" misclassification units.</span>
+<span id="cb14-107"><a href="#cb14-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-110"><a href="#cb14-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-111"><a href="#cb14-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb14-112"><a href="#cb14-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb14-113"><a href="#cb14-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb14-114"><a href="#cb14-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: TRUE</span></span>
+<span id="cb14-115"><a href="#cb14-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-116"><a href="#cb14-116" aria-hidden="true" tabindex="-1"></a><span class="co"># extract table</span></span>
+<span id="cb14-117"><a href="#cb14-117" aria-hidden="true" tabindex="-1"></a>cp_data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(credit_tree<span class="sc">$</span>cptable)</span>
+<span id="cb14-118"><a href="#cb14-118" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cp_data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"cp"</span>, <span class="st">"nsplit"</span>, <span class="st">"rel_error"</span>, <span class="st">"xerror"</span>, <span class="st">"xstd"</span>)</span>
+<span id="cb14-119"><a href="#cb14-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-120"><a href="#cb14-120" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute number of terminal nodes</span></span>
+<span id="cb14-121"><a href="#cb14-121" aria-hidden="true" tabindex="-1"></a>cp_data<span class="sc">$</span>size <span class="ot">&lt;-</span> cp_data<span class="sc">$</span>nsplit <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb14-122"><a href="#cb14-122" aria-hidden="true" tabindex="-1"></a>cp_data<span class="sc">$</span>xstd <span class="ot">&lt;-</span> cp_data<span class="sc">$</span>xstd</span>
+<span id="cb14-123"><a href="#cb14-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-124"><a href="#cb14-124" aria-hidden="true" tabindex="-1"></a><span class="co"># The errors are normalised relative to the model with no-splits</span></span>
+<span id="cb14-125"><a href="#cb14-125" aria-hidden="true" tabindex="-1"></a><span class="co"># to put them in the natural scale we need to multiply by the fraction </span></span>
+<span id="cb14-126"><a href="#cb14-126" aria-hidden="true" tabindex="-1"></a><span class="co"># of errors in the no-split model, that is the same as the error we </span></span>
+<span id="cb14-127"><a href="#cb14-127" aria-hidden="true" tabindex="-1"></a><span class="co"># would make by always simply predicting the majority class:</span></span>
+<span id="cb14-128"><a href="#cb14-128" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(GermanCredit<span class="sc">$</span>Class)</span>
+<span id="cb14-129"><a href="#cb14-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-130"><a href="#cb14-130" aria-hidden="true" tabindex="-1"></a><span class="co"># we can re-scale the errors as follow</span></span>
+<span id="cb14-131"><a href="#cb14-131" aria-hidden="true" tabindex="-1"></a>cp_data[,<span class="fu">c</span>(<span class="st">"rel_error"</span>, <span class="st">"xerror"</span>, <span class="st">"xstd"</span>)] <span class="ot">&lt;-</span> cp_data[,<span class="fu">c</span>(<span class="st">"rel_error"</span>, <span class="st">"xerror"</span>, <span class="st">"xstd"</span>)] <span class="sc">*</span> <span class="dv">300</span><span class="sc">/</span>(<span class="dv">300</span> <span class="sc">+</span> <span class="dv">700</span>)</span>
+<span id="cb14-132"><a href="#cb14-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-133"><a href="#cb14-133" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot misclassification error vs. number of terminal nodes</span></span>
+<span id="cb14-134"><a href="#cb14-134" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cp_data, <span class="fu">aes</span>(<span class="at">x =</span> size)) <span class="sc">+</span></span>
+<span id="cb14-135"><a href="#cb14-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> rel_error, <span class="at">color =</span> <span class="st">"Training"</span>), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-136"><a href="#cb14-136" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> xerror, <span class="at">color =</span> <span class="st">"Cross-validation"</span>), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-137"><a href="#cb14-137" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">y =</span> xerror, <span class="at">ymin=</span>xerror<span class="sc">-</span>xstd, <span class="at">ymax=</span>xerror<span class="sc">+</span>xstd), <span class="at">color=</span><span class="st">"blue"</span>, <span class="at">width=</span><span class="fl">0.1</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-138"><a href="#cb14-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> size[<span class="fu">which.min</span>(xerror)], <span class="at">y =</span> <span class="fu">min</span>(xerror)), <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">size =</span> <span class="dv">8</span>, <span class="at">shape =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-139"><a href="#cb14-139" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb14-140"><a href="#cb14-140" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of terminal nodes"</span>,</span>
+<span id="cb14-141"><a href="#cb14-141" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Fraction of misclassifications"</span>,</span>
+<span id="cb14-142"><a href="#cb14-142" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-143"><a href="#cb14-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Training"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Cross-validation"</span> <span class="ot">=</span> <span class="st">"blue"</span>), <span class="at">name=</span><span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb14-144"><a href="#cb14-144" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb14-145"><a href="#cb14-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-146"><a href="#cb14-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-147"><a href="#cb14-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-148"><a href="#cb14-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-149"><a href="#cb14-149" aria-hidden="true" tabindex="-1"></a>::: callout-tip</span>
+<span id="cb14-150"><a href="#cb14-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-151"><a href="#cb14-151" aria-hidden="true" tabindex="-1"></a><span class="fu">### The cost function of decision trees</span></span>
+<span id="cb14-152"><a href="#cb14-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-153"><a href="#cb14-153" aria-hidden="true" tabindex="-1"></a>In the classical formulation of decision trees<span class="ot">[^breiman]</span> the cost is defined as follow.</span>
+<span id="cb14-154"><a href="#cb14-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-155"><a href="#cb14-155" aria-hidden="true" tabindex="-1"></a><span class="ot">[^breiman]: </span>L. Breiman, J.H. Friedman, R.A. Olshen, , and C.J Stone. _Classification and Regression Trees._ Wadsworth, Belmont, Ca, 1983.</span>
+<span id="cb14-156"><a href="#cb14-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-157"><a href="#cb14-157" aria-hidden="true" tabindex="-1"></a>Say we have a tree with $k$ terminal nodes (leafs), $T_1, T_2, \ldots, T_k$. (Note: the tree with $k$ leafs has $k-1$ splits.)</span>
+<span id="cb14-158"><a href="#cb14-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-159"><a href="#cb14-159" aria-hidden="true" tabindex="-1"></a>The error of the tree (fraction of misclassified observations in our case) is called _**risk**_ in jargon, and when it is combined across all leafs, it gives us the overall _risk_ of the tree, notated as $R(T)$. This is a measure of error that is not _penalised_ for complexity: it is minimised by a tree complex enough to classify all observations perfectly.</span>
+<span id="cb14-160"><a href="#cb14-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-161"><a href="#cb14-161" aria-hidden="true" tabindex="-1"></a>The complexity penalty is introduced by defining the cost of the tree $T$ as follow:</span>
+<span id="cb14-162"><a href="#cb14-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-163"><a href="#cb14-163" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-164"><a href="#cb14-164" aria-hidden="true" tabindex="-1"></a>R_{\alpha}(T) = R(T)+\alpha \left| T \right|</span>
+<span id="cb14-165"><a href="#cb14-165" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-166"><a href="#cb14-166" aria-hidden="true" tabindex="-1"></a> $\left| T \right|$ is the number of terminal nodes or leafs (so it would be $\left| T \right| = k$ as we have $k$ terminal nodes). </span>
+<span id="cb14-167"><a href="#cb14-167" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb14-168"><a href="#cb14-168" aria-hidden="true" tabindex="-1"></a>Note that in this formulation the $alpha$ is expressed in the same units of measurements of $R(T)$, which in our case would the proportion or _rate_ of misclassification.</span>
+<span id="cb14-169"><a href="#cb14-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-170"><a href="#cb14-170" aria-hidden="true" tabindex="-1"></a><span class="in">`rpart`</span> implementation adopts a slightly different formulation: the error that appear in the table as <span class="in">`rel error`</span> is defined as </span>
+<span id="cb14-171"><a href="#cb14-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-172"><a href="#cb14-172" aria-hidden="true" tabindex="-1"></a>$$\tilde{R}(T) = \frac{R(T)}{R(T_0)}$$</span>
+<span id="cb14-173"><a href="#cb14-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-174"><a href="#cb14-174" aria-hidden="true" tabindex="-1"></a>Essentially by dividing by $R(T_0)$ we are normalising the cost, so that the cost for the model with 0 splits will be 1, $\tilde{R}(T_0)=1$, by construction.</span>
+<span id="cb14-175"><a href="#cb14-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-176"><a href="#cb14-176" aria-hidden="true" tabindex="-1"></a>We can divide everything by $R(T_0)$ and obtain the "normalised" cost as</span>
+<span id="cb14-177"><a href="#cb14-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-178"><a href="#cb14-178" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-179"><a href="#cb14-179" aria-hidden="true" tabindex="-1"></a>\tilde{R}_{\alpha}(T) = \frac{R_{\alpha}(T)}{R(T_0)} =  \frac{R(T)}{R(T_0)} +\frac{\alpha}{R(T_0)} \left| T \right|</span>
+<span id="cb14-180"><a href="#cb14-180" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-181"><a href="#cb14-181" aria-hidden="true" tabindex="-1"></a>The <span class="in">`cp`</span> parameter in <span class="in">`rpart`</span> is precisely the normalised value of <span class="in">`alpha`</span>:</span>
+<span id="cb14-182"><a href="#cb14-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-183"><a href="#cb14-183" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-184"><a href="#cb14-184" aria-hidden="true" tabindex="-1"></a>\text{cp} = \frac{\alpha}{R(T_0)} </span>
+<span id="cb14-185"><a href="#cb14-185" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-186"><a href="#cb14-186" aria-hidden="true" tabindex="-1"></a>If we wanted to express the cost in the original scale, we can write:</span>
+<span id="cb14-187"><a href="#cb14-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-188"><a href="#cb14-188" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-189"><a href="#cb14-189" aria-hidden="true" tabindex="-1"></a>R_{\alpha}(T) = R(T) + \text{cp} \cdot R(T_0)  \cdot \left| T \right|</span>
+<span id="cb14-190"><a href="#cb14-190" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-191"><a href="#cb14-191" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb14-192"><a href="#cb14-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-193"><a href="#cb14-193" aria-hidden="true" tabindex="-1"></a><span class="fu">### Manually pruning the tree</span></span>
+<span id="cb14-194"><a href="#cb14-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-195"><a href="#cb14-195" aria-hidden="true" tabindex="-1"></a>Note that <span class="in">`rpart`</span> use the default value of <span class="in">`cp`</span>=0.01, which may not be optimal. We can use the <span class="in">`prune`</span> function to prune the tree manually. </span>
+<span id="cb14-196"><a href="#cb14-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-197"><a href="#cb14-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-198"><a href="#cb14-198" aria-hidden="true" tabindex="-1"></a>For example, if we wanted to implement the 1 - SE rule, </span>
+<span id="cb14-199"><a href="#cb14-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-202"><a href="#cb14-202" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-203"><a href="#cb14-203" aria-hidden="true" tabindex="-1"></a><span class="co"># explore the table</span></span>
+<span id="cb14-204"><a href="#cb14-204" aria-hidden="true" tabindex="-1"></a>cp_table <span class="ot">&lt;-</span> credit_tree<span class="sc">$</span>cptable</span>
+<span id="cb14-205"><a href="#cb14-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-206"><a href="#cb14-206" aria-hidden="true" tabindex="-1"></a><span class="co"># find the row with the minimum</span></span>
+<span id="cb14-207"><a href="#cb14-207" aria-hidden="true" tabindex="-1"></a>min_row <span class="ot">&lt;-</span> <span class="fu">which.min</span>(cp_table[, <span class="st">"xerror"</span>])</span>
+<span id="cb14-208"><a href="#cb14-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-209"><a href="#cb14-209" aria-hidden="true" tabindex="-1"></a><span class="co"># extract min error and SE of min error</span></span>
+<span id="cb14-210"><a href="#cb14-210" aria-hidden="true" tabindex="-1"></a>min_xerror <span class="ot">&lt;-</span> cp_table[min_row, <span class="st">"xerror"</span>]</span>
+<span id="cb14-211"><a href="#cb14-211" aria-hidden="true" tabindex="-1"></a>min_xstd   <span class="ot">&lt;-</span> cp_table[min_row, <span class="st">"xstd"</span>]</span>
+<span id="cb14-212"><a href="#cb14-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-213"><a href="#cb14-213" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the threshold: the best model according to the </span></span>
+<span id="cb14-214"><a href="#cb14-214" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 - SE rule is the first (simplest) within the threshold</span></span>
+<span id="cb14-215"><a href="#cb14-215" aria-hidden="true" tabindex="-1"></a>threshold <span class="ot">&lt;-</span> min_xerror <span class="sc">+</span> min_xstd</span>
+<span id="cb14-216"><a href="#cb14-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-217"><a href="#cb14-217" aria-hidden="true" tabindex="-1"></a><span class="co"># find smallest tree within threshold</span></span>
+<span id="cb14-218"><a href="#cb14-218" aria-hidden="true" tabindex="-1"></a>best_row <span class="ot">&lt;-</span> <span class="fu">which</span>(cp_table[, <span class="st">"xerror"</span>] <span class="sc">&lt;=</span> threshold)[<span class="dv">1</span>]</span>
+<span id="cb14-219"><a href="#cb14-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-220"><a href="#cb14-220" aria-hidden="true" tabindex="-1"></a>best_cp <span class="ot">&lt;-</span> cp_table[best_row, <span class="st">"CP"</span>]</span>
+<span id="cb14-221"><a href="#cb14-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-222"><a href="#cb14-222" aria-hidden="true" tabindex="-1"></a>best_cp</span>
+<span id="cb14-223"><a href="#cb14-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-224"><a href="#cb14-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-225"><a href="#cb14-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-226"><a href="#cb14-226" aria-hidden="true" tabindex="-1"></a>We can now manually prune using:</span>
+<span id="cb14-227"><a href="#cb14-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-230"><a href="#cb14-230" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-231"><a href="#cb14-231" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb14-232"><a href="#cb14-232" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 16</span></span>
+<span id="cb14-233"><a href="#cb14-233" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb14-234"><a href="#cb14-234" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: TRUE</span></span>
+<span id="cb14-235"><a href="#cb14-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-236"><a href="#cb14-236" aria-hidden="true" tabindex="-1"></a><span class="co"># manually prune the tree</span></span>
+<span id="cb14-237"><a href="#cb14-237" aria-hidden="true" tabindex="-1"></a>pruned_tree <span class="ot">=</span> <span class="fu">prune</span>(credit_tree, <span class="at">cp=</span>best_cp)</span>
+<span id="cb14-238"><a href="#cb14-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-239"><a href="#cb14-239" aria-hidden="true" tabindex="-1"></a><span class="co"># plot pruned tree</span></span>
+<span id="cb14-240"><a href="#cb14-240" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pruned_tree)</span>
+<span id="cb14-241"><a href="#cb14-241" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(pruned_tree, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">0.9</span>)</span>
+<span id="cb14-242"><a href="#cb14-242" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-243"><a href="#cb14-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-244"><a href="#cb14-244" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

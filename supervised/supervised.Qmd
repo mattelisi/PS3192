@@ -413,6 +413,7 @@ ggplot(cp_data, aes(x = size)) +
 
 ```
 
+
 ## 
 
 ### Estimating a decision tree in R (`rpart` package)
@@ -429,7 +430,7 @@ p_m
  
 
 ::: {style="font-size: 80%;"}
-This tree has 4 terminal leafs (terminal nodes), rather 8 suggested by the cross-validation.\
+This tree has only 4 terminal leafs (terminal nodes).\
 This is because by default `rpart` does not attempt to split a node if it has 20 datapoints or less.
 :::
 ::::
@@ -452,10 +453,12 @@ Now the tree has 8 leafs (which correspond to the minimum of the cross-validatio
 :::
 ::::
 
+
+
 ## 
 
 ::: {style="font-size: 80%;"}
--   In practice `rpart` would choose the simplest model that is within 1 standard error from the minimum, rather than the minimum itself.
+-   In practice we may want to choose the simplest model that is within 1 standard error from the minimum, rather than the minimum itself.
 -   (The error typically shows a sharp drop followed by a flat plateau; so the 1 - SE rule allows to choose the simplest model among all those "tied" on the plateau)
 :::
 
@@ -503,7 +506,7 @@ ggplot(cp_data, aes(x = size)) +
 
 ## 
 
-*Pruned* tree for `penguins` data, after allowing split also in nodes with as little as `minsplit = 4` observations.
+Tree for `penguins` data, after allowing split also in nodes with as little as `minsplit = 4` observations.
 
 ```{r}
 #| fig-height: 6
@@ -528,6 +531,31 @@ plot(p_m2, digits = 0, id = FALSE,
 
 
 ```
+
+
+##  {.scrollable}
+
+We can print on the console the cross-validation results using the `printcp()` function:
+
+```{r}
+#| echo: TRUE
+printcp(p_m)
+```
+
+ 
+
+::: fragment
+
+We can manually prune the tree at any value we may want. e.g. if we decide that 4 splits are preferable, as its error is close to the best model, we can prune the tree using 
+
+```{r}
+#| echo: TRUE
+prune(p_m, cp=0.011)
+```
+
+
+:::
+
 
 ##  {.scrollable}
 
