@@ -24,6 +24,10 @@ Course coordinator: Matteo Lisi
 
 [Worked example `GermanCredit` dataset](supervised/credit_tree_example.html)
 
+## Unsupervised learning & clustering (20 Feb 2026)
+
+[Slides](unsupervised/unsupervised_GMM.html)
+
 
 
 
