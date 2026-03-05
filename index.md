@@ -2,7 +2,7 @@ Module: PS3192 Real World Data Science
 
 Course coordinator: Matteo Lisi
 
-# Current academic year
+# Current academic year (2025-26)
 
 ## Advanced R programming (23 Jan 2026)
 
@@ -31,42 +31,4 @@ Course coordinator: Matteo Lisi
 
 
 
-<br><br><br><br><br><br>
 
- ---
-
-# Past academic years
-
-## 2024-25
-
-### Introduction to R programming
-
-
-[Slides](archive25-26/01_IntroR/01_introduction_to_R_slides.html)
-
-[Worksheet](archive25-26/01_IntroR/lecture1_worksheet.html)
-
-[Solution to 5.1 exercises](archive25-26/01_IntroR/5.3.html)
-
-
-### Introduction to ML
-
-
-[Slides](archive25-26/intro2ML/intro2ML.html)
-
-[Worked example California housing data](archive25-26/intro2ML/california_housing_exercise.html)
-
-
-### Classification
-
-[Slides](archive25-26/supervised/classification.html)
-
-
-### Clustering
-
-[Slides](archive25-26/unsupervised/unsupervised_GMM.html)
-
-
-### Closing thoughts
-
-[Slides](archive25-26/wherefromhere/wherefromhere.html)

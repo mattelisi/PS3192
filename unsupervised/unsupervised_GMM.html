@@ -403,6 +403,14 @@ Matteo Lisi
 </div>
 
 </section>
+<section id="section" class="slide level2">
+<h2></h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/neuro_slide.png" class="quarto-figure quarto-figure-center" style="width:120.0%"></p>
+</figure>
+</div>
+</section>
 <section>
 <section id="unsupervised-learning-clustering" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
 <h1>Unsupervised learning &amp; clustering</h1>
@@ -452,7 +460,7 @@ Learn structured representations from raw data, often mapping high-dimensional c
 Example: large language models (LLM) like ChatGPT represent words as “dense vector embeddings” — sets of numbers that indicate where a word lies along different semantic dimensions.</p></li>
 </ul>
 </section>
-<section id="section" class="slide level2">
+<section id="section-1" class="slide level2">
 <h2></h2>
 <div>
 <p><strong>Clustering examples:</strong></p>
@@ -496,13 +504,233 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 </div><div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="K-means_convergence.gif" class="quarto-figure quarto-figure-center"></p>
+<p><img data-src="img/K-means_convergence.gif" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
 </div></div>
 </div>
 <aside class="notes">
 <p>The k-means process is interrupted at each iteration after updating the means. The Voronoi cells (black lines) are drawn with the new means, but the points labels are still from the previous iteration (i.e.&nbsp;assigned to the closest mean of the previous iteration). This is why the black lines are already one iteration ahead (the Voronoi cells are only computed in visualization, k-means does not compute them). This can be a bit irritating, but it is a fact that the result, until converged, is never completely consistent: either points are not assigned to the nearest center, or the center is not the mean of the assigned points. Once we have both properties, it has converged.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="example-mouse-dataset" class="slide level2">
+<h2>Example: <code>mouse</code> dataset</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>Example “mouse” dataset (available on Moodle)</p>
+<p>&nbsp;</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"mouse.csv"</span>)</span>
+<span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        X1       X2
+1 3.566276 8.057792
+2 7.988349 4.153911
+3 4.368442 5.601580
+4 2.763622 7.454118
+5 6.174496 4.262424
+6 8.048162 7.815795</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="k-means-clustering-in-r" class="slide level2">
+<h2><span class="math inline">\(k\)</span>-means clustering in R</h2>
+<p>&nbsp;</p>
+<p><code>kmeans()</code> function available in R</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform k-means clustering </span></span>
+<span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># (3 clusters)</span></span>
+<span id="cb3-3"><a href="" aria-hidden="true" tabindex="-1"></a>kmeans_fit <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(dat, </span>
+<span id="cb3-4"><a href="" aria-hidden="true" tabindex="-1"></a>                     <span class="at">centers =</span> <span class="dv">3</span>)</span>
+<span id="cb3-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predicted cluster to the dataset</span></span>
+<span id="cb3-7"><a href="" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>cluster_kmeans <span class="ot">&lt;-</span> <span class="fu">factor</span>(kmeans_fit<span class="sc">$</span>cluster)</span>
+<span id="cb3-8"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot k-means results</span></span>
+<span id="cb3-10"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat, </span>
+<span id="cb3-11"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> X1, <span class="at">y =</span> X2, </span>
+<span id="cb3-12"><a href="" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> cluster_kmeans)) <span class="sc">+</span></span>
+<span id="cb3-13"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb3-14"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb3-15"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"K-means Clustering"</span>,</span>
+<span id="cb3-16"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"X1"</span>, <span class="at">y =</span> <span class="st">"X2"</span>,</span>
+<span id="cb3-17"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"cluster"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="k2" class="slide level2">
+<h2><span class="math inline">\(k\)</span>=2</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k3" class="slide level2">
+<h2><span class="math inline">\(k\)</span>=3</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k4" class="slide level2">
+<h2><span class="math inline">\(k\)</span>=4</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k5" class="slide level2">
+<h2><span class="math inline">\(k\)</span>=5</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k6" class="slide level2">
+<h2><span class="math inline">\(k\)</span>=6</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k7" class="slide level2">
+<h2><span class="math inline">\(k\)</span>=7</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k8" class="slide level2">
+<h2><span class="math inline">\(k\)</span>=8</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k9" class="slide level2">
+<h2><span class="math inline">\(k\)</span>=9</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k10" class="slide level2">
+<h2><span class="math inline">\(k\)</span>=10</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="k-means-clustering-choosing-the-number-of-clusters" class="slide level2 scrollable">
+<h2><span class="math inline">\(k\)</span>-means clustering: choosing the number of clusters</h2>
+<p>‘Elbow’ method: find the bend in a plot of WCSS (Within-Cluster Sum of Squares).</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform k-means for a range of k values and store within-cluster sum of squares</span></span>
+<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a>max_k <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a>wss <span class="ot">&lt;-</span> <span class="fu">numeric</span>(max_k)</span>
+<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="fu">seq_len</span>(max_k)) {</span>
+<span id="cb4-6"><a href="" aria-hidden="true" tabindex="-1"></a>  km <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(dat, <span class="at">centers =</span> k, <span class="at">nstart =</span> <span class="dv">20</span>)</span>
+<span id="cb4-7"><a href="" aria-hidden="true" tabindex="-1"></a>  wss[k] <span class="ot">&lt;-</span> km<span class="sc">$</span>tot.withinss</span>
+<span id="cb4-8"><a href="" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-9"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Elbow plot: within-cluster sum of squares vs k</span></span>
+<span id="cb4-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>max_k, wss, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">col=</span><span class="st">"purple"</span>,</span>
+<span id="cb4-12"><a href="" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Number of clusters (k)"</span>,</span>
+<span id="cb4-13"><a href="" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"WCSS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>There is no automatic way of setting the “right” <span class="math inline">\(k\)</span>, nor a precise definition of what “right” is. We rely on heuristic approaches (like the elbow method) which do not always work well.</p>
+</div>
+<aside class="notes">
+<p>Unfortunately there is no way to automatically set the “right” K nor is there a definition of what “right” is. There isn’t a principled statistical method, simple or complex that can set the “right K”. There are heuristics, rules of thumb that sometimes work, sometimes don’t.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -537,7 +765,7 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 <div class="fragment">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Gaussian_Mixture.gif" class="quarto-figure quarto-figure-center"></p>
+<p><img data-src="Gaussian_Mixture.gif" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
 </figure>
 </div>
 </div>
@@ -577,7 +805,7 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-1-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>
@@ -600,7 +828,7 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 </ul></li>
 </ul>
 </section>
-<section id="section-1" class="slide level2 scrollable" data-background-color="#202A30" data-transition="slide">
+<section id="section-2" class="slide level2 scrollable" data-background-color="#202A30" data-transition="slide">
 <h2></h2>
 <p><strong>Variance-covariance matrix example:</strong></p>
 <p>&nbsp;</p>
@@ -625,7 +853,7 @@ Example: large language models (LLM) like ChatGPT represent words as “dense ve
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" width="864"></p>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center" width="864"></p>
 </figure>
 </div>
 </div>
@@ -679,7 +907,7 @@ Update the cluster parameters (mean, covariance, mixture weight) to maximize the
 <section id="gaussian-mixture-model-in-r-mclust-package" class="slide level2">
 <h2>Gaussian Mixture Model in R: <code>mclust</code> package</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mclust)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mclust)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>&nbsp;</p>
 <div class="fragment">
@@ -688,8 +916,8 @@ Update the cluster parameters (mean, covariance, mixture weight) to maximize the
 <p>Example “mouse” dataset (available on Moodle)</p>
 <p>&nbsp;</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"mouse.csv"</span>)</span>
-<span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"mouse.csv"</span>)</span>
+<span id="cb6-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        X1       X2
 1 3.566276 8.057792
@@ -706,7 +934,7 @@ Update the cluster parameters (mean, covariance, mixture weight) to maximize the
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>
@@ -720,8 +948,8 @@ Update the cluster parameters (mean, covariance, mixture weight) to maximize the
 <p>&nbsp;</p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">Mclust</span>(dat)    <span class="co"># fit GMM</span></span>
-<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)          <span class="co"># print summary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">Mclust</span>(dat)    <span class="co"># fit GMM</span></span>
+<span id="cb8-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)          <span class="co"># print summary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>---------------------------------------------------- 
 Gaussian finite mixture model fitted by EM algorithm 
@@ -739,11 +967,11 @@ Clustering table:
 </div>
 </div>
 </section>
-<section id="section-2" class="slide level2 scrollable">
+<section id="section-3" class="slide level2 scrollable">
 <h2></h2>
 <p>As it is often the case, <code>summary()</code> only print key information, there is a lot more in the fitted model object. Using the <code>str()</code> is one way to get a list of what is included:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 16
  $ call          : language Mclust(data = dat)
@@ -818,14 +1046,14 @@ Clustering table:
 </div>
 </div>
 </section>
-<section id="section-3" class="slide level2 scrollable">
+<section id="section-4" class="slide level2 scrollable">
 <h2></h2>
 <p>The field <code>fit$classification</code> contains the “hard” assignment of data-points to clusters.</p>
 <p>&nbsp;</p>
 <div class="fragment">
 <p>The field <code>fit$z</code> contains the probabilities that each datapoint belong to each cluster</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             [,1]       [,2]         [,3]
 [1,] 9.394938e-01 0.06050619 4.020001e-15
@@ -840,7 +1068,7 @@ Clustering table:
 <p>&nbsp;</p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">head</span>(fit<span class="sc">$</span>z), <span class="at">digits=</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">head</span>(fit<span class="sc">$</span>z), <span class="at">digits=</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       [,1]   [,2]   [,3]
 [1,] 0.9395 0.0605 0.0000
@@ -859,24 +1087,24 @@ Clustering table:
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predicted cluster to the dataset</span></span>
-<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>cluster_gmm <span class="ot">&lt;-</span> <span class="fu">factor</span>(fit<span class="sc">$</span>classification)</span>
-<span id="cb12-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot GMM results</span></span>
-<span id="cb12-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat, <span class="fu">aes</span>(<span class="at">x =</span> X1, <span class="at">y =</span> X2, </span>
-<span id="cb12-6"><a href="" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> cluster_gmm)) <span class="sc">+</span></span>
-<span id="cb12-7"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb12-8"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb12-9"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"GMM xlustering"</span>,</span>
-<span id="cb12-10"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"X1"</span>, <span class="at">y =</span> <span class="st">"X2"</span>,</span>
-<span id="cb12-11"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"cluster"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predicted cluster to the dataset</span></span>
+<span id="cb16-2"><a href="" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>cluster_gmm <span class="ot">&lt;-</span> <span class="fu">factor</span>(fit<span class="sc">$</span>classification)</span>
+<span id="cb16-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot GMM results</span></span>
+<span id="cb16-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat, <span class="fu">aes</span>(<span class="at">x =</span> X1, <span class="at">y =</span> X2, </span>
+<span id="cb16-6"><a href="" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> cluster_gmm)) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb16-9"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"GMM xlustering"</span>,</span>
+<span id="cb16-10"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"X1"</span>, <span class="at">y =</span> <span class="st">"X2"</span>,</span>
+<span id="cb16-11"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"cluster"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:60%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>
@@ -889,29 +1117,29 @@ Clustering table:
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform k-means clustering (3 clusters)</span></span>
-<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a>kmeans_fit <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(dat, </span>
-<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a>                     <span class="at">centers =</span> <span class="dv">3</span>)</span>
-<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predicted cluster to the dataset</span></span>
-<span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>cluster_kmeans <span class="ot">&lt;-</span> <span class="fu">factor</span>(kmeans_fit<span class="sc">$</span>cluster)</span>
-<span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot k-means results</span></span>
-<span id="cb13-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat, </span>
-<span id="cb13-10"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> X1, <span class="at">y =</span> X2, </span>
-<span id="cb13-11"><a href="" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> cluster_kmeans)) <span class="sc">+</span></span>
-<span id="cb13-12"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb13-13"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb13-14"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"K-means Clustering"</span>,</span>
-<span id="cb13-15"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"X1"</span>, <span class="at">y =</span> <span class="st">"X2"</span>,</span>
-<span id="cb13-16"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"cluster"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform k-means clustering (3 clusters)</span></span>
+<span id="cb17-2"><a href="" aria-hidden="true" tabindex="-1"></a>kmeans_fit <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(dat, </span>
+<span id="cb17-3"><a href="" aria-hidden="true" tabindex="-1"></a>                     <span class="at">centers =</span> <span class="dv">3</span>)</span>
+<span id="cb17-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predicted cluster to the dataset</span></span>
+<span id="cb17-6"><a href="" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>cluster_kmeans <span class="ot">&lt;-</span> <span class="fu">factor</span>(kmeans_fit<span class="sc">$</span>cluster)</span>
+<span id="cb17-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot k-means results</span></span>
+<span id="cb17-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat, </span>
+<span id="cb17-10"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> X1, <span class="at">y =</span> X2, </span>
+<span id="cb17-11"><a href="" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> cluster_kmeans)) <span class="sc">+</span></span>
+<span id="cb17-12"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb17-13"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb17-14"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"K-means Clustering"</span>,</span>
+<span id="cb17-15"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"X1"</span>, <span class="at">y =</span> <span class="st">"X2"</span>,</span>
+<span id="cb17-16"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"cluster"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:60%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-27-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>
@@ -922,7 +1150,7 @@ Clustering table:
 <h2>Model selection in <code>mclust</code></h2>
 <p>By default, <code>mclust</code> tries all parametrizations of variance-covariance matrix, and up to 9 components</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>BIC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>BIC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Bayesian Information Criterion (BIC): 
         EII       VII       EEI       VEI       EVI       VVI       EEE
@@ -955,11 +1183,11 @@ Top 3 models based on the BIC criterion:
 <section id="visualising-model-selection-in-mclust" class="slide level2">
 <h2>Visualising model selection in <code>mclust</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit<span class="sc">$</span>BIC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit<span class="sc">$</span>BIC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-29-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
@@ -994,8 +1222,8 @@ e.g.&nbsp;by using <code>mclust(dat, modelNames = "EII")</code></p>
 <section id="gmm-with-more-than-2-dimensions" class="slide level2 scrollable">
 <h2>GMM with more than 2 dimensions</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb17-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb21-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tibble [344 × 8] (S3: tbl_df/tbl/data.frame)
  $ species          : Factor w/ 3 levels "Adelie","Chinstrap",..: 1 1 1 1 1 1 1 1 1 1 ...
@@ -1007,9 +1235,9 @@ e.g.&nbsp;by using <code>mclust(dat, modelNames = "EII")</code></p>
  $ sex              : Factor w/ 2 levels "female","male": 2 1 1 NA 1 2 1 2 NA NA ...
  $ year             : int [1:344] 2007 2007 2007 2007 2007 2007 2007 2007 2007 2007 ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(penguins[, <span class="fu">c</span>(<span class="st">"species"</span>, <span class="st">"bill_length_mm"</span>, <span class="st">"flipper_length_mm"</span>, <span class="st">"body_mass_g"</span>)])</span>
-<span id="cb19-2"><a href="" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">Mclust</span>(dat[,<span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb19-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(penguins[, <span class="fu">c</span>(<span class="st">"species"</span>, <span class="st">"bill_length_mm"</span>, <span class="st">"flipper_length_mm"</span>, <span class="st">"body_mass_g"</span>)])</span>
+<span id="cb23-2"><a href="" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">Mclust</span>(dat[,<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb23-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>---------------------------------------------------- 
 Gaussian finite mixture model fitted by EM algorithm 
@@ -1027,40 +1255,72 @@ Clustering table:
 </div>
 </div>
 </section>
-<section id="gmm-with-more-than-2-dimensions-1" class="slide level2">
+<section id="gmm-with-more-than-2-dimensions-1" class="slide level2 scrollable">
 <h2>GMM with more than 2 dimensions</h2>
 <p>Using bill length, flipper length and body mass suggest 3 classes; we can plot the results as follow:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, <span class="at">what =</span> <span class="st">"classification"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, <span class="at">what =</span> <span class="st">"classification"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center" width="528"></p>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-31-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="gmm-with-more-than-2-dimensions-2" class="slide level2">
+<section id="gmm-with-more-than-2-dimensions-2" class="slide level2 scrollable">
 <h2>GMM with more than 2 dimensions</h2>
 <p>The <code>mclust</code> package contains also some handy functions to visualise the ‘true’ class (if available)</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">clPairs</span>(dat[,<span class="sc">-</span><span class="dv">1</span>], <span class="at">classification=</span>dat<span class="sc">$</span>species, </span>
-<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="at">main=</span><span class="st">"True penguin species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">clPairs</span>(dat[,<span class="sc">-</span><span class="dv">1</span>], <span class="at">classification=</span>dat<span class="sc">$</span>species, </span>
+<span id="cb26-2"><a href="" aria-hidden="true" tabindex="-1"></a>        <span class="at">main=</span><span class="st">"True penguin species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center" width="624"></p>
+<p><img data-src="unsupervised_GMM_files/figure-revealjs/unnamed-chunk-32-1.png" class="quarto-figure quarto-figure-center" width="528"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="exercise" class="slide level2">
+<section id="exercise" class="slide level2 scrollable">
 <h2>Exercise</h2>
 <div>
+<p>Choose one dataset for clustering from the coursework folder on Moodle.</p>
+<p>&nbsp;</p>
+<p>Suggested steps:</p>
 <ul>
-<li>Use one of the dataset for clustering in the ‘coursework’ folder on Moodle and fit and evaluate a GMM model.</li>
+<li><p><strong>Explore the dataset</strong></p>
+<ul>
+<li>Inspect the variables and decide which ones could reasonably be used for clustering.</li>
+<li>Visualise the data (scatterplots, pair plots, etc.).</li>
+</ul></li>
+<li><p><strong>Fit a <span class="math inline">\(k\)</span>-means clustering model</strong></p>
+<ul>
+<li>Try a few values of <span class="math inline">\(k\)</span> (e.g.&nbsp;2–5 clusters).</li>
+<li>Visualise the resulting clusters.</li>
+</ul></li>
+<li><p><strong>Fit a Gaussian Mixture Model (GMM) using <code>mclust</code></strong></p>
+<ul>
+<li>Let <code>Mclust()</code> choose the number of clusters and covariance structure automatically.</li>
+<li>Inspect the selected model and the BIC values.</li>
+</ul></li>
+<li><p><strong>Visualise and compare the results</strong></p>
+<ul>
+<li>Plot the cluster assignments from both methods.</li>
+<li>Do the two approaches give similar clusters?</li>
+</ul></li>
+<li><p><strong>Reflect on the results</strong></p>
+<ul>
+<li>Does <span class="math inline">\(k\)</span>-means perform reasonably well, or does the flexibility of GMM (different shapes/orientations) seem necessary?</li>
+<li>Are the clusters clearly separated or highly overlapping?</li>
+</ul></li>
+<li><p><strong>Interpret the clusters</strong></p>
+<ul>
+<li>What appear to drive the clustering?</li>
+<li>Do you think the clusters correspond to a plausible latent structure in the data, or could they be a statistical artifact of the algorithm?</li>
+</ul></li>
 </ul>
 </div>
 <div class="quarto-auto-generated-content">

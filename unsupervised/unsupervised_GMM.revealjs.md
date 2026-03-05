@@ -21,6 +21,12 @@ filters: [bg_style.lua]
 
 
 
+
+##
+
+![](img/neuro_slide.png){fig-align="center"  width="120%"}
+
+
 # Unsupervised learning & clustering
 
 
@@ -107,7 +113,7 @@ filters: [bg_style.lua]
 ::::
 
 ::: {.column width="50%"}
-![](K-means_convergence.gif){fig-align="center"}
+![](img/K-means_convergence.gif){fig-align="center"}
 :::
 ::::::
 :::::::
@@ -115,6 +121,281 @@ filters: [bg_style.lua]
 ::: notes
 The k-means process is interrupted at each iteration after updating the means. The Voronoi cells (black lines) are drawn with the new means, but the points labels are still from the previous iteration (i.e. assigned to the closest mean of the previous iteration). This is why the black lines are already one iteration ahead (the Voronoi cells are only computed in visualization, k-means does not compute them). This can be a bit irritating, but it is a fact that the result, until converged, is never completely consistent: either points are not assigned to the nearest center, or the center is not the mean of the assigned points. Once we have both properties, it has converged.
 :::
+
+
+## Example: `mouse` dataset
+
+
+:::::: columns
+::: {.column width="40%"}
+Example "mouse" dataset (available on Moodle)
+
+ 
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
+dat <- read.csv("mouse.csv")
+head(dat)
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+        X1       X2
+1 3.566276 8.057792
+2 7.988349 4.153911
+3 4.368442 5.601580
+4 2.763622 7.454118
+5 6.174496 4.262424
+6 8.048162 7.815795
+```
+
+
+:::
+:::
+
+
+:::
+
+:::: {.column width="60%"}
+::: fragment
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-2-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+:::
+::::
+::::::
+
+
+
+## $k$-means clustering in R
+
+ 
+
+`kmeans()` function available in R
+
+::::: columns
+::: {.column width="40%"}
+
+
+::: {.cell}
+
+```{.r .cell-code}
+# Perform k-means clustering 
+# (3 clusters)
+kmeans_fit <- kmeans(dat, 
+                     centers = 3)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, 
+       aes(x = X1, y = X2, 
+           color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means Clustering",
+       x = "X1", y = "X2",
+       color = "cluster")
+```
+:::
+
+
+:::
+
+::: {.column width="60%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-4-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+:::
+:::::
+
+## $k$=2
+
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-5-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+
+## $k$=3
+
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-6-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+
+## $k$=4
+
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-7-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+
+
+## $k$=5
+
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-8-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+## $k$=6
+
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-9-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+
+## $k$=7
+
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-10-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+
+## $k$=8
+
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-11-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+
+## $k$=9
+
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-12-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+
+## $k$=10
+
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-13-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+
+
+## $k$-means clustering: choosing the number of clusters {.scrollable}
+
+'Elbow' method: find the bend in a plot of WCSS (Within-Cluster Sum of Squares).
+
+
+
+::: {.cell layout-align="center"}
+
+```{.r .cell-code}
+# Perform k-means for a range of k values and store within-cluster sum of squares
+max_k <- 15
+wss <- numeric(max_k)
+
+for (k in seq_len(max_k)) {
+  km <- kmeans(dat, centers = k, nstart = 20)
+  wss[k] <- km$tot.withinss
+}
+
+# Elbow plot: within-cluster sum of squares vs k
+plot(1:max_k, wss, type = "o", col="purple",
+     xlab = "Number of clusters (k)",
+     ylab = "WCSS")
+```
+
+::: {.cell-output-display}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-14-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+::: fragment
+
+There is no automatic way of setting the "right" $k$, nor a precise definition of what "right" is. We rely on heuristic approaches (like the elbow method) which do not always work well.
+
+:::
+
+::: notes
+
+Unfortunately there is no way to automatically set the "right" K nor is there a definition of what "right" is. There isn't a principled statistical method, simple or complex that can set the "right K". There are heuristics, rules of thumb that sometimes work, sometimes don't.
+
+:::
+
 
 ## Limitations of $k$-means clustering
 
@@ -137,7 +418,7 @@ Other (less important) limitations of $k$-means clustering are its sensitivity t
 -   In this approach, known as *mixture modelling* we assume that the data comes from a set of distinct sub-populations, each with its own characteristics. When these sub-populations are assumed to be Gaussian, we have a *Gaussian Mixture Model* or *GMM*.
 
 ::: fragment
-![](Gaussian_Mixture.gif){fig-align="center"}
+![](Gaussian_Mixture.gif){fig-align="center"  width="70%"}
 :::
 
 ## Gaussian Mixture Models (GMM)
@@ -182,7 +463,7 @@ $p(x) =  \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-1-1.png){fig-align='center' width=480}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-15-1.png){fig-align='center' width=480}
 :::
 :::
 
@@ -241,7 +522,7 @@ where:
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-2-1.png){fig-align='center' width=864}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-16-1.png){fig-align='center' width=864}
 :::
 :::
 
@@ -350,7 +631,7 @@ head(dat)
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-5-1.png){fig-align='center' width=480}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-19-1.png){fig-align='center' width=480}
 :::
 :::
 
@@ -590,7 +871,7 @@ ggplot(dat, aes(x = X1, y = X2,
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-11-1.png){fig-align='center' width=480}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-25-1.png){fig-align='center' width=480}
 :::
 :::
 
@@ -636,7 +917,7 @@ ggplot(dat,
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-13-1.png){fig-align='center' width=480}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-27-1.png){fig-align='center' width=480}
 :::
 :::
 
@@ -703,7 +984,7 @@ plot(fit$BIC)
 ```
 
 ::: {.cell-output-display}
-![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-15-1.png){fig-align='center' width=960}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-29-1.png){fig-align='center' width=960}
 :::
 :::
 
@@ -796,7 +1077,7 @@ Clustering table:
 
 
 
-## GMM with more than 2 dimensions
+## GMM with more than 2 dimensions  {.scrollable}
 
 Using bill length, flipper length and body mass suggest 3 classes; we can plot the results as follow:
 
@@ -809,13 +1090,13 @@ plot(fit, what = "classification")
 ```
 
 ::: {.cell-output-display}
-![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-17-1.png){fig-align='center' width=528}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-31-1.png){fig-align='center' width=480}
 :::
 :::
 
 
 
-## GMM with more than 2 dimensions
+## GMM with more than 2 dimensions  {.scrollable}
 
 The `mclust` package contains also some handy functions to visualise the 'true' class (if available)
 
@@ -829,14 +1110,49 @@ clPairs(dat[,-1], classification=dat$species,
 ```
 
 ::: {.cell-output-display}
-![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-18-1.png){fig-align='center' width=624}
+![](unsupervised_GMM_files/figure-revealjs/unnamed-chunk-32-1.png){fig-align='center' width=528}
 :::
 :::
 
 
 
-## Exercise
+## Exercise {.scrollable}
 
 ::: nonincremental
--   Use one of the dataset for clustering in the 'coursework' folder on Moodle and fit and evaluate a GMM model.
+Choose one dataset for clustering from the coursework folder on Moodle.
+
+ 
+
+Suggested steps:
+
+- **Explore the dataset**
+
+    - Inspect the variables and decide which ones could reasonably be used for clustering.
+    - Visualise the data (scatterplots, pair plots, etc.).
+
+- **Fit a $k$-means clustering model**
+
+    - Try a few values of $k$ (e.g. 2–5 clusters).
+    - Visualise the resulting clusters.
+
+- **Fit a Gaussian Mixture Model (GMM) using `mclust`**
+
+    - Let `Mclust()` choose the number of clusters and covariance structure automatically.
+    - Inspect the selected model and the BIC values.
+
+- **Visualise and compare the results**
+
+    - Plot the cluster assignments from both methods.
+    - Do the two approaches give similar clusters?
+
+- **Reflect on the results**
+
+    - Does $k$-means perform reasonably well, or does the flexibility of GMM (different shapes/orientations) seem necessary?
+    - Are the clusters clearly separated or highly overlapping?
+
+- **Interpret the clusters**
+
+    - What appear to drive the clustering?
+    - Do you think the clusters correspond to a plausible latent structure in the data, or could they be a statistical artifact of the algorithm?
+
 :::

@@ -24,6 +24,12 @@ library(tidyverse)
 library(MASS)
 ```
 
+
+##
+
+![](img/neuro_slide.png){fig-align="center"  width="120%"}
+
+
 # Unsupervised learning & clustering
 
 
@@ -110,7 +116,7 @@ library(MASS)
 ::::
 
 ::: {.column width="50%"}
-![](K-means_convergence.gif){fig-align="center"}
+![](img/K-means_convergence.gif){fig-align="center"}
 :::
 ::::::
 :::::::
@@ -118,6 +124,372 @@ library(MASS)
 ::: notes
 The k-means process is interrupted at each iteration after updating the means. The Voronoi cells (black lines) are drawn with the new means, but the points labels are still from the previous iteration (i.e. assigned to the closest mean of the previous iteration). This is why the black lines are already one iteration ahead (the Voronoi cells are only computed in visualization, k-means does not compute them). This can be a bit irritating, but it is a fact that the result, until converged, is never completely consistent: either points are not assigned to the nearest center, or the center is not the mean of the assigned points. Once we have both properties, it has converged.
 :::
+
+
+## Example: `mouse` dataset
+
+
+:::::: columns
+::: {.column width="40%"}
+Example "mouse" dataset (available on Moodle)
+
+ 
+
+```{r, echo=TRUE, include=TRUE}
+dat <- read.csv("mouse.csv")
+head(dat)
+```
+:::
+
+:::: {.column width="60%"}
+::: fragment
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+set.seed(42)
+n_obs <- 300
+
+# Define three Gaussian clusters (mouse shape)
+ear1 <- MASS::mvrnorm(n = n_obs/2, mu = c(3, 8), Sigma = matrix(c(0.3, 0, 0, 0.3), 2))
+ear2 <- MASS::mvrnorm(n_obs/2, c(8, 8), Sigma = matrix(c(0.3, 0, 0, 0.3), 2))
+head <- MASS::mvrnorm(n_obs*2, c(5.5, 5), Sigma = matrix(c(2.5, 0, 0, 2.5), 2))
+
+# Combine into one dataset
+datC <- data.frame(rbind(ear1, ear2, head))
+colnames(datC) <- c("X1", "X2")
+
+# write_csv(dat,"mouse.csv")
+
+datC$cluster <- factor(c(rep("Ear1", n_obs/2), rep("Ear2", n_obs/2), rep("Head", n_obs*2)))
+
+# Plot dataset (similar to Wikipedia "mouse" example)
+ggplot(datC, aes(x = X1, y = X2, color=cluster)) +
+  geom_point(alpha=0.8) +
+  theme_minimal() +
+  labs(x="X1", y="X2")
+
+```
+:::
+::::
+::::::
+
+
+
+## $k$-means clustering in R
+
+ 
+
+`kmeans()` function available in R
+
+::::: columns
+::: {.column width="40%"}
+```{r, echo=TRUE, eval=FALSE}
+# Perform k-means clustering 
+# (3 clusters)
+kmeans_fit <- kmeans(dat, 
+                     centers = 3)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, 
+       aes(x = X1, y = X2, 
+           color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means Clustering",
+       x = "X1", y = "X2",
+       color = "cluster")
+
+
+```
+:::
+
+::: {.column width="60%"}
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering (3 clusters)
+kmeans_fit <- kmeans(dat, centers = 3)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, 
+                color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means Clustering",
+       x = "X1", y = "X2",
+       color = "cluster")
+
+```
+:::
+:::::
+
+## $k$=2
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering
+kmeans_fit <- kmeans(dat, centers = 2)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means (k=2)",
+       x = "X1", y = "X2", color = "cluster")
+
+```
+
+
+## $k$=3
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering 
+kmeans_fit <- kmeans(dat, centers = 3)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means (k=3)",
+       x = "X1", y = "X2", color = "cluster")
+
+```
+
+
+## $k$=4
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering 
+kmeans_fit <- kmeans(dat, centers = 4)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means (k=4)",
+       x = "X1", y = "X2", color = "cluster")
+
+```
+
+
+
+## $k$=5
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering 
+kmeans_fit <- kmeans(dat, centers = 5)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means (k=5)",
+       x = "X1", y = "X2", color = "cluster")
+
+```
+
+## $k$=6
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering 
+kmeans_fit <- kmeans(dat, centers = 6)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means (k=6)",
+       x = "X1", y = "X2", color = "cluster")
+
+```
+
+
+## $k$=7
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering 
+kmeans_fit <- kmeans(dat, centers = 7)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means (k=7)",
+       x = "X1", y = "X2", color = "cluster")
+
+```
+
+
+## $k$=8
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering 
+kmeans_fit <- kmeans(dat, centers = 8)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means (k=8)",
+       x = "X1", y = "X2", color = "cluster")
+
+```
+
+
+## $k$=9
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering 
+kmeans_fit <- kmeans(dat, centers = 9)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means (k=9)",
+       x = "X1", y = "X2", color = "cluster")
+
+```
+
+
+## $k$=10
+
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+
+# Perform k-means clustering 
+kmeans_fit <- kmeans(dat, centers = 10)
+
+# Add predicted cluster to the dataset
+dat$cluster_kmeans <- factor(kmeans_fit$cluster)
+
+# Plot k-means results
+ggplot(dat, aes(x = X1, y = X2, color = cluster_kmeans)) +
+  geom_point(alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "K-means (k=10)",
+       x = "X1", y = "X2", color = "cluster")
+
+```
+
+
+
+## $k$-means clustering: choosing the number of clusters {.scrollable}
+
+'Elbow' method: find the bend in a plot of WCSS (Within-Cluster Sum of Squares).
+
+```{r}
+#| fig-height: 4
+#| fig-width: 5
+#| fig-align: center
+#| echo: TRUE
+
+
+# Perform k-means for a range of k values and store within-cluster sum of squares
+max_k <- 15
+wss <- numeric(max_k)
+
+for (k in seq_len(max_k)) {
+  km <- kmeans(dat, centers = k, nstart = 20)
+  wss[k] <- km$tot.withinss
+}
+
+# Elbow plot: within-cluster sum of squares vs k
+plot(1:max_k, wss, type = "o", col="purple",
+     xlab = "Number of clusters (k)",
+     ylab = "WCSS")
+
+
+```
+
+::: fragment
+
+There is no automatic way of setting the "right" $k$, nor a precise definition of what "right" is. We rely on heuristic approaches (like the elbow method) which do not always work well.
+
+:::
+
+::: notes
+
+Unfortunately there is no way to automatically set the "right" K nor is there a definition of what "right" is. There isn't a principled statistical method, simple or complex that can set the "right K". There are heuristics, rules of thumb that sometimes work, sometimes don't.
+
+:::
+
 
 ## Limitations of $k$-means clustering
 
@@ -140,7 +512,7 @@ Other (less important) limitations of $k$-means clustering are its sensitivity t
 -   In this approach, known as *mixture modelling* we assume that the data comes from a set of distinct sub-populations, each with its own characteristics. When these sub-populations are assumed to be Gaussian, we have a *Gaussian Mixture Model* or *GMM*.
 
 ::: fragment
-![](Gaussian_Mixture.gif){fig-align="center"}
+![](Gaussian_Mixture.gif){fig-align="center"  width="70%"}
 :::
 
 ## Gaussian Mixture Models (GMM)
@@ -603,24 +975,24 @@ fit <- Mclust(dat[,-1])
 summary(fit)
 ```
 
-## GMM with more than 2 dimensions
+## GMM with more than 2 dimensions  {.scrollable}
 
 Using bill length, flipper length and body mass suggest 3 classes; we can plot the results as follow:
 
 ```{r, echo=TRUE, eval=TRUE}
-#| fig-height: 5.5
-#| fig-width: 5.5
+#| fig-height: 5
+#| fig-width: 5
 #| fig-align: center
 plot(fit, what = "classification")
 ```
 
-## GMM with more than 2 dimensions
+## GMM with more than 2 dimensions  {.scrollable}
 
 The `mclust` package contains also some handy functions to visualise the 'true' class (if available)
 
 ```{r, echo=TRUE, eval=TRUE}
-#| fig-height: 6.5
-#| fig-width: 6.5
+#| fig-height: 5.5
+#| fig-width: 5.5
 #| fig-align: center
 
 clPairs(dat[,-1], classification=dat$species, 
@@ -628,8 +1000,43 @@ clPairs(dat[,-1], classification=dat$species,
 
 ```
 
-## Exercise
+## Exercise {.scrollable}
 
 ::: nonincremental
--   Use one of the dataset for clustering in the 'coursework' folder on Moodle and fit and evaluate a GMM model.
+Choose one dataset for clustering from the coursework folder on Moodle.
+
+ 
+
+Suggested steps:
+
+- **Explore the dataset**
+
+    - Inspect the variables and decide which ones could reasonably be used for clustering.
+    - Visualise the data (scatterplots, pair plots, etc.).
+
+- **Fit a $k$-means clustering model**
+
+    - Try a few values of $k$ (e.g. 2–5 clusters).
+    - Visualise the resulting clusters.
+
+- **Fit a Gaussian Mixture Model (GMM) using `mclust`**
+
+    - Let `Mclust()` choose the number of clusters and covariance structure automatically.
+    - Inspect the selected model and the BIC values.
+
+- **Visualise and compare the results**
+
+    - Plot the cluster assignments from both methods.
+    - Do the two approaches give similar clusters?
+
+- **Reflect on the results**
+
+    - Does $k$-means perform reasonably well, or does the flexibility of GMM (different shapes/orientations) seem necessary?
+    - Are the clusters clearly separated or highly overlapping?
+
+- **Interpret the clusters**
+
+    - What appear to drive the clustering?
+    - Do you think the clusters correspond to a plausible latent structure in the data, or could they be a statistical artifact of the algorithm?
+
 :::
