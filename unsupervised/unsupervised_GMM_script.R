@@ -6,6 +6,16 @@ hablar::set_wd_to_script_path()
 library(mclust)
 help(package="mclust") 
 
+
+data("iris")
+str(iris)
+
+iris_gmm <- Mclust(iris[,1:4])
+summary(iris_gmm)
+print(iris_gmm)
+
+iris_gmm$BIC
+
 #######################################################################################
 # plot 1
 

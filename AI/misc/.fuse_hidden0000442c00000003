@@ -1,0 +1,50 @@
+\documentclass[tikz, border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath}
+
+\begin{document}
+
+\begin{tikzpicture}[>=latex, font=\small]
+
+  % --- Node centre and radius ---
+  \def\cx{0}
+  \def\cy{0}
+  \def\R{1.0}
+
+  % --- Shaded right half of the circle (function f) ---
+  \fill[gray!40] (\cx,\cy) -- (\cx, \cy+\R)
+    arc[start angle=90, end angle=-90, radius=\R] -- cycle;
+
+  % --- Full circle outline ---
+  \draw[thick] (\cx,\cy) circle (\R);
+
+  % --- Vertical dividing line between g and f ---
+  \draw[thick] (\cx, \cy-\R) -- (\cx, \cy+\R);
+
+  % --- Labels inside the two halves ---
+  \node at (\cx-0.38, \cy) {$g$};
+  \node at (\cx+0.38, \cy) {$f$};
+
+  % --- Input lines and labels ---
+  % Inputs are spread from top-left to bottom-left
+  % Angles (measured from positive x-axis): ~145, 160, 175, 200, 220
+  \foreach \angle/\label in {
+      148/$x_1$,
+      163/$x_2$,
+      178/$x_3$,
+      200/$\ldots$,
+      218/$x_n \in \{0,1\}$
+  }{
+    \draw[thin]
+      ({cos(\angle)*2.6}, {sin(\angle)*2.6})
+      -- ({cos(\angle)*\R},  {sin(\angle)*\R});
+    \node[left=2pt] at ({cos(\angle)*2.7}, {sin(\angle)*2.7}) {\label};
+  }
+
+  % --- Output arrow and label ---
+  \draw[->, thick] (\cx+\R, \cy) -- (\cx+2.4, \cy);
+  \node[right=2pt] at (\cx+2.4, \cy) {$y \in \{0,1\}$};
+
+\end{tikzpicture}
+
+\end{document}

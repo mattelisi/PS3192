@@ -16,11 +16,12 @@ keep-md: true
 filters: [bg_style.lua]
 ---
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(ggdag)
-library(dagitty)
-```
+
+::: {.cell}
+
+:::
+
+
 
 ## Outline for today
 
@@ -141,26 +142,15 @@ Minsky & Papert (1969) formalised these limitations — **setting off the first 
 :::
 
 ::: {.column width="50%"}
-```{r xor, fig.height=4, fig.width=4.5}
-par(bg = "transparent", mar = c(3, 3, 2, 1))
-plot(c(0,1,0,1), c(0,1,1,0),
-     pch = c(1, 1, 16, 16), cex = 3.5,
-     col = c("#56B4E9","#E69F00","#E69F00","#56B4E9"),
-     xlim = c(-0.3, 1.3), ylim = c(-0.3, 1.3),
-     xlab = "x₁", ylab = "x₂",
-     main = "XOR — not linearly separable",
-     col.main = "white", col.lab = "white", col.axis = "white",
-     bg = "transparent", axes = TRUE)
-grid(col = "#444444")
-legend("topright",
-       legend = c("Output = 0", "Output = 1"),
-       pch = c(1, 16),
-       col = c("#56B4E9", "#E69F00"),
-       text.col = "white", bg = "transparent", box.col = "transparent")
-axis(1, col.axis = "white", col = "white")
-axis(2, col.axis = "white", col = "white")
-box(col = "white")
-```
+
+
+::: {.cell}
+::: {.cell-output-display}
+![](AI_slides_files/figure-revealjs/xor-1.png){width=432}
+:::
+:::
+
+
 :::
 
 ::::

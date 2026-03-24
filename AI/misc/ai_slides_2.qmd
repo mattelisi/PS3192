@@ -1,0 +1,103 @@
+---
+title: "Artificial intelligence"
+subtitle: "<br>PS3192: Data science for psychology"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    logo: ../img/logo-small-london-cmyk.jpg
+    footer: "PS3192 25-26"
+    incremental: true  
+    auto-stretch: false
+    code-fold: false   # don’t fold
+    code-line-numbers: false
+    theme: [default, ../matteo_rhul.css]
+editor: source
+keep-md: true
+filters: [../bg_style.lua]
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(ggdag)
+library(dagitty)
+```
+
+## What is modern AI?
+
+- Most modern AI is based on **artificial neural networks**
+- These are systems made of many simple computational units connected together
+- They are **loosely inspired by the brain**, but only in a broad sense
+- The key idea is simple:
+  - inputs are represented as numbers
+  - the network transforms them through layers of computation
+  - the connection strengths (**weights**) are learned from data
+
+::: notes
+Emphasise that “brain-inspired” does not mean “brain-realistic”.
+The inspiration is historical and conceptual, not a faithful biological model.
+:::
+
+## How brain-like is it?
+
+- Early neural networks borrowed some broad ideas from neuroscience:
+  - neurons as simple units
+  - learning by changing connections
+  - hierarchical processing
+  - recurrent feedback
+- But modern AI is mostly driven by **engineering choices that scale well**
+- Over time, performance improved by becoming **less biologically realistic**
+
+> A useful summary: neural networks began as rough brain-inspired models, but modern AI is better understood as a family of powerful statistical function approximators.
+
+## A very simple artificial neuron
+
+- An artificial neuron:
+  - receives several inputs
+  - multiplies each input by a weight
+  - adds them together
+  - applies an activation rule
+- In compact form:
+
+$$
+z = w_1x_1 + w_2x_2 + \dots + w_px_p + b
+$$
+
+$$
+y = f(z)
+$$
+
+- The weights determine how important each input is
+- Learning means adjusting those weights from data
+
+## Artificial neuron: diagram
+
+```{r, echo=FALSE, fig.width=9, fig.height=4}
+par(mar = c(0,0,0,0))
+plot(0, 0, type = "n", xlim = c(0, 10), ylim = c(0, 6),
+     axes = FALSE, xlab = "", ylab = "")
+
+# inputs
+points(rep(1.5, 4), c(1.2, 2.4, 3.6, 4.8), pch = 19, cex = 1.4)
+text(1, c(1.2, 2.4, 3.6, 4.8), labels = c("x1", "x2", "x3", "x4"), cex = 1.1)
+
+# neuron
+symbols(5, 3, circles = 0.8, inches = FALSE, add = TRUE, bg = "grey95")
+text(5, 3, "Σ\n+ f()", cex = 1)
+
+# output
+points(8.5, 3, pch = 19, cex = 1.4)
+text(9, 3, "y", pos = 4, cex = 1.1)
+
+# arrows
+arrows(1.8, 1.2, 4.2, 2.6, length = 0.08)
+arrows(1.8, 2.4, 4.2, 2.85, length = 0.08)
+arrows(1.8, 3.6, 4.2, 3.15, length = 0.08)
+arrows(1.8, 4.8, 4.2, 3.4, length = 0.08)
+arrows(5.8, 3, 8, 3, length = 0.08)
+
+# weights
+text(3, c(1.8, 2.6, 3.4, 4.2), labels = c("w1", "w2", "w3", "w4"), cex = 0.9)
+
+# bias
+arrows(5, 5.5, 5, 3.9, length = 0.08)
+text(5.25, 5.5, "bias b", pos = 4, cex = 0.9)

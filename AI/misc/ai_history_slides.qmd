@@ -1,0 +1,686 @@
+---
+title: "A Short History of Artificial Intelligence"
+subtitle: "From Neurons to Transformers"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    logo: ../img/logo-small-london-cmyk.jpg
+    footer: "PS3192 25-26"
+    incremental: true  
+    auto-stretch: false
+    code-fold: false   # don’t fold
+    code-line-numbers: false
+    theme: [default, ../matteo_rhul.css]
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+library(ggplot2)
+library(igraph)
+library(ggraph)
+library(tidyverse)
+```
+
+## Overview {.center}
+
+> *"Modern AI is built on neural networks — loosely inspired by the brain, but increasingly diverging from it."*
+
+This session traces the key milestones from the first artificial neuron (1943) to the Transformer (2017), asking at each step: **how brain-like is this?**
+
+---
+
+## The Artificial Neuron — McCulloch & Pitts (1943) {.smaller}
+
+:::: {.columns}
+
+::: {.column width="45%"}
+**The idea:**
+
+- A simple unit of computation inspired by the biological neuron
+- Takes **binary inputs**, computes a **weighted sum**, fires if it exceeds a threshold
+- Can be combined to implement **any Boolean logic**
+
+**But:** weights are fixed — it cannot learn
+:::
+
+::: {.column width="55%"}
+```{r mcp-neuron, fig.height=4, fig.width=5}
+par(bg = "transparent", mar = c(1, 1, 1.5, 1))
+plot.new()
+plot.window(xlim = c(0, 10), ylim = c(0, 10))
+
+# Input nodes
+input_x <- 1.2; input_ys <- c(7.5, 5, 2.5)
+node_col <- "#56B4E9"; neuron_col <- "#E69F00"
+
+for (y in input_ys) {
+  symbols(input_x, y, circles = 0.5, add = TRUE, inches = FALSE,
+          bg = node_col, fg = "white", lwd = 2)
+}
+text(input_x, 9.2, "Inputs  x₁, x₂, x₃", col = "white", cex = 0.85, font = 2)
+
+# Weights on arrows
+w_labels <- c("w₁", "w₂", "w₃")
+neuron_x <- 5.5; neuron_y <- 5
+for (i in seq_along(input_ys)) {
+  arrows(input_x + 0.5, input_ys[i], neuron_x - 0.6, neuron_y,
+         length = 0.1, col = "white", lwd = 1.5)
+  mx <- (input_x + 0.5 + neuron_x - 0.6) / 2
+  my <- (input_ys[i] + neuron_y) / 2
+  text(mx, my + 0.4, w_labels[i], col = "#F0E442", cex = 0.8, font = 3)
+}
+
+# Neuron body
+symbols(neuron_x, neuron_y, circles = 0.7, add = TRUE, inches = FALSE,
+        bg = neuron_col, fg = "white", lwd = 2)
+text(neuron_x, neuron_y, "Σ ≥ θ?", col = "white", cex = 0.75, font = 2)
+text(neuron_x, 9.2, "Neuron", col = "white", cex = 0.85, font = 2)
+
+# Output
+output_x <- 8.5
+arrows(neuron_x + 0.7, neuron_y, output_x - 0.3, neuron_y,
+       length = 0.12, col = "white", lwd = 2)
+symbols(output_x, neuron_y, circles = 0.4, add = TRUE, inches = FALSE,
+        bg = "#009E73", fg = "white", lwd = 2)
+text(output_x, neuron_y, "0/1", col = "white", cex = 0.7, font = 2)
+text(output_x, 9.2, "Output", col = "white", cex = 0.85, font = 2)
+
+title("The McCulloch–Pitts Neuron (1943)", col.main = "white", cex.main = 1)
+```
+:::
+
+::::
+
+---
+
+## Hebbian Learning (1949) & The Perceptron (1962) {.smaller}
+
+:::: {.columns}
+
+::: {.column width="48%"}
+**Donald Hebb (1949)**
+
+> *"Neurons that fire together, wire together"*
+
+- Learning as **synaptic strengthening** between co-active neurons
+- A biological principle that became a foundation for computational learning
+
+**Frank Rosenblatt (1962)**
+
+- The **Perceptron**: a single layer network that can **learn weights from data**
+- Weights encode knowledge — a profound shift
+- The first algorithm to learn a linear decision boundary
+:::
+
+::: {.column width="52%"}
+```{r perceptron, fig.height=4.5, fig.width=5}
+par(bg = "transparent", mar = c(2, 1, 2, 1))
+plot.new()
+plot.window(xlim = c(0, 10), ylim = c(0, 10))
+
+input_xs <- rep(1.5, 4)
+input_ys <- c(8, 5.5, 3.5, 1)
+out_x <- 8; out_y <- 5
+
+node_col <- "#56B4E9"
+out_col  <- "#E69F00"
+
+# Inputs
+for (y in input_ys) {
+  symbols(1.5, y, circles = 0.55, add = TRUE, inches = FALSE,
+          bg = node_col, fg = "white", lwd = 2)
+}
+text(1.5, 9.4, "Inputs", col = "white", cex = 0.85, font = 2)
+
+# Arrows with weight labels
+ws <- c("w₁", "w₂", "w₃", "w₄")
+for (i in seq_along(input_ys)) {
+  arrows(2.05, input_ys[i], out_x - 0.55, out_y,
+         length = 0.09, col = "#cccccc", lwd = 1.4)
+  mx <- (2.05 + out_x - 0.55) / 2
+  my <- (input_ys[i] + out_y) / 2
+  text(mx + 0.2, my + 0.35, ws[i], col = "#F0E442", cex = 0.72, font = 3)
+}
+
+# Output node
+symbols(out_x, out_y, circles = 0.7, add = TRUE, inches = FALSE,
+        bg = out_col, fg = "white", lwd = 2)
+text(out_x, out_y + 0.05, "ŷ", col = "white", cex = 1.1, font = 2)
+text(out_x, 9.4, "Output", col = "white", cex = 0.85, font = 2)
+
+# Learning arrow feedback
+arrows(out_x, out_y - 0.75, out_x - 2, out_y - 2.5,
+       length = 0.1, col = "#CC79A7", lwd = 1.8, lty = 2)
+text(out_x - 1.2, out_y - 2.0, "error → update w", col = "#CC79A7", cex = 0.72, font = 3)
+
+# Input labels
+xlabs <- c("age", "BMI", "fever", "CT scan")
+for (i in seq_along(input_ys)) {
+  text(0.1, input_ys[i], xlabs[i], col = "#aaaaaa", cex = 0.65, adj = 0)
+}
+
+title("Perceptron — learns weights from data", col.main = "white", cex.main = 1)
+```
+:::
+
+::::
+
+---
+
+## Patient Vectors — A Concrete Example {.smaller}
+
+*Inspired by Anil Ananthaswamy, "I, Human" / "Why Machines Learn"*
+
+Each patient is represented as a **vector in 6-dimensional space**:
+
+| Feature | Value |
+|---|---|
+| Age | continuous |
+| Body mass | continuous |
+| Breathing difficulty | 0 / 1 |
+| Fever | 0 / 1 |
+| Diabetes | 0 / 1 |
+| Chest CT scan score | continuous |
+
+**Target (label):** Does the patient improve after 3 days — or remain on ventilator support?
+
+::: {.callout-tip}
+## Why this matters
+The perceptron finds a **hyperplane** in this 6D space that separates "improves" from "remains sick." The **weights are the knowledge** — learned automatically from labelled examples.
+:::
+
+---
+
+## Limits — The XOR Problem & Minsky–Papert (1969) {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**The good news:**
+
+*Perceptron Convergence Theorem* — if a linear solution exists, the perceptron **is guaranteed to find it**.
+
+**The bad news:**
+
+Many real problems are **not linearly separable** — the classic case is XOR:
+
+| x₁ | x₂ | XOR |
+|---|---|---|
+| 0 | 0 | 0 |
+| 0 | 1 | 1 |
+| 1 | 0 | 1 |
+| 1 | 1 | 0 |
+
+No single straight line can separate the 1s from the 0s.
+
+Minsky & Papert (1969) formalised these limitations — **setting off the first AI Winter**.
+:::
+
+::: {.column width="50%"}
+```{r xor, fig.height=4, fig.width=4.5}
+par(bg = "transparent", mar = c(3, 3, 2, 1))
+plot(c(0,1,0,1), c(0,1,1,0),
+     pch = c(1, 1, 16, 16), cex = 3.5,
+     col = c("#56B4E9","#E69F00","#E69F00","#56B4E9"),
+     xlim = c(-0.3, 1.3), ylim = c(-0.3, 1.3),
+     xlab = "x₁", ylab = "x₂",
+     main = "XOR — not linearly separable",
+     col.main = "white", col.lab = "white", col.axis = "white",
+     bg = "transparent", axes = TRUE)
+grid(col = "#444444")
+legend("topright",
+       legend = c("Output = 0", "Output = 1"),
+       pch = c(1, 16),
+       col = c("#56B4E9", "#E69F00"),
+       text.col = "white", bg = "transparent", box.col = "transparent")
+axis(1, col.axis = "white", col = "white")
+axis(2, col.axis = "white", col = "white")
+box(col = "white")
+```
+:::
+
+::::
+
+---
+
+## The First AI Winter: 1974–1980 {.center}
+
+::: {.callout-warning}
+## The classic winter pattern
+Not "no progress" — but **expectations rising much faster than capabilities**.
+:::
+
+In the 1970s, AI energy shifted toward **symbolic AI & Expert Systems**:
+
+- Knowledge represented explicitly as **rules, logical formulas, frames, semantic networks**
+- Systems like MYCIN (medical diagnosis) showed impressive narrow performance
+- But: **brittle, hard to maintain, couldn't generalise**
+
+Buyers expected adaptability and robustness — they got carefully hand-coded rules.
+
+::: {.fragment}
+> A second AI Winter followed in the **late 1980s** for the same reason: hype outran capability.
+:::
+
+---
+
+## Backpropagation — Rumelhart, Hinton & Williams (1982) {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+The key insight that made **multi-layer networks trainable**:
+
+- Compute how much each weight contributed to the error
+- Propagate that gradient **backwards** through the layers
+- Update weights using gradient descent
+
+This allowed networks to learn **internal representations** — not just input-output mappings.
+
+It also implicitly solved XOR: add a hidden layer, and you can represent non-linear boundaries.
+:::
+
+::: {.column width="50%"}
+```{r feedforward, fig.height=5, fig.width=4.8}
+par(bg = "transparent", mar = c(1, 1, 2, 1))
+plot.new()
+plot.window(xlim = c(0, 10), ylim = c(0, 10))
+
+layers <- list(
+  input  = list(x = 1.5, ys = c(8, 6, 4, 2),  col = "#56B4E9", label = "Input"),
+  hidden = list(x = 5,   ys = c(7.5, 5.5, 3.5),col = "#E69F00", label = "Hidden"),
+  output = list(x = 8.5, ys = c(6.5, 4, 1.5),  col = "#009E73", label = "Output")
+)
+
+# Forward connections
+for (i in seq_along(layers$input$ys)) {
+  for (j in seq_along(layers$hidden$ys)) {
+    lines(c(layers$input$x + 0.42, layers$hidden$x - 0.42),
+          c(layers$input$ys[i],    layers$hidden$ys[j]),
+          col = "#888888", lwd = 0.9)
+  }
+}
+for (i in seq_along(layers$hidden$ys)) {
+  for (j in seq_along(layers$output$ys)) {
+    lines(c(layers$hidden$x + 0.42, layers$output$x - 0.42),
+          c(layers$hidden$ys[i],    layers$output$ys[j]),
+          col = "#888888", lwd = 0.9)
+  }
+}
+
+# Nodes
+for (nm in names(layers)) {
+  l <- layers[[nm]]
+  for (y in l$ys) {
+    symbols(l$x, y, circles = 0.42, add = TRUE, inches = FALSE,
+            bg = l$col, fg = "white", lwd = 1.8)
+  }
+  text(l$x, 9.5, l$label, col = "white", cex = 0.85, font = 2)
+}
+
+# Backprop arrow
+arrows(7.8, 1.0, 2.2, 1.0, length = 0.12,
+       col = "#CC79A7", lwd = 2, lty = 2)
+text(5, 0.4, "← backpropagation (error gradient)", col = "#CC79A7", cex = 0.72, font = 3)
+
+title("Feedforward Network + Backprop", col.main = "white", cex.main = 1)
+```
+:::
+
+::::
+
+---
+
+## Convolutional Neural Networks — LeCun et al. (1989) {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**Brain-inspired architecture for vision:**
+
+- **Receptive fields**: each unit responds to a local patch, mimicking visual cortex
+- **Weight sharing**: the same filter scans the whole image → far fewer parameters
+- **Pooling**: spatial downsampling, building invariance
+- **Hierarchy**: edges → textures → parts → objects — "features of features"
+
+Biologically motivated, practically transformative — but the hierarchy is steeper and more explicit than in biological vision.
+:::
+
+::: {.column width="50%"}
+```{r cnn-diagram, fig.height=5, fig.width=5}
+par(bg = "transparent", mar = c(1, 1, 2, 1))
+plot.new()
+plot.window(xlim = c(0, 10), ylim = c(0, 10))
+
+# Layer blocks
+blocks <- data.frame(
+  x    = c(0.5, 2.8, 5.1, 7.4),
+  w    = c(1.8, 1.8, 1.5, 1.6),
+  h    = c(4.0, 3.0, 2.0, 1.2),
+  col  = c("#56B4E9","#E69F00","#009E73","#CC79A7"),
+  lab  = c("Input\nimage", "Conv\nlayer", "Pooling\n+ Conv", "Fully\nconnected"),
+  stringsAsFactors = FALSE
+)
+
+cy <- 5  # centre y
+for (i in 1:nrow(blocks)) {
+  b <- blocks[i, ]
+  rect(b$x, cy - b$h/2, b$x + b$w, cy + b$h/2,
+       col = b$col, border = "white", lwd = 1.5)
+  text(b$x + b$w/2, cy, b$lab, col = "white", cex = 0.72, font = 2)
+  text(b$x + b$w/2, cy + b$h/2 + 0.4, c("28×28","24×24","12×12","")[i],
+       col = "#aaaaaa", cex = 0.62)
+}
+
+# Arrows between blocks
+for (i in 1:(nrow(blocks)-1)) {
+  b1 <- blocks[i, ]; b2 <- blocks[i+1, ]
+  arrows(b1$x + b1$w + 0.05, cy, b2$x - 0.05, cy,
+         length = 0.1, col = "white", lwd = 1.8)
+}
+
+# Labels under
+feature_labels <- c("pixels", "edges &\norientations", "textures &\nparts", "class\nscores")
+for (i in 1:nrow(blocks)) {
+  b <- blocks[i, ]
+  text(b$x + b$w/2, cy - b$h/2 - 0.55, feature_labels[i],
+       col = "#cccccc", cex = 0.62)
+}
+
+title("Convolutional Network — Hierarchical Features", col.main = "white", cex.main = 1)
+```
+:::
+
+::::
+
+---
+
+## Recurrent Networks & LSTM (1997) {.smaller}
+
+:::: {.columns}
+
+::: {.column width="48%"}
+**The problem:** sequences have **temporal dependencies**
+
+- Language, speech, time series — earlier inputs matter later
+- Standard feedforward nets have no memory
+
+**Recurrent networks:** hidden state is fed back as input at the next step
+
+**LSTM (Hochreiter & Schmidhuber, 1997):**
+
+- Gated memory cells allow gradients to flow over **long distances** in time
+- Solved the "vanishing gradient" problem
+- Brain-inspired: recurrence echoes working memory
+
+*Still: biological recurrence is richer, messier, and multi-scale*
+:::
+
+::: {.column width="52%"}
+```{r rnn-diagram, fig.height=4.5, fig.width=5}
+par(bg = "transparent", mar = c(2, 1, 2, 1))
+plot.new()
+plot.window(xlim = c(0, 10), ylim = c(0, 10))
+
+# Three unrolled RNN steps
+xs <- c(2, 5, 8); hy <- 6; iy <- 2.5; oy <- 9
+
+node_cols <- c("#56B4E9","#E69F00","#009E73")
+time_labs <- c("t-1", "t", "t+1")
+
+for (i in seq_along(xs)) {
+  # hidden node
+  symbols(xs[i], hy, circles = 0.6, add = TRUE, inches = FALSE,
+          bg = node_cols[i], fg = "white", lwd = 2)
+  text(xs[i], hy, "h", col = "white", cex = 0.9, font = 2)
+
+  # input node
+  symbols(xs[i], iy, circles = 0.45, add = TRUE, inches = FALSE,
+          bg = "#555555", fg = "white", lwd = 1.5)
+  text(xs[i], iy, paste0("x\n",time_labs[i]), col = "white", cex = 0.6)
+
+  # output node
+  symbols(xs[i], oy, circles = 0.45, add = TRUE, inches = FALSE,
+          bg = "#9E5FB8", fg = "white", lwd = 1.5)
+  text(xs[i], oy, paste0("y\n",time_labs[i]), col = "white", cex = 0.6)
+
+  # input → hidden
+  arrows(xs[i], iy + 0.45, xs[i], hy - 0.6, length = 0.1, col = "white", lwd = 1.5)
+  # hidden → output
+  arrows(xs[i], hy + 0.6, xs[i], oy - 0.45, length = 0.1, col = "white", lwd = 1.5)
+}
+
+# Recurrent connections between hidden states
+for (i in 1:(length(xs)-1)) {
+  arrows(xs[i] + 0.6, hy, xs[i+1] - 0.6, hy,
+         length = 0.1, col = "#F0E442", lwd = 2)
+}
+text(5, 7.3, "recurrent connection →", col = "#F0E442", cex = 0.72, font = 3)
+
+# Self-loop on middle node
+theta <- seq(pi*0.2, pi*1.8, length.out = 50)
+r <- 0.9
+loop_x <- xs[2] + r * cos(theta)
+loop_y <- hy + r * 0.5 + 0.3 * sin(theta)
+lines(loop_x, loop_y, col = "#F0E442", lwd = 1.5, lty = 2)
+
+title("Recurrent Network — Sequence Memory", col.main = "white", cex.main = 1)
+```
+:::
+
+::::
+
+---
+
+## 2012 — The Deep Learning Revolution {.center}
+
+**AlexNet wins ImageNet** by more than **10 percentage points** over all competitors.
+
+::: {.incremental}
+- Trained on GPUs — showing that hardware mattered as much as algorithms
+- Used **ReLU activations** and **dropout regularisation** — engineering over biology
+- Triggered enormous investment from industry (Google, Microsoft, Meta, …)
+- The moment neural networks moved from academic curiosity to industrial infrastructure
+:::
+
+::: {.fragment}
+> *"The data is there. The compute is there. Now the architecture works."*
+:::
+
+---
+
+## 2013 — Word2Vec: Meaning as Geometry {.smaller}
+
+:::: {.columns}
+
+::: {.column width="55%"}
+**Mikolov et al. (2013):** learn dense word vectors from large text corpora
+
+- Words with similar meaning → **nearby vectors** in high-dimensional space
+- Semantic relationships encoded as **directions**:
+  - King − Man + Woman ≈ Queen
+  - Paris − France + Italy ≈ Rome
+
+**Why this matters:**
+
+- Language is no longer a bag of discrete atoms
+- Meaning is **distributed** across many dimensions — closer to how neuroscience thinks about distributed coding
+- Downstream tasks (classification, translation) suddenly became much easier
+:::
+
+::: {.column width="45%"}
+```{r word2vec, fig.height=4.5, fig.width=4.5}
+par(bg = "transparent", mar = c(3, 3, 2, 1))
+words <- list(
+  King   = c(0.1, 0.9), Man  = c(0.05, 0.4),
+  Queen  = c(0.75, 0.85), Woman = c(0.7, 0.35),
+  France = c(0.15, -0.2), Paris = c(0.25, 0.15),
+  Italy  = c(0.7, -0.25), Rome  = c(0.8, 0.1)
+)
+df <- do.call(rbind, words) |> as.data.frame()
+colnames(df) <- c("x","y")
+df$word <- rownames(df)
+
+plot(df$x, df$y, type = "n",
+     xlim = c(-0.1, 1.0), ylim = c(-0.5, 1.1),
+     xlab = "Dimension 1 (gender?)", ylab = "Dimension 2 (royalty?)",
+     col.lab = "white", col.axis = "white", main = "Word Vectors (schematic)",
+     col.main = "white", axes = TRUE)
+grid(col = "#444444")
+box(col = "white")
+
+# Analogy arrows
+arrows(df["Man","x"], df["Man","y"], df["King","x"], df["King","y"],
+       col="#E69F00", lwd=1.4, length=0.1, lty=2)
+arrows(df["Woman","x"], df["Woman","y"], df["Queen","x"], df["Queen","y"],
+       col="#E69F00", lwd=1.4, length=0.1, lty=2)
+arrows(df["France","x"], df["France","y"], df["Paris","x"], df["Paris","y"],
+       col="#56B4E9", lwd=1.4, length=0.1, lty=2)
+arrows(df["Italy","x"], df["Italy","y"], df["Rome","x"], df["Rome","y"],
+       col="#56B4E9", lwd=1.4, length=0.1, lty=2)
+
+pch_vals <- c(King=17,Man=1,Queen=17,Woman=1,
+               France=15,Paris=15,Italy=15,Rome=15)
+col_vals <- c(King="#E69F00",Man="#E69F00",Queen="#E69F00",Woman="#E69F00",
+               France="#56B4E9",Paris="#56B4E9",Italy="#56B4E9",Rome="#56B4E9")
+for (w in rownames(df)) {
+  points(df[w,"x"], df[w,"y"], pch = pch_vals[w], cex = 1.8,
+         col = col_vals[w])
+  text(df[w,"x"], df[w,"y"] + 0.09, w, col = "white", cex = 0.7)
+}
+axis(1, col.axis="white", col="white")
+axis(2, col.axis="white", col="white")
+```
+:::
+
+::::
+
+---
+
+## 2017 — "Attention Is All You Need" {.smaller}
+
+The **Transformer** architecture (Vaswani et al.) marks a decisive break.
+
+It **dispensed entirely** with the two most brain-like prior principles:
+
+::: {.columns}
+
+::: {.column width="50%"}
+**What it dropped:**
+
+❌ **Recurrence** — no sequential hidden state  
+❌ **Convolutions** — no local receptive fields
+
+**What makes it un-brain-like:**
+
+- **Global pairwise attention:** every token interacts with every other token simultaneously
+- **Multi-head attention:** no known mapping to neural circuitry
+- **Positional encoding:** brain does not add sinusoidal tags to inputs to track order
+:::
+
+::: {.column width="50%"}
+**Why it works:**
+
+✅ Massively parallelisable on GPUs  
+✅ Scales with data and compute  
+✅ No vanishing gradient through time  
+✅ Long-range dependencies handled directly
+
+> *Performance improves precisely by abandoning biological constraints.*
+:::
+
+::::
+
+---
+
+## The Trajectory: From Biology to Engineering {.smaller}
+
+```{r timeline, fig.height=4.5, fig.width=10}
+par(bg = "transparent", mar = c(4, 1, 2, 1))
+plot.new()
+plot.window(xlim = c(1940, 2022), ylim = c(0, 4))
+
+# Timeline axis
+lines(c(1943, 2018), c(1.5, 1.5), col = "white", lwd = 2)
+arrows(2018, 1.5, 2021, 1.5, length = 0.1, col = "white", lwd = 2)
+
+events <- data.frame(
+  year  = c(1943, 1949, 1962, 1969, 1974, 1982, 1989, 1997, 2012, 2013, 2017),
+  label = c("MCP\nNeuron", "Hebb\nLearning", "Perceptron", "Minsky\n& Papert",
+            "1st AI\nWinter", "Backprop", "CNN\nLeCun", "LSTM",
+            "AlexNet", "Word2Vec", "Transformer"),
+  above = c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE),
+  bio   = c(1, 1, 1, 1, 0, 1, 1, 1, 0.5, 0.5, 0),
+  stringsAsFactors = FALSE
+)
+
+bio_cols <- colorRampPalette(c("#CC79A7","#E69F00","#56B4E9"))(3)
+
+for (i in 1:nrow(events)) {
+  e <- events[i,]
+  col_i <- if (e$bio == 1) "#56B4E9" else if (e$bio == 0.5) "#E69F00" else "#CC79A7"
+  
+  points(e$year, 1.5, pch = 21, cex = 2.2, bg = col_i, col = "white", lwd = 1.5)
+  
+  if (e$above) {
+    segments(e$year, 1.5, e$year, 2.8, col = "#777777", lwd = 1)
+    text(e$year, 3.0, e$label, col = "white", cex = 0.58, font = 2, adj = 0.5)
+    text(e$year, 1.1, e$year, col = "#aaaaaa", cex = 0.55)
+  } else {
+    segments(e$year, 1.5, e$year, 0.3, col = "#777777", lwd = 1)
+    text(e$year, 0.1, e$label, col = "white", cex = 0.58, font = 2, adj = 0.5)
+    text(e$year, 1.9, e$year, col = "#aaaaaa", cex = 0.55)
+  }
+}
+
+# Legend
+legend(1943, 4.0, legend = c("Brain-inspired", "Hybrid", "Engineering-first"),
+       pch = 21, pt.bg = c("#56B4E9","#E69F00","#CC79A7"),
+       col = "white", text.col = "white", bg = "transparent",
+       box.col = "transparent", horiz = TRUE, pt.cex = 1.5, cex = 0.75)
+
+title("Key Milestones in Neural Network AI", col.main = "white", cex.main = 1.1)
+```
+
+---
+
+## The Big Picture {.center}
+
+::: {.callout-note}
+## A recurring pattern
+Early deep learning borrowed broad principles from biology — distributed representation, learned connectivity, hierarchy, recurrence — while progressively **replacing biological realism with engineering abstractions**.
+:::
+
+::: {.fragment}
+The Transformer marks the moment when that trend becomes **explicit**:
+
+> *Performance improves precisely by abandoning the most brain-like architectural constraints.*
+:::
+
+::: {.fragment}
+**So: how brain-like is modern AI?**
+
+Less so with every generation — and more capable for it.
+:::
+
+---
+
+## Key Takeaways {.smaller}
+
+| Milestone | Year | Brain-like? |
+|---|---|---|
+| McCulloch–Pitts neuron | 1943 | ✅ Inspired by neuroscience |
+| Perceptron | 1962 | ✅ Learns like Hebb's rule |
+| Backpropagation | 1982 | ⚠️ Mathematically elegant, biologically implausible |
+| CNN | 1989 | ✅ Mimics visual cortex hierarchy |
+| LSTM | 1997 | ⚠️ Captures recurrence, but gates are not biological |
+| AlexNet | 2012 | ⚠️ Deep hierarchy, but GPU-optimised |
+| Word2Vec | 2013 | ⚠️ Distributed coding — sort of |
+| Transformer | 2017 | ❌ Deliberately non-biological |
+
+::: {.fragment}
+*The field started by asking "how does the brain compute?" — and ended up asking "what computes best?"*
+:::
