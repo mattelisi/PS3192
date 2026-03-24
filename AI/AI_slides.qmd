@@ -1,0 +1,24 @@
+---
+title: "AI"
+subtitle: "<br>PS3192: Data science for psychology"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    logo: img/logo-small-london-cmyk.jpg
+    footer: "PS3192 25-26"
+    incremental: true  
+    auto-stretch: false
+    code-fold: false   # don’t fold
+    code-line-numbers: false
+    theme: [default, matteo_rhul.css]
+editor: source
+keep-md: true
+filters: [bg_style.lua]
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(ggdag)
+library(dagitty)
+```
+
