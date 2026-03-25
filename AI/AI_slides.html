@@ -407,44 +407,51 @@ Matteo Lisi
 </figure>
 </div>
 </section>
-<section id="learning" class="slide level2 smaller">
+<section id="learning" class="slide level2">
 <h2>Learning</h2>
 <div class="columns">
-<div class="column" style="width:45%;">
-<p><strong>Donald Hebb (1949)</strong></p>
-<blockquote>
-<p><em>“Neurons that fire together, wire together”</em></p>
-</blockquote>
+<div class="column" style="width:40%;">
+<div style="font-size: 70%;">
 <ul>
-<li class="fragment">Learning as strengthening of synaptic connections between co-active neurons</li>
+<li class="fragment"><strong>Donald Hebb (1949)</strong> <em>“Neurons that fire together, wire together”</em></li>
 </ul>
-<p>&nbsp;</p>
-<p><strong>Frank Rosenblatt (1962)</strong></p>
-<ul>
-<li class="fragment">The <strong>Perceptron</strong>: a single layer network that can learn weights from data</li>
-<li class="fragment">Weights encode knowledge!</li>
-</ul>
-</div><div class="column" style="width:55%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/rosenblatt.jpg" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
-</figure>
 </div>
+<!-- Learning as strengthening of synaptic connections between co-active neurons -->
+<p>&nbsp;</p>
+<div style="font-size: 70%;">
+<ul>
+<li class="fragment"><strong>Frank Rosenblatt (1962)</strong> build the <strong>Perceptron</strong>: a single layer network that can learn weights from data</li>
+</ul>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="fragment">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="img/retina-perceptron.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
 </figure>
 </div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/rosenblatt.jpg" class="quarto-figure quarto-figure-center" style="width:30.0%"></p>
+</figure>
+</div>
+</div>
 </div></div>
 </section>
-<section id="limits-the-xor-problem-minskypapert-1969" class="slide level2 smaller">
-<h2>Limits — The XOR Problem &amp; Minsky–Papert (1969)</h2>
+<section id="limitations" class="slide level2">
+<h2>Limitations</h2>
+<!-- {.smaller} -->
+<!-- #### The XOR problem & Minsky–Papert (1969) -->
+<p>&nbsp;</p>
 <div class="columns">
-<div class="column" style="width:50%;">
-<p><strong>The good news:</strong></p>
-<p><em>Perceptron Convergence Theorem</em> — if a linear solution exists, the perceptron <strong>is guaranteed to find it</strong>.</p>
-<p><strong>The bad news:</strong></p>
-<p>Many real problems are <strong>not linearly separable</strong> — the classic case is XOR:</p>
+<div class="column" style="width:40%;">
+<div style="font-size: 70%;">
+<div class="fragment" data-fragment-index="1">
+<p><em>Perceptron Convergence Theorem</em> — if a <em>linear</em> solution exists, the perceptron is guaranteed to find it.</p>
+</div>
+<p>&nbsp;</p>
+<div class="fragment" data-fragment-index="2">
+<p>The bad news: many real problems are <strong>not linearly separable</strong> — the classic case is XOR:</p>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -477,18 +484,231 @@ Matteo Lisi
 </tbody>
 </table>
 <p>No single straight line can separate the 1s from the 0s.</p>
-<p>Minsky &amp; Papert (1969) formalised these limitations — <strong>setting off the first AI Winter</strong>.</p>
-</div><div class="column" style="width:50%;">
+</div>
+<p>&nbsp;</p>
+<div class="fragment" data-fragment-index="3">
+<p><span style="color:#198754">Minsky &amp; Papert (1969) formalised these limitations — setting off the first <strong>AI Winter</strong>.</span></p>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="fragment" data-fragment-index="2">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="AI_slides_files/figure-revealjs/xor-1.png" width="432"></p>
+<p><img data-src="AI_slides_files/figure-revealjs/xor-1.png" width="336"></p>
 </figure>
 </div>
 </div>
 </div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="fragment" data-fragment-index="3">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/perceptron_book_cover.jpg" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
 </div></div>
+</section>
+<section id="single-and-multi-layer-perceptrons" class="slide level2">
+<h2>Single and multi-layer perceptrons</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/single.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+</figure>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/multi.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+</div></div>
+</section>
+<section id="the-first-ai-winter-1970-1980" class="slide level2">
+<h2>The first “AI winter” (1970-1980)</h2>
+<div>
+<div class="fragment" data-fragment-index="1">
+<ul>
+<li>Period of severely reduced funding and interest in neural network research, due to unmet expectations.</li>
+</ul>
+</div>
+<div class="fragment" data-fragment-index="2">
+<ul>
+<li>Funding and energy moved toward <strong>symbolic AI</strong>, focused on using high-level representations and logic to model human intelligence.</li>
+</ul>
+</div>
+<div class="fragment" data-fragment-index="3">
+<ul>
+<li>Minsky and Papert, among others, were proponents of symbolic AI approaches and argued that neural networks would fail to scale up beyond toy problems.</li>
+</ul>
+</div>
+</div>
+<p>&nbsp;</p>
+<div class="fragment" data-fragment-index="4">
+<p>A second AI winter in the late 80s, when it became clear that many buyers and investors expected far more adaptability and robustness than what symbolic AI systems could provide.</p>
+</div>
+<p>&nbsp;</p>
+<div class="fragment" data-fragment-index="5">
+<p><span style="color:#198754"><strong><em>Typical</em> AI winter pattern: not “no progress”, but expectations rising much faster than capabilities.</strong></span></p>
+</div>
+</section>
+<section id="key-milestones-in-neural-network-ai" class="slide level2 smaller scrollable" data-background-color="#202A30">
+<h2>Key milestones in neural network AI</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="AI_slides_files/figure-revealjs/timeline-1.png" class="quarto-figure quarto-figure-center" width="1344"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>1982: <strong>Backpropagation algorithm</strong>: scalable training of multilayer perceptrons revives interest in neural networks</p></li>
+<li class="fragment"><p>1989 <strong>Convolutional neural network (CNN)</strong>: spatial convolutions inspired by the hierarchical organisation of the visual system</p></li>
+<li class="fragment"><p>1997 <strong>Long short-term memory (LSTM)</strong>: recurrent network that can learn long-range dependencies in sequences, inspired by recurrence in brain circuits</p></li>
+<li class="fragment"><p>2012 <strong>Deep learning</strong>: AlexNet wins the ImageNet competition by a large margin, sparking major industry interest</p></li>
+<li class="fragment"><p>2013 <strong>word2vec</strong> dense distributed word embeddings learned from huge text corpora, allowing to represent semantics with list of numbers (not unlike the brain)</p></li>
+<li class="fragment"><p>2017 <em>“Attention is all you need”</em> paper introduces the <strong>transformer</strong> architecture, which underlies modern large language models (GPT, Claude, Gemini, etc.)</p></li>
+</ul>
+</section>
+<section id="alexnet-the-imagenet-competition" class="slide level2">
+<h2>AlexNet &amp; the ImageNet competition</h2>
+<p>&nbsp;</p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/Krizhevsky2012_architecture.png" style="width:100.0%"></p>
+<figcaption>Krizhevsky, Sutskever, &amp; Hinton (2012)</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/imagenet.webp" style="width:100.0%"></p>
+<figcaption>ImageNet contains over 14 million images categorized into 1000 classes.</figcaption>
+</figure>
+</div>
+</div></div>
+<p>&nbsp;</p>
+<div class="fragment">
+<p>The success of AlexNet was due also to recent developments in availability of large scale labelled datasets and general purpose GPU computing.</p>
+</div>
+</section>
+<section id="how-brain-like-are-neural-networks" class="slide level2 scrollable">
+<h2>How brain-like are neural networks?</h2>
+<p>&nbsp;</p>
+<p>Many influential ideas in neural networks were borrowed from biology:</p>
+<ul>
+<li class="fragment"><p>The artificial neuron as a basic computational unit in a network</p></li>
+<li class="fragment"><p>Early learning algorithms (e.g.&nbsp;the perceptron) were inspired by the strengthening of connections between co-active neurons</p></li>
+<li class="fragment"><p>Information is stored in the strength of synaptic connections, a central idea in neuroscience</p></li>
+<li class="fragment"><p>Convolutional networks were heavily inspired by biological vision (local receptive fields, hierarchical feature detectors)</p></li>
+<li class="fragment"><p>Early approaches to language and sequence learning relied on <em>recurrence</em>, echoing recurrent connectivity in the brain</p></li>
+<li class="fragment"><p>Semantic concepts can be represented in a distributed way: both artificial and biological networks encode information as patterns of activity across many units</p></li>
+</ul>
+<p>&nbsp; &nbsp;</p>
+<div class="fragment">
+<p>Over time, neural networks increasingly diverged from biology, replacing biological realism with engineering abstractions.</p>
+</div>
+<div class="fragment">
+<p>A first example is <u>backpropagation</u>: it uses the chain rule to propagate errors backward and update connection weights during learning. By contrast, biological neurons are thought to learn mainly from locally available signals, and no clear biological equivalent of backpropagation is known.</p>
+</div>
+<div class="fragment">
+<p>The clearest example is the <u>transformer architecture</u>: achieved a big boost in performance obtained <em>precisely by abandoning some of the most brain-inspired ideas</em> (recurrence and convolution).</p>
+</div>
+</section>
+<section id="transformer-architecture" class="slide level2">
+<h2>Transformer architecture</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div style="font-size: 80%;">
+<p>From a neuroscience perspective, several aspects are strikingly un-brain-like, and hard to justify except by their empirical success:</p>
+<ul>
+<li class="fragment"><u>Parallel processing of all <a href="https://platform.openai.com/tokenizer"><em>tokens</em></a></u> (<span class="math inline">\(\approx\)</span> words) in a single feedforward pass, rather than sequentially</li>
+<li class="fragment"><u>Global pairwise token interactions</u>: every token can interact directly with every other token</li>
+<li class="fragment"><u>Multi-head attention</u>: multiple parallel attention mechanisms operate at once</li>
+<li class="fragment"><u>Positional encoding</u>: sequence order must be added explicitly because the architecture has no built-in notion of order</li>
+</ul>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/ModalNet-21.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<h4 id="positional-encoding-in-transformers">Positional encoding in transformers</h4>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div style="font-size: 70%;">
+<div>
+<ul>
+<li><p>Tokens are first represented using a <em>one-hot</em> code.</p></li>
+<li><p>They are then mapped onto lower-dimensional dense embeddings, vectors<sup>1</sup> of numbers that capture aspects of word meaning, so that related words lie close together in the embedding space.</p></li>
+</ul>
+</div>
+<ul>
+<li class="fragment"><p>Because transformers process all tokens simultaneously, they have no built-in sense of sequence. To encode word order, a position vector is added to each embedding.</p></li>
+<li class="fragment"><p><span style="color:#198754">This is a strikingly un-brain-like solution: rather than sequence emerging from dynamics or recurrence, order is imposed by adding an explicit numerical code for position.</span></p></li>
+</ul>
+</div>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="AI_slides_files/figure-revealjs/post-1.png" width="288"></p>
+<figcaption>Positional encoding matrix for a text of 50 words, and an internal embedding dimensions of 100.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/ModalNet-21.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+</figure>
+</div>
+</div></div>
+<aside><ol class="aside-footnotes"><li id="fn1"><p>A vector is simply an ordered list of numbers. An <span class="math inline">\(n\)</span>-dimensional vector defines a position in an <span class="math inline">\(n\)</span>-dimensional space.</p></li></ol></aside></section>
+<section id="how-do-transformers-learn" class="slide level2">
+<h2>How do transformers learn?</h2>
+<p>Like earlier neural networks, transformers learn by adjusting millions or billions of parameters through <strong>backpropagation</strong>.</p>
+<ul>
+<li class="fragment">During training, the model is shown huge amounts of text and asked to predict the next token</li>
+<li class="fragment">When its prediction is wrong, the error is computed and propagated backward through the network</li>
+<li class="fragment">This gradually adjusts the weights so that future predictions improve</li>
+<li class="fragment">Although first developed for sequence-to-sequence tasks such as translation, this training objective turned out to support many other abilities too</li>
+</ul>
+</section>
+<section id="after-2017" class="slide level2">
+<h2>After 2017</h2>
+<ul>
+<li class="fragment"><strong>Transformers rapidly scaled up</strong>: more data, more compute, and many more parameters</li>
+<li class="fragment"><strong>Multimodal models</strong> extended the same general approach beyond text, combining language with images, audio, and other inputs</li>
+<li class="fragment"><strong>ChatGPT</strong> made this technology widely visible when it was released to the public in November 2022</li>
+</ul>
+</section>
+<section id="practical-session-calling-language-models-from-r" class="slide level2">
+<h2>Practical session: calling language models from R</h2>
+<p>Today we will use the <a href="https://ellmer.tidyverse.org/"><strong>ellmer</strong></a> package in R to call large language models from code.</p>
+<ul>
+<li class="fragment"><code>ellmer</code> provides a simple interface to a wide range of model providers</li>
+<li class="fragment">It lets us send prompts, receive model outputs and process them directly in R</li>
+</ul>
 <div class="quarto-auto-generated-content">
 <p><img src="img/logo-small-london-cmyk.jpg" class="slide-logo"></p>
 <div class="footer footer-default">
@@ -496,6 +716,7 @@ Matteo Lisi
 </div>
 </div>
 </section></section>
+
     </div>
   </div>
 

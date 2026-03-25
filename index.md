@@ -28,6 +28,10 @@ Course coordinator: Matteo Lisi
 
 [Slides](unsupervised/unsupervised_GMM.html)
 
+## AI and Large Language Models (27 Mar 2026)
+
+[Slides](AI/AI_slides.html)
+
 
 
 
