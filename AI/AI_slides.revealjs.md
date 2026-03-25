@@ -498,13 +498,13 @@ library(ellmer)
 
 chat <- chat_google_gemini("You are a terse assistant.")
 
-chat$chat("What is the capital of France?")
+chat$chat("What is the capital of Italy?")
 ```
 
 ::: {.cell-output .cell-output-stdout}
 
 ```
-Paris
+Rome
 ```
 
 
@@ -518,7 +518,7 @@ chat$chat("What is its most famous landmark?")
 ::: {.cell-output .cell-output-stdout}
 
 ```
-Eiffel Tower
+Colosseum
 ```
 
 
