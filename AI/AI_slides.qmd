@@ -525,3 +525,60 @@ Today we will use the [**ellmer**](https://ellmer.tidyverse.org/) package in R t
 - It lets us send prompts, receive model outputs and process them directly in R
 
 
+## {.scrollable background-color="#202A30"}
+
+#### Steps to create a Gemini API key and adding it to R environment 
+
+1. Go to: [https://ai.google.dev/aistudio](https://ai.google.dev/aistudio)
+
+2. Click **GET API KEY** in the top bar.
+
+
+3. Sign in with a Google account, or create one if needed.
+
+
+4. After logging in, you should be taken to: [https://aistudio.google.com/api-keys](https://aistudio.google.com/api-keys)
+
+
+5. Click **Create API key**. \newline After entering a name, a new API key will appear in the list on that page. Click the 'copy' key icon, then return to RStudio.
+
+
+6. In RStudio, run the following command in the console: `usethis::edit_r_environ()` This will open your .Renviron file in the editor. Add a line that starts like this:
+`GEMINI_API_KEY=<paste API key here>` making sure to paste the API key you created above after the equal sign. Then save and close the file.
+
+
+7. Restart R (you can do this by pressing Ctrl + Shift + F10, or by clicking Session > Restart R).
+
+
+8. Testing that it works After completing these steps, you can test whether everything is working by running:
+
+::: fragment 
+ 
+```{r, eval=FALSE, echo=TRUE}
+library(ellmer)
+
+# start a chat
+chat <- chat_google_gemini()
+
+# test a prompt
+chat$chat("Explain why overfitting in machine learning is a problem.")
+
+```
+
+:::
+
+## {.scrollable}
+
+```{r, echo=TRUE}
+library(ellmer)
+
+chat <- chat_google_gemini("You are a terse assistant.")
+
+chat$chat("What is the capital of Italy?")
+
+# the client is stateful, so this continues the conversation
+chat$chat("What is its most famous landmark?")
+
+```
+
+
