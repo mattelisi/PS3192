@@ -684,9 +684,11 @@ Matteo Lisi
 <div class="fragment">
 <p>Over time, neural networks increasingly diverged from biology, replacing biological realism with engineering abstractions.</p>
 </div>
+<p>&nbsp; &nbsp;</p>
 <div class="fragment">
 <p>A first example is <u>backpropagation</u>: it uses the chain rule to propagate errors backward and update connection weights during learning. By contrast, biological neurons are thought to learn mainly from locally available signals, and no clear biological equivalent of backpropagation is known.</p>
 </div>
+<p>&nbsp; &nbsp;</p>
 <div class="fragment">
 <p>The clearest example is the <u>transformer architecture</u>: achieved a big boost in performance obtained <em>precisely by abandoning some of the most brain-inspired ideas</em> (recurrence and convolution).</p>
 </div>
@@ -766,16 +768,25 @@ Matteo Lisi
 <li class="fragment"><strong>Multimodal models</strong> extended the same general approach beyond text, combining language with images, audio, and other inputs</li>
 <li class="fragment"><strong>ChatGPT</strong> made this technology widely visible when it was released to the public in November 2022</li>
 </ul>
+<!-- ## Ethics of modern AI -->
+<!-- - My view: nothing inherently wrong with the technology, but the investment bubble likely to have negative effects for environment, wealth inequality, etc. -->
+<!-- - AI misalignment: models have 'no wants', but if not regulated can definitely have unintended, negative consequences -->
+<!-- - Even worse when given agentic capabilities (e.g. OpenClaw) -->
+</section></section>
+<section>
+<section id="practical-session-calling-language-models-from-r" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
+<h1>Practical session: calling language models from R</h1>
+
 </section>
-<section id="practical-session-calling-language-models-from-r" class="slide level2">
-<h2>Practical session: calling language models from R</h2>
+<section id="section-3" class="slide level2">
+<h2></h2>
 <p>Today we will use the <a href="https://ellmer.tidyverse.org/"><strong>ellmer</strong></a> package in R to call large language models from code.</p>
 <ul>
 <li class="fragment"><code>ellmer</code> provides a simple interface to a wide range of model providers</li>
 <li class="fragment">It lets us send prompts, receive model outputs and process them directly in R</li>
 </ul>
 </section>
-<section id="section-3" class="slide level2 scrollable" data-background-color="#202A30">
+<section id="section-4" class="slide level2 scrollable" data-background-color="#202A30">
 <h2></h2>
 <h4 id="steps-to-create-a-gemini-api-key-and-adding-it-to-r-environment">Steps to create a Gemini API key and adding it to R environment</h4>
 <ol type="1">
@@ -800,7 +811,7 @@ Matteo Lisi
 </div>
 </div>
 </section>
-<section id="section-4" class="slide level2 scrollable">
+<section id="section-5" class="slide level2 scrollable">
 <h2></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ellmer)</span>
@@ -817,6 +828,95 @@ Matteo Lisi
 <pre><code>Colosseum</code></pre>
 </div>
 </div>
+<p>&nbsp; &nbsp;</p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a>chat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;Chat Google/Gemini/gemini-2.5-flash turns=5 tokens=38/3 $0.00&gt;
+── system [0] ──────────────────────────────────────────────────────────────────
+You are a terse assistant.
+── user [14] ───────────────────────────────────────────────────────────────────
+What is the capital of Italy?
+── assistant [1] ───────────────────────────────────────────────────────────────
+Rome
+── user [9] ────────────────────────────────────────────────────────────────────
+What is its most famous landmark?
+── assistant [2] ───────────────────────────────────────────────────────────────
+Colosseum</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="anatomy-of-a-conversation" class="slide level2">
+<h2>Anatomy of a conversation</h2>
+<ul>
+<li class="fragment"><p>Each interaction is a pair of user and assistant turns, corresponding to a HTTP request and response.</p></li>
+<li class="fragment"><p>Messages are in JSON (JavaScript Object Notation) format</p></li>
+<li class="fragment"><p>The API server is <em>stateless</em> (does not store anything about the conversation), even though conversation are <em>statefull</em>.</p></li>
+</ul>
+<!-- ```{r} -->
+<!-- httr2::with_verbosity(chat$chat("What is its most famous landmark?"), verbosity=2) -->
+<!-- httr2::local_verbosity(2, env = caller_env()) -->
+<!-- ``` -->
+</section>
+<section id="section-6" class="slide level2 scrollable">
+<h2></h2>
+<p>User request</p>
+<pre><code> {
+   "contents": [
+     {
+       "role": "user",
+       "parts": [
+         {
+           "text": "What is the capital of Italy?"
+         }
+       ]
+     }
+   ],
+   "systemInstruction": {
+     "parts": {
+       "text": "You are a terse assistant."
+     }
+   }
+}
+</code></pre>
+</section>
+<section id="section-7" class="slide level2 scrollable">
+<h2></h2>
+<p>API server response</p>
+<pre><code>type: message
+data: {
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "Rome"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 14,
+    "candidatesTokenCount": 1,
+    "totalTokenCount": 35,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 14
+      }
+    ],
+    "thoughtsTokenCount": 20
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "X0rEaeDNCpCuxN8P0YmZiAE"
+}
+</code></pre>
 <div class="quarto-auto-generated-content">
 <p><img src="img/logo-small-london-cmyk.jpg" class="slide-logo"></p>
 <div class="footer footer-default">

@@ -318,12 +318,17 @@ Over time, neural networks increasingly diverged from biology, replacing biologi
 
 :::
 
+ 
+ 
 
 ::: fragment
 
 A first example is [backpropagation]{.underline}: it uses the chain rule to propagate errors backward and update connection weights during learning. By contrast, biological neurons are thought to learn mainly from locally available signals, and no clear biological equivalent of backpropagation is known.
 
 :::
+
+ 
+ 
 
 ::: fragment
 
@@ -428,10 +433,18 @@ Like earlier neural networks, transformers learn by adjusting millions or billio
 - **ChatGPT** made this technology widely visible when it was released to the public in November 2022
 
 
+<!-- ## Ethics of modern AI -->
+
+<!-- - My view: nothing inherently wrong with the technology, but the investment bubble likely to have negative effects for environment, wealth inequality, etc. -->
+
+<!-- - AI misalignment: models have 'no wants', but if not regulated can definitely have unintended, negative consequences -->
+
+<!-- - Even worse when given agentic capabilities (e.g. OpenClaw) -->
 
 
+# Practical session: calling language models from R
 
-## Practical session: calling language models from R
+##
 
 Today we will use the [**ellmer**](https://ellmer.tidyverse.org/) package in R to call large language models from code.
 
@@ -524,3 +537,126 @@ Colosseum
 
 :::
 :::
+
+
+
+ 
+ 
+
+::: fragment
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
+chat
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+<Chat Google/Gemini/gemini-2.5-flash turns=5 tokens=38/3 $0.00>
+── system [0] ──────────────────────────────────────────────────────────────────
+You are a terse assistant.
+── user [14] ───────────────────────────────────────────────────────────────────
+What is the capital of Italy?
+── assistant [1] ───────────────────────────────────────────────────────────────
+Rome
+── user [9] ────────────────────────────────────────────────────────────────────
+What is its most famous landmark?
+── assistant [2] ───────────────────────────────────────────────────────────────
+Colosseum
+```
+
+
+:::
+:::
+
+
+
+:::
+
+
+## Anatomy of a conversation
+
+- Each interaction is a pair of user and assistant turns, corresponding to a HTTP request and response.
+
+- Messages are in JSON (JavaScript Object Notation) format
+
+- The API server is _stateless_ (does not store anything about the conversation), even though conversation are _statefull_.
+
+
+
+<!-- ```{r} -->
+<!-- httr2::with_verbosity(chat$chat("What is its most famous landmark?"), verbosity=2) -->
+
+<!-- httr2::local_verbosity(2, env = caller_env()) -->
+<!-- ``` -->
+
+
+## {.scrollable}
+
+User request
+
+```
+ {
+   "contents": [
+     {
+       "role": "user",
+       "parts": [
+         {
+           "text": "What is the capital of Italy?"
+         }
+       ]
+     }
+   ],
+   "systemInstruction": {
+     "parts": {
+       "text": "You are a terse assistant."
+     }
+   }
+}
+
+```
+
+## {.scrollable}
+
+API server response
+
+```
+type: message
+data: {
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "Rome"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 14,
+    "candidatesTokenCount": 1,
+    "totalTokenCount": 35,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 14
+      }
+    ],
+    "thoughtsTokenCount": 20
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "X0rEaeDNCpCuxN8P0YmZiAE"
+}
+
+```
+
+
